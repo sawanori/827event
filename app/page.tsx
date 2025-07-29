@@ -1,103 +1,251 @@
+"use client";
+
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
+  useEffect(() => {
+    // Google Calendar script を動的に読み込む
+    const script1 = document.createElement('link');
+    script1.href = 'https://calendar.google.com/calendar/scheduling-button-script.css';
+    script1.rel = 'stylesheet';
+    document.head.appendChild(script1);
+
+    const script2 = document.createElement('script');
+    script2.src = 'https://calendar.google.com/calendar/scheduling-button-script.js';
+    script2.async = true;
+    document.body.appendChild(script2);
+
+    script2.onload = () => {
+      // スクリプトが読み込まれたら、ボタンを初期化
+      if ((window as any).calendar && (window as any).calendar.schedulingButton) {
+        (window as any).calendar.schedulingButton.load({
+          url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1Gg_DmXJRTl_aM4LfxX8rnmI4ODzmDjHfhp8fgTWjoImlSacOfGBjReue48PR5OOUBraTF3JhM?gv=true',
+          color: '#ff61cd',
+          label: '予約はこちら',
+          target: document.getElementById('google-calendar-button'),
+        });
+      }
+    };
+
+    return () => {
+      // クリーンアップ
+      if (document.head.contains(script1)) {
+        document.head.removeChild(script1);
+      }
+      if (document.body.contains(script2)) {
+        document.body.removeChild(script2);
+      }
+    };
+  }, []);
+  const images = [
+    "DSC00927.jpg",
+    "DSC01074.jpg",
+    "DSC01011のコピー.jpg",
+    "DSC01335.jpg",
+    "DSC00949.jpg",
+    "DSC01398.jpg",
+    "DSC01020のコピー.jpg",
+    "DSC01109.jpg",
+    "DSC01356.jpg",
+    "DSC00895のコピー.jpg",
+    "DSC01152.jpg",
+    "DSC01404のコピー.jpg",
+    "DSC01011のコピー2.jpg",
+    "DSC01099.jpg",
+    "DSC01314のコピー.jpg",
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white">
+      {/* Hero Section */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 grid grid-cols-3 gap-1 opacity-20">
+          {images.slice(0, 6).map((img, idx) => (
+            <div key={idx} className="relative h-full">
+              <Image
+                src={`/images/827/${img}`}
+                alt=""
+                fill
+                className="object-cover"
+              />
+            </div>
+          ))}
+        </div>
+        <div className="relative z-10 text-center px-4">
+          <h1 className="text-5xl md:text-7xl font-light text-pink-800 mb-4">
+            Special Photo Session
+          </h1>
+          <p className="text-xl md:text-2xl text-pink-600 mb-8">
+            あなたの魅力をプロフィール写真に表現しませんか？
+          </p>
           <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#register"
+            className="inline-block bg-pink-400 text-white px-8 py-4 rounded-full hover:bg-pink-500 transition-colors text-lg"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
+            無料で参加する
           </a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      {/* About Section */}
+      <section className="py-20 px-4 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 className="text-4xl font-light text-pink-800 mb-6">
+              あなたの魅力を引き出す
+            </h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">
+              当社NonTurnの澤田が、あなたの自然な美しさを写真に収めます。
+              2時間のセッションで、2カットの厳選された写真をお渡しします。
+            </p>
+            <ul className="space-y-3 text-gray-600">
+              <li className="flex items-start">
+                <span className="text-pink-400 mr-2">✓</span>
+                完全無料（限定8名様）
+              </li>
+             <li className="flex items-start">
+                <span className="text-pink-400 mr-2">✓</span>
+                レタッチ済み2カットをプレゼント
+              </li>
+            </ul>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            {images.slice(6, 10).map((img, idx) => (
+              <div key={idx} className="relative aspect-square rounded-lg overflow-hidden">
+                <Image
+                  src={`/images/827/${img}`}
+                  alt=""
+                  fill
+                  className="object-cover hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Company Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4">
+          <h2 className="text-4xl font-light text-pink-800 text-center mb-12">
+            About NonTurn
+          </h2>
+          <div className="bg-pink-50 rounded-2xl p-8 md:p-12">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-medium text-gray-800 mb-2">NonTurn.LLC</h3>
+              <p className="text-gray-600 mb-4">代表者：澤田憲孝</p>
+              <div className="flex gap-3 justify-center">
+                <a 
+                  href="https://non-turn.com/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-block bg-pink-400 text-white px-6 py-2 rounded-full hover:bg-pink-500 transition-colors text-sm"
+                >
+                  公式サイトを見る
+                </a>
+                <a 
+                  href="https://www.instagram.com/nonturn2022?igsh=MWxoOWx2MnZ0M3I0eg==" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:from-purple-600 hover:to-pink-600 transition-all"
+                  aria-label="Instagram"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1112.324 0 6.162 6.162 0 01-12.324 0zM12 16a4 4 0 110-8 4 4 0 010 8zm4.965-10.405a1.44 1.44 0 112.881.001 1.44 1.44 0 01-2.881-.001z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <div className="space-y-4 text-gray-700 leading-relaxed">
+              <p>
+                動画制作・スチール撮影を用いて企業のブランディングアップのお手伝いをしております。
+              </p>
+              <p>
+                OG8Fの専用デスクで普段仕事してます。
+                仲良くして下さい。
+              </p>
+              <p className="text-sm text-gray-600 mt-6">
+                今回の撮影会は、普段企業様向けに行っている撮影技術を活かし、
+                個人の方にもプロフェッショナルな写真撮影を体験していただく特別企画です。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery Section */}
+      <section className="py-20 bg-pink-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-4xl font-light text-pink-800 text-center mb-12">
+            Gallery
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {images.map((img, idx) => (
+              <div 
+                key={idx} 
+                className="relative aspect-[3/4] rounded-lg overflow-hidden cursor-pointer"
+                onClick={() => setSelectedImage(img)}
+              >
+                <Image
+                  src={`/images/827/${img}`}
+                  alt=""
+                  fill
+                  className="object-cover hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section id="register" className="py-20 px-4">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="text-4xl font-light text-pink-800 mb-6">
+            今すぐお申し込みください
+          </h2>
+          <p className="text-gray-600 mb-8">
+            限定8名様のみの特別企画です。お早めにお申し込みください。
+          </p>
+          <div className="bg-white p-8 rounded-2xl shadow-lg">
+            <p className="text-gray-700 mb-6">
+              下記のボタンから予約をお申し込みください
+            </p>
+            <div id="google-calendar-button"></div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-pink-100 py-8 text-center text-gray-600">
+        <p>&copy; 2024 Special Photo Session. All rights reserved.</p>
       </footer>
+
+      {/* Modal */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="relative max-w-4xl max-h-[90vh] w-full h-full">
+            <Image
+              src={`/images/827/${selectedImage}`}
+              alt=""
+              fill
+              className="object-contain"
+            />
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-4 right-4 text-white bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-70 transition-opacity"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
