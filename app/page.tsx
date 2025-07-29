@@ -1,10 +1,44 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Intersection Observer for scroll animations
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all elements with scroll-animation class
+    const elements = document.querySelectorAll('.scroll-animation');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => {
+      elements.forEach((el) => observer.unobserve(el));
+    };
+  }, [loading]); // Re-run when loading is done
+
+  useEffect(() => {
+    // ローディングアニメーションを3秒後に非表示
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     // Google Calendar script を動的に読み込む
@@ -41,32 +75,56 @@ export default function Home() {
     };
   }, []);
   const images = [
-    "DSC00927.jpg",
-    "DSC01074.jpg",
-    "DSC01011のコピー.jpg",
-    "DSC01335.jpg",
-    "DSC00949.jpg",
-    "DSC01398.jpg",
-    "DSC01020のコピー.jpg",
-    "DSC01109.jpg",
-    "DSC01356.jpg",
-    "DSC00895のコピー.jpg",
-    "DSC01152.jpg",
-    "DSC01404のコピー.jpg",
-    "DSC01011のコピー2.jpg",
-    "DSC01099.jpg",
-    "DSC01314のコピー.jpg",
+    { path: "827/DSC00927.jpg" },
+    { path: "827/DSC01074.jpg" },
+    { path: "yon/DSC00833のコピー.jpg" },
+    { path: "827/DSC01011のコピー.jpg" },
+    { path: "827/DSC01335.jpg" },
+    { path: "827/DSC00949.jpg" },
+    { path: "yon/DSC00843のコピー.jpg" },
+    { path: "827/DSC01398.jpg" },
+    { path: "827/DSC01020のコピー.jpg" },
+    { path: "827/DSC01109.jpg" },
+    { path: "yon/DSC00861のコピー.jpg" },
+    { path: "827/DSC01356.jpg" },
+    { path: "827/DSC00895のコピー.jpg" },
+    { path: "827/DSC01152.jpg" },
+    { path: "827/DSC01404のコピー.jpg" },
+    { path: "827/DSC01011のコピー2.jpg" },
+    { path: "827/DSC01099.jpg" },
+    { path: "827/DSC01314のコピー.jpg" },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white">
+    <>
+      {/* Loading Animation */}
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+          <div className="text-center">
+            <div className="mb-8">
+              <div className="w-16 h-16 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin mx-auto"></div>
+            </div>
+            <div className="space-y-2 animate-pulse">
+              <h2 className="text-3xl font-light text-pink-800">Special Photo Session</h2>
+              <p className="text-xl text-gray-600 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+                2025/8/27 18:00~
+              </p>
+              <p className="text-xl text-gray-600 animate-fade-in" style={{ animationDelay: '1s' }}>
+                @7A会議室
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white">
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 grid grid-cols-3 gap-1 opacity-20">
           {images.slice(0, 6).map((img, idx) => (
             <div key={idx} className="relative h-full">
               <Image
-                src={`/images/827/${img}`}
+                src={`/images/${img.path}`}
                 alt=""
                 fill
                 className="object-cover"
@@ -92,7 +150,7 @@ export default function Home() {
 
       {/* About Section */}
       <section className="py-20 px-4 max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid md:grid-cols-2 gap-12 items-center scroll-animation opacity-0 translate-y-10 transition-all duration-700">
           <div>
             <h2 className="text-4xl font-light text-pink-800 mb-6">
               あなたの魅力を引き出す
@@ -116,7 +174,7 @@ export default function Home() {
             {images.slice(6, 10).map((img, idx) => (
               <div key={idx} className="relative aspect-square rounded-lg overflow-hidden">
                 <Image
-                  src={`/images/827/${img}`}
+                  src={`/images/${img.path}`}
                   alt=""
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-300"
@@ -130,10 +188,10 @@ export default function Home() {
       {/* Company Section */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-4xl font-light text-pink-800 text-center mb-12">
+          <h2 className="text-4xl font-light text-pink-800 text-center mb-12 scroll-animation opacity-0 translate-y-10 transition-all duration-700">
             About NonTurn
           </h2>
-          <div className="bg-pink-50 rounded-2xl p-8 md:p-12">
+          <div className="bg-pink-50 rounded-2xl p-8 md:p-12 scroll-animation opacity-0 translate-y-10 transition-all duration-700 delay-200">
             <div className="text-center mb-8">
               <h3 className="text-2xl font-medium text-gray-800 mb-2">NonTurn.LLC</h3>
               <p className="text-gray-600 mb-4">代表者：澤田憲孝</p>
@@ -179,18 +237,19 @@ export default function Home() {
       {/* Gallery Section */}
       <section className="py-20 bg-pink-50">
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-4xl font-light text-pink-800 text-center mb-12">
+          <h2 className="text-4xl font-light text-pink-800 text-center mb-12 scroll-animation opacity-0 translate-y-10 transition-all duration-700">
             Gallery
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {images.map((img, idx) => (
               <div 
                 key={idx} 
-                className="relative aspect-[3/4] rounded-lg overflow-hidden cursor-pointer"
-                onClick={() => setSelectedImage(img)}
+                className={`relative aspect-[3/4] rounded-lg overflow-hidden cursor-pointer scroll-animation opacity-0 translate-y-10 transition-all duration-700`}
+                style={{ transitionDelay: `${idx * 50}ms` }}
+                onClick={() => setSelectedImage(img.path)}
               >
                 <Image
-                  src={`/images/827/${img}`}
+                  src={`/images/${img.path}`}
                   alt=""
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-300"
@@ -203,7 +262,7 @@ export default function Home() {
 
       {/* CTA Section */}
       <section id="register" className="py-20 px-4">
-        <div className="max-w-2xl mx-auto text-center">
+        <div className="max-w-2xl mx-auto text-center scroll-animation opacity-0 translate-y-10 transition-all duration-700">
           <h2 className="text-4xl font-light text-pink-800 mb-6">
             今すぐお申し込みください
           </h2>
@@ -232,7 +291,7 @@ export default function Home() {
         >
           <div className="relative max-w-4xl max-h-[90vh] w-full h-full">
             <Image
-              src={`/images/827/${selectedImage}`}
+              src={`/images/${selectedImage}`}
               alt=""
               fill
               className="object-contain"
@@ -247,5 +306,6 @@ export default function Home() {
         </div>
       )}
     </div>
+    </>
   );
 }
