@@ -40,40 +40,6 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    // Google Calendar script を動的に読み込む
-    const script1 = document.createElement('link');
-    script1.href = 'https://calendar.google.com/calendar/scheduling-button-script.css';
-    script1.rel = 'stylesheet';
-    document.head.appendChild(script1);
-
-    const script2 = document.createElement('script');
-    script2.src = 'https://calendar.google.com/calendar/scheduling-button-script.js';
-    script2.async = true;
-    document.body.appendChild(script2);
-
-    script2.onload = () => {
-      // スクリプトが読み込まれたら、ボタンを初期化
-      if ((window as any).calendar && (window as any).calendar.schedulingButton) {
-        (window as any).calendar.schedulingButton.load({
-          url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1Gg_DmXJRTl_aM4LfxX8rnmI4ODzmDjHfhp8fgTWjoImlSacOfGBjReue48PR5OOUBraTF3JhM?gv=true',
-          color: '#ff61cd',
-          label: '予約はこちら',
-          target: document.getElementById('google-calendar-button'),
-        });
-      }
-    };
-
-    return () => {
-      // クリーンアップ
-      if (document.head.contains(script1)) {
-        document.head.removeChild(script1);
-      }
-      if (document.body.contains(script2)) {
-        document.body.removeChild(script2);
-      }
-    };
-  }, []);
   const images = [
     { path: "827/DSC00927.jpg" },
     { path: "827/DSC01074.jpg" },
@@ -273,7 +239,14 @@ export default function Home() {
             <p className="text-gray-700 mb-6">
               下記のボタンから予約をお申し込みください
             </p>
-            <div id="google-calendar-button"></div>
+            <a 
+              href="https://calendar.google.com/calendar/u/0/r/week/2025/8/27?hl=ja"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-pink-400 text-white px-8 py-4 rounded-full hover:bg-pink-500 transition-colors text-lg font-medium"
+            >
+              予約はこちら
+            </a>
           </div>
         </div>
       </section>
