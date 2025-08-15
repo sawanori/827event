@@ -64,7 +64,10 @@ export default function Home() {
   ];
 
   // Slideshow effect for About section
-  const slideshowImages = images.slice(6, 10);
+  const slideshowImages = [
+    { path: "827/DSC00902.jpg" },
+    ...images.slice(6, 10)
+  ];
   
   useEffect(() => {
     const interval = setInterval(() => {
