@@ -74,7 +74,7 @@ export default function Home() {
       setCurrentSlideIndex((prevIndex) => 
         (prevIndex + 1) % slideshowImages.length
       );
-    }, 3000); // Change image every 3 seconds
+    }, 5000); // Change image every 5 seconds
 
     return () => clearInterval(interval);
   }, [slideshowImages.length]);
@@ -86,7 +86,16 @@ export default function Home() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
           <div className="text-center">
             <div className="mb-8">
-              <div className="w-16 h-16 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin mx-auto"></div>
+              <div className="relative w-32 h-32 mx-auto">
+                <Image
+                  src="/images/827/load.png"
+                  alt="Loading"
+                  width={128}
+                  height={128}
+                  className="animate-[spin_3s_linear_infinite]"
+                  priority
+                />
+              </div>
             </div>
             <div className="space-y-2 animate-pulse">
               <h2 className="text-3xl font-light text-pink-800">Special Photo Session</h2>
