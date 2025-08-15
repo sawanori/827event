@@ -237,8 +237,12 @@ export default function Home() {
             限定8名様のみの特別企画です。お早めにお申し込みください。
           </p>
           <div className="bg-white p-8 rounded-2xl shadow-lg">
-            <p className="text-gray-700 mb-6">
+            <p className="text-gray-700 mb-2">
               下記のボタンから予約をお申し込みください
+            </p>
+            <p className="text-sm text-gray-500 mb-6">
+              ※カレンダーが表示されたら8/27(水)が表示される週まで移動いただき、<br />
+              設定している撮影枠からご予約お願いいたします。
             </p>
             <button
               onClick={() => setShowCalendar(true)}
