@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showCalendar, setShowCalendar] = useState(false);
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -239,14 +240,12 @@ export default function Home() {
             <p className="text-gray-700 mb-6">
               下記のボタンから予約をお申し込みください
             </p>
-            <a 
-              href="https://calendar.google.com/calendar/u/0/r/week/2025/8/27?hl=ja"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-pink-400 text-white px-8 py-4 rounded-full hover:bg-pink-500 transition-colors text-lg font-medium"
+            <button
+              onClick={() => setShowCalendar(true)}
+              className="inline-block bg-pink-400 text-white px-8 py-4 rounded-full hover:bg-pink-500 transition-colors text-lg font-medium cursor-pointer"
             >
               予約はこちら
-            </a>
+            </button>
           </div>
         </div>
       </section>
@@ -256,7 +255,34 @@ export default function Home() {
         <p>&copy; 2024 Special Photo Session. All rights reserved.</p>
       </footer>
 
-      {/* Modal */}
+      {/* Calendar Modal */}
+      {showCalendar && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowCalendar(false)}
+        >
+          <div 
+            className="relative bg-white rounded-lg w-full max-w-5xl h-[80vh] overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowCalendar(false)}
+              className="absolute top-4 right-4 z-10 text-gray-600 bg-white bg-opacity-90 rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-100 transition-colors shadow-lg"
+            >
+              ✕
+            </button>
+            <iframe 
+              src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ1Gg_DmXJRTl_aM4LfxX8rnmI4ODzmDjHfhp8fgTWjoImlSacOfGBjReue48PR5OOUBraTF3JhM?gv=true" 
+              style={{ border: 0 }} 
+              width="100%" 
+              height="100%" 
+              frameBorder="0"
+            ></iframe>
+          </div>
+        </div>
+      )}
+
+      {/* Image Modal */}
       {selectedImage && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4"
