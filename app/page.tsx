@@ -7,6 +7,7 @@ export default function Home() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [showCalendar, setShowCalendar] = useState(false);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -61,6 +62,19 @@ export default function Home() {
     { path: "827/DSC01099.jpg" },
     { path: "827/DSC01314のコピー.jpg" },
   ];
+
+  // Slideshow effect for About section
+  const slideshowImages = images.slice(6, 10);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlideIndex((prevIndex) => 
+        (prevIndex + 1) % slideshowImages.length
+      );
+    }, 3000); // Change image every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [slideshowImages.length]);
 
   return (
     <>
@@ -137,17 +151,36 @@ export default function Home() {
               </li>
             </ul>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            {images.slice(6, 10).map((img, idx) => (
-              <div key={idx} className="relative aspect-square rounded-lg overflow-hidden">
+          <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-100">
+            {slideshowImages.map((img, idx) => (
+              <div
+                key={idx}
+                className={`absolute inset-0 transition-opacity duration-1000 ${
+                  idx === currentSlideIndex ? 'opacity-100' : 'opacity-0'
+                }`}
+              >
                 <Image
                   src={`/images/${img.path}`}
-                  alt=""
+                  alt="撮影サンプル"
                   fill
-                  className="object-cover hover:scale-105 transition-transform duration-300"
+                  className="object-cover"
+                  priority={idx === 0}
                 />
               </div>
             ))}
+            {/* Slide indicators */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+              {slideshowImages.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlideIndex(idx)}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    idx === currentSlideIndex ? 'bg-white' : 'bg-white/50'
+                  }`}
+                  aria-label={`スライド ${idx + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
