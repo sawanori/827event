@@ -241,8 +241,9 @@ export default function Home() {
               下記のボタンから予約をお申し込みください
             </p>
             <p className="text-sm text-gray-500 mb-6">
-              ※カレンダーが表示されたら8/27(水)が表示される週まで移動いただき、<br />
-              設定している撮影枠からご予約お願いいたします。
+              ※PCからお申し込みの場合は<br />
+              カレンダーが表示されたら8/27(水)が表示される週まで<br />
+              移動いただき、設定している撮影枠からご予約お願いいたします。
             </p>
             <button
               onClick={() => setShowCalendar(true)}
