@@ -2,12 +2,14 @@
 
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
+import CancellationModal from "@/components/CancellationModal";
 
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [showCalendar, setShowCalendar] = useState(false);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [showCancellationModal, setShowCancellationModal] = useState(false);
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -37,6 +39,10 @@ export default function Home() {
     // ローディングアニメーションを3秒後に非表示
     const timer = setTimeout(() => {
       setLoading(false);
+      // ローディング完了後、1秒待ってからモーダルを表示
+      setTimeout(() => {
+        setShowCancellationModal(true);
+      }, 1000);
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -74,7 +80,7 @@ export default function Home() {
       setCurrentSlideIndex((prevIndex) => 
         (prevIndex + 1) % slideshowImages.length
       );
-    }, 5000); // Change image every 5 seconds
+    }, 7000); // Change image every 7 seconds
 
     return () => clearInterval(interval);
   }, [slideshowImages.length]);
@@ -354,6 +360,13 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* Cancellation Modal */}
+      <CancellationModal 
+        isOpen={showCancellationModal} 
+        onClose={() => setShowCancellationModal(false)}
+        onReservation={() => setShowCalendar(true)}
+      />
     </div>
     </>
   );
