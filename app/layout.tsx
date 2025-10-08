@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Special Photo Session - 無料写真撮影会",
-  description: "プロカメラマンによる2時間の無料撮影会。限定8名様、女性限定。2カットの厳選された写真をプレゼント。",
+  title: "帰ってきたプロフィール撮影会 - 無料写真撮影会",
+  description: "プロカメラマンによる2時間の無料撮影会。限定ーー名様、女性限定。2カットの厳選された写真をプレゼント。",
 };
 
 export default function RootLayout({
