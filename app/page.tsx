@@ -188,7 +188,7 @@ export default function Home() {
             href="#register"
             className="inline-block bg-[#b8b6b6] text-white px-8 py-4 rounded-full hover:bg-[#808080] transition-colors text-lg"
           >
-            無料で参加する
+            勇気を出して参加する
           </a>
         </div>
       </section>
