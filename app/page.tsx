@@ -141,7 +141,7 @@ export default function Home() {
                 </span>
               </h2>
               <p className="text-xl text-gray-600 animate-fade-in" style={{ animationDelay: '0.5s' }}>
-                2025/10/21(Mon) 18:00~20:00
+                2025/10/21(Mon) 18:30~20:00
               </p>
             </div>
           </div>
