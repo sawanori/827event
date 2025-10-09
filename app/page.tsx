@@ -499,12 +499,14 @@ export default function Home() {
               カレンダーが表示されたら2025/10/21(月)が表示される週まで<br />
               移動いただき、設定している撮影枠からご予約お願いいたします。
             </p>
-            <button
-              onClick={() => setShowCalendar(true)}
-              className="inline-block bg-[#b8b6b6] text-white px-8 py-4 rounded-full hover:bg-[#808080] transition-colors text-lg font-medium cursor-pointer"
+            <a
+              href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0iEean-B-BgWkc2-ksuujdTv5221lq77XPAULUGMY-iFGCQ83w1zDX7YDJ1LxIE35Icdmm4zLR?gv=true"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-[#b8b6b6] text-white px-8 py-4 rounded-full hover:bg-[#808080] transition-colors text-lg font-medium"
             >
-              予約はこちら
-            </button>
+              10月21日の週の撮影予約はこちら
+            </a>
           </div>
         </div>
       </section>
