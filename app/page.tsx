@@ -114,58 +114,163 @@ export default function Home() {
 
   return (
     <>
-      {/* Loading Animation */}
+      {/* Loading Animation - Impact Version */}
       {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #fffef9 0%, #fef8f0 100%)' }}>
-          {/* Decorative blobs - New Year colors */}
-          <div className="blob blob-coral w-64 h-64 -top-20 -left-20" />
-          <div className="blob blob-gold w-48 h-48 top-1/2 -right-10" />
-          <div className="blob blob-coral w-32 h-32 bottom-20 left-1/4 opacity-50" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%)' }}>
+          {/* Animated gradient background */}
+          <div
+            className="absolute inset-0 opacity-30"
+            style={{
+              background: 'radial-gradient(ellipse at center, rgba(212, 175, 55, 0.3) 0%, transparent 50%)',
+              animation: 'pulse 2s ease-in-out infinite'
+            }}
+          />
 
-          {/* Floating gold particles */}
-          {[...Array(8)].map((_, i) => (
+          {/* Floating photos mosaic - scattered around */}
+          {[
+            { x: '5%', y: '10%', rotate: -15, delay: 0, size: 'w-20 h-28' },
+            { x: '85%', y: '15%', rotate: 12, delay: 0.1, size: 'w-24 h-32' },
+            { x: '10%', y: '75%', rotate: 8, delay: 0.2, size: 'w-22 h-30' },
+            { x: '80%', y: '70%', rotate: -10, delay: 0.3, size: 'w-20 h-28' },
+            { x: '25%', y: '5%', rotate: 5, delay: 0.15, size: 'w-16 h-22' },
+            { x: '70%', y: '85%', rotate: -8, delay: 0.25, size: 'w-18 h-24' },
+          ].map((pos, i) => (
             <div
-              key={i}
-              className="absolute w-2 h-2 rounded-full animate-falling"
+              key={`corner-${i}`}
+              className={`absolute ${pos.size} rounded-lg overflow-hidden shadow-2xl float-photo`}
               style={{
-                background: 'var(--color-gold)',
-                left: `${10 + i * 12}%`,
-                animationDelay: `${i * 0.5}s`,
-                animationDuration: `${5 + i * 0.5}s`,
-              }}
-            />
+                left: pos.x,
+                top: pos.y,
+                transform: `rotate(${pos.rotate}deg)`,
+                animationDelay: `${pos.delay}s`,
+                '--float-rotate': `${pos.rotate}deg`,
+                boxShadow: '0 10px 40px rgba(212, 175, 55, 0.3)',
+              } as React.CSSProperties}
+            >
+              <Image
+                src={memberImages[i % memberImages.length].path}
+                alt=""
+                fill
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+            </div>
           ))}
 
-          <div className="text-center relative z-10">
-            <div className="mb-8">
-              <div className="relative w-32 h-32 mx-auto animate-bounce-in">
+          {/* Center 3D rotating orbit */}
+          <div className="loading-container relative">
+            {/* Pulsing rings */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="ring-pulse w-48 h-48" style={{ animationDelay: '0s' }} />
+              <div className="ring-pulse w-48 h-48" style={{ animationDelay: '0.5s' }} />
+              <div className="ring-pulse w-48 h-48" style={{ animationDelay: '1s' }} />
+            </div>
+
+            {/* Orbiting photos */}
+            <div className="orbit-container relative w-64 h-64 flex items-center justify-center">
+              {[0, 1, 2, 3, 4, 5].map((i) => {
+                const angle = (i * 60) * (Math.PI / 180);
+                const radius = 120;
+                const x = Math.cos(angle) * radius;
+                const z = Math.sin(angle) * radius;
+                return (
+                  <div
+                    key={`orbit-${i}`}
+                    className="orbit-item w-16 h-20 rounded-lg overflow-hidden shadow-xl"
+                    style={{
+                      transform: `translateX(${x}px) translateZ(${z}px)`,
+                      boxShadow: '0 8px 32px rgba(196, 30, 58, 0.4)',
+                    }}
+                  >
+                    <Image
+                      src={memberImages[i + 3].path}
+                      alt=""
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Center logo with glow */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="center-logo relative w-28 h-28 rounded-full overflow-hidden border-4 border-white/30">
                 <Image
                   src="/images/827/load.png"
                   alt="Loading"
-                  width={128}
-                  height={128}
-                  className="animate-[spin_3s_linear_infinite]"
+                  fill
+                  className="object-cover"
                   priority
                 />
               </div>
             </div>
+
+            {/* Sparkle effects */}
+            {[...Array(8)].map((_, i) => {
+              const angle = (i * 45) * (Math.PI / 180);
+              const distance = 100 + (i % 3) * 20;
+              return (
+                <div
+                  key={`sparkle-${i}`}
+                  className="absolute w-2 h-2"
+                  style={{
+                    left: `calc(50% + ${Math.cos(angle) * distance}px)`,
+                    top: `calc(50% + ${Math.sin(angle) * distance}px)`,
+                    animation: `sparkle-burst 1.5s ease-in-out infinite`,
+                    animationDelay: `${i * 0.2}s`,
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" fill="var(--color-gold)" className="w-full h-full">
+                    <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" />
+                  </svg>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Text content */}
+          <div className="absolute bottom-16 left-0 right-0 text-center">
             <div className="space-y-3">
               <h2 className="relative inline-block">
-                <span className="block text-5xl md:text-6xl font-display font-extrabold text-gradient-gold animate-slide-up mb-2">
+                <span
+                  className="block text-6xl md:text-7xl font-display font-extrabold animate-slide-up mb-2"
+                  style={{
+                    background: 'linear-gradient(135deg, #d4af37 0%, #fff8dc 30%, #ffd700 50%, #fff8dc 70%, #d4af37 100%)',
+                    backgroundSize: '200% 100%',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    animation: 'shimmer-gold 2s linear infinite, slide-up 0.6s var(--ease-out-expo) forwards',
+                    textShadow: '0 0 40px rgba(212, 175, 55, 0.5)',
+                  }}
+                >
                   2026
                 </span>
                 <span className="block text-2xl md:text-3xl font-display font-bold text-gradient-coral animate-slide-up delay-100">
                   新年特別企画
                 </span>
-                <span className="block text-3xl md:text-4xl font-display font-bold mt-2 animate-slide-up delay-200" style={{ color: 'var(--color-ink)' }}>
+                <span className="block text-3xl md:text-4xl font-display font-bold mt-2 animate-slide-up delay-200 text-white">
                   プロフィール撮影会
                 </span>
               </h2>
-              <p className="text-lg font-display font-medium animate-slide-up delay-400" style={{ color: 'var(--color-secondary)' }}>
-                2026年1月開催
-              </p>
+              <div className="flex items-center justify-center gap-3 animate-slide-up delay-300">
+                <span className="text-2xl">📸</span>
+                <p className="text-lg font-display font-medium" style={{ color: 'var(--color-gold)' }}>
+                  Loading...
+                </p>
+                <span className="text-2xl">✨</span>
+              </div>
             </div>
           </div>
+
+          {/* Flash effect on transition */}
+          <div
+            className="absolute inset-0 bg-white pointer-events-none"
+            style={{
+              opacity: 0,
+              animation: loading ? 'none' : 'flash-white 0.3s ease-out forwards',
+            }}
+          />
         </div>
       )}
 
