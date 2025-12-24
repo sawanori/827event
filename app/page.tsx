@@ -36,7 +36,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2500);
+    }, 4500);
 
     return () => clearTimeout(timer);
   }, []);
@@ -195,7 +195,7 @@ export default function Home() {
 
             {/* Center logo with glow */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="center-logo relative w-28 h-28 rounded-full overflow-hidden border-4 border-white/30">
+              <div className="center-logo relative w-40 h-40 rounded-full overflow-hidden border-4 border-white/50 shadow-[0_0_40px_rgba(212,175,55,0.6),0_0_80px_rgba(212,175,55,0.3)]">
                 <Image
                   src="/images/827/load.png"
                   alt="Loading"
