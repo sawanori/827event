@@ -9,6 +9,8 @@ export default function Home() {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<'member' | 'community'>('member');
   const [heroSlideIndex, setHeroSlideIndex] = useState(0);
+  const [galleryLoading, setGalleryLoading] = useState(false);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -111,6 +113,27 @@ export default function Home() {
 
     return () => clearInterval(interval);
   }, [heroSlideshows.length]);
+
+  // タブ切り替えハンドラー
+  const handleTabChange = (tab: 'member' | 'community') => {
+    if (tab !== activeTab) {
+      setGalleryLoading(true);
+      setLoadedImages(new Set());
+      setActiveTab(tab);
+    }
+  };
+
+  // 画像読み込み完了ハンドラー
+  const handleImageLoad = (imagePath: string, totalImages: number) => {
+    setLoadedImages((prev) => {
+      const newSet = new Set(prev);
+      newSet.add(imagePath);
+      if (newSet.size >= totalImages) {
+        setGalleryLoading(false);
+      }
+      return newSet;
+    });
+  };
 
   return (
     <>
@@ -571,7 +594,7 @@ export default function Home() {
             <div className="flex justify-center mb-12 scroll-animation">
               <div className="inline-flex p-1.5 rounded-full" style={{ background: 'white' }}>
                 <button
-                  onClick={() => setActiveTab('member')}
+                  onClick={() => handleTabChange('member')}
                   className={`px-6 py-3 rounded-full font-display font-semibold transition-all duration-300 ${
                     activeTab === 'member'
                       ? 'text-white shadow-lg'
@@ -585,7 +608,7 @@ export default function Home() {
                   メンバー撮影分
                 </button>
                 <button
-                  onClick={() => setActiveTab('community')}
+                  onClick={() => handleTabChange('community')}
                   className={`px-6 py-3 rounded-full font-display font-semibold transition-all duration-300 ${
                     activeTab === 'community'
                       ? 'text-white shadow-lg'
@@ -602,31 +625,46 @@ export default function Home() {
             </div>
 
             {/* Gallery Grid - Masonry-style */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {(activeTab === 'member' ? memberImages : communityImages).map((img, idx) => (
-                <div
-                  key={`${activeTab}-${idx}`}
-                  className={`gallery-item relative cursor-pointer animate-slide-up ${
-                    idx % 5 === 0 ? 'md:row-span-2' : ''
-                  }`}
-                  style={{
-                    animationDelay: `${idx * 50}ms`,
-                    aspectRatio: idx % 5 === 0 ? '3/5' : '3/4'
-                  }}
-                  onClick={() => setSelectedImage(img.path)}
-                >
-                  <Image
-                    src={img.path}
-                    alt=""
-                    fill
-                    className="object-cover"
-                  />
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                    <span className="text-white font-display text-sm">Click to view</span>
+            <div className="relative">
+              {/* Loading Overlay */}
+              {galleryLoading && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-2xl">
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-gray-200 border-t-[var(--color-primary)] rounded-full animate-spin"></div>
+                    <span className="text-sm font-display" style={{ color: 'var(--color-muted)' }}>画像を読み込み中...</span>
                   </div>
                 </div>
-              ))}
+              )}
+              <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 transition-opacity duration-300 ${galleryLoading ? 'opacity-30' : 'opacity-100'}`}>
+                {(activeTab === 'member' ? memberImages : communityImages).map((img, idx) => {
+                  const currentImages = activeTab === 'member' ? memberImages : communityImages;
+                  return (
+                    <div
+                      key={`${activeTab}-${idx}`}
+                      className={`gallery-item relative cursor-pointer animate-slide-up ${
+                        idx % 5 === 0 ? 'md:row-span-2' : ''
+                      }`}
+                      style={{
+                        animationDelay: `${idx * 50}ms`,
+                        aspectRatio: idx % 5 === 0 ? '3/5' : '3/4'
+                      }}
+                      onClick={() => setSelectedImage(img.path)}
+                    >
+                      <Image
+                        src={img.path}
+                        alt=""
+                        fill
+                        className="object-cover"
+                        onLoad={() => handleImageLoad(img.path, currentImages.length)}
+                      />
+                      {/* Hover overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                        <span className="text-white font-display text-sm">Click to view</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </section>
