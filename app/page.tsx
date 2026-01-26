@@ -342,7 +342,7 @@ export default function Home() {
               新しいプロフィール写真で厄払い（？！）
             </p>
             <p className="text-lg font-body mb-10 animate-slide-up delay-350" style={{ color: 'var(--color-secondary)' }}>
-              2026年2月開催 ｜ 立春の始まりに最高の一枚を
+              2/18開催 ｜ 立春の始まりに最高の一枚を
             </p>
 
             <a
@@ -727,7 +727,7 @@ export default function Home() {
                 <span className="text-4xl">⛄️🌅⛄️</span>
               </div>
               <p className="text-xl font-display font-bold mb-2" style={{ color: 'var(--color-primary)' }}>
-                2026年2月開催
+                2/18開催
               </p>
               <p className="font-body mb-2" style={{ color: 'var(--color-ink)' }}>
                 下記のボタンから予約をお申し込みください
