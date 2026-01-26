@@ -181,7 +181,7 @@ export default function Home() {
           ))}
 
           {/* Center 3D rotating orbit */}
-          <div className="loading-container relative">
+          <div className="loading-container relative w-64 h-64 flex items-center justify-center">
             {/* Pulsing rings */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="ring-pulse w-48 h-48" style={{ animationDelay: '0s' }} />
@@ -189,38 +189,11 @@ export default function Home() {
               <div className="ring-pulse w-48 h-48" style={{ animationDelay: '1s' }} />
             </div>
 
-            {/* Orbiting photos */}
-            <div className="orbit-container relative w-64 h-64 flex items-center justify-center">
-              {[0, 1, 2, 3, 4, 5].map((i) => {
-                const angle = (i * 60) * (Math.PI / 180);
-                const radius = 120;
-                const x = Math.cos(angle) * radius;
-                const z = Math.sin(angle) * radius;
-                return (
-                  <div
-                    key={`orbit-${i}`}
-                    className="orbit-item w-16 h-20 rounded-lg overflow-hidden shadow-xl"
-                    style={{
-                      transform: `translateX(${x}px) translateZ(${z}px)`,
-                      boxShadow: '0 8px 32px rgba(196, 30, 58, 0.4)',
-                    }}
-                  >
-                    <Image
-                      src={memberImages[i + 3].path}
-                      alt=""
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                );
-              })}
-            </div>
-
             {/* Center logo with glow */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="center-logo relative w-40 h-40 rounded-full overflow-hidden border-4 border-white/50 shadow-[0_0_40px_rgba(212,175,55,0.6),0_0_80px_rgba(212,175,55,0.3)]">
                 <Image
-                  src="/images/827/load.png"
+                  src="https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com/hige.png"
                   alt="Loading"
                   fill
                   className="object-cover"
@@ -270,7 +243,7 @@ export default function Home() {
                   2026
                 </span>
                 <span className="block text-2xl md:text-3xl font-display font-bold text-gradient-coral animate-slide-up delay-100">
-                  新年特別企画
+                  厄払い特別企画
                 </span>
                 <span className="block text-3xl md:text-4xl font-display font-bold mt-2 animate-slide-up delay-200 text-white">
                   プロフィール撮影会
@@ -348,14 +321,14 @@ export default function Home() {
           <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
             {/* Year Badge */}
             <div className="inline-flex items-center gap-4 badge-newyear-flashy animate-glow-pulse mb-6 text-2xl md:text-3xl px-8 py-4 rounded-xl">
-              <span className="text-3xl md:text-4xl animate-bounce">🎍</span>
-              <span className="font-extrabold tracking-wider">✨ 2026年 新春 ✨</span>
-              <span className="text-3xl md:text-4xl animate-bounce" style={{ animationDelay: '0.2s' }}>🎍</span>
+              <span className="text-3xl md:text-4xl animate-bounce">⛄️</span>
+              <span className="font-extrabold tracking-wider">✨ 2026年 立春 ✨</span>
+              <span className="text-3xl md:text-4xl animate-bounce" style={{ animationDelay: '0.2s' }}>⛄️</span>
             </div>
 
             <h1 className="mb-6">
               <span className="block text-3xl md:text-4xl font-display font-bold text-gradient-gold mb-2 animate-slide-up">
-                新年特別企画
+                厄払い特別企画
               </span>
               <span className="block text-5xl md:text-7xl lg:text-8xl font-display font-extrabold animate-slide-up delay-100" style={{ color: 'var(--color-ink)' }}>
                 プロフィール
@@ -366,17 +339,17 @@ export default function Home() {
             </h1>
 
             <p className="text-xl md:text-2xl font-body mb-4 animate-slide-up delay-300" style={{ color: 'var(--color-muted)' }}>
-              新しい年、新しいあなたを写真に
+              新しいプロフィール写真で厄払い（？！）
             </p>
             <p className="text-lg font-body mb-10 animate-slide-up delay-350" style={{ color: 'var(--color-secondary)' }}>
-              2026年1月開催 ｜ 新年の始まりに最高の一枚を
+              2026年2月開催 ｜ 立春の始まりに最高の一枚を
             </p>
 
             <a
               href="#register"
               className="btn-primary inline-block text-lg animate-slide-up delay-400"
             >
-              新年のスタートを切る
+              立春のスタートを切る
             </a>
           </div>
 
@@ -398,16 +371,16 @@ export default function Home() {
             <div className="text-center mb-16 scroll-animation">
               <span className="badge-gold mb-4 inline-block">Check This</span>
               <h2 className="text-4xl md:text-5xl font-display font-bold" style={{ color: 'var(--color-ink)' }}>
-                新年に向けて<span className="text-gradient-coral">こんなお悩み</span>は？
+                年明け１ヶ月経ち、<span className="text-gradient-coral">こんなお悩み</span>は？
               </h2>
             </div>
 
             <div className="grid gap-6 mb-16">
               {[
-                { icon: "🎍", text: "新年を迎えるのに、プロフィール写真が古いまま…", delay: "delay-100" },
-                { icon: "💕", text: "2026年こそ、マッチングアプリで映える写真が欲しい！", delay: "delay-200" },
-                { icon: "💼", text: "新年度に向けて、LinkedIn等ビジネス用の写真を更新したい", delay: "delay-300" },
-                { icon: "✨", text: "新しい年に、新しい自分を表現したい！", delay: "delay-400" },
+                { icon: "⛄️", text: "2026年になって1ヶ月たったが去年の惰性のままの方", delay: "delay-100" },
+                { icon: "💕", text: "2026年こそ、マッチングアプリで映える写真が欲しい！（スキPと巡り会いたい）", delay: "delay-200" },
+                { icon: "💼", text: "LinkedIn等ビジネス用の写真を更新したい", delay: "delay-300" },
+                { icon: "✨", text: "2026年、新しい自分を表現したい！", delay: "delay-400" },
               ].map((item, idx) => (
                 <div
                   key={idx}
@@ -428,7 +401,7 @@ export default function Home() {
                 <div className="absolute -inset-1 rounded-3xl animate-gradient" style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-gold), var(--color-accent))', opacity: 0.5, filter: 'blur(10px)' }} />
                 <div className="relative bg-white px-10 py-8 rounded-3xl border-2" style={{ borderColor: 'var(--color-gold-light)' }}>
                   <p className="text-2xl md:text-3xl font-display font-bold text-gradient-gold mb-2">
-                    🎍 新年のスタートに！ 🎍
+                    ⛄️ 立春のスタートに！ ⛄️
                   </p>
                   <p className="text-xl md:text-2xl font-display font-semibold" style={{ color: 'var(--color-ink)' }}>
                     2026年を最高の一枚から始めましょう！
@@ -450,11 +423,11 @@ export default function Home() {
               <div className="md:col-span-7 order-2 md:order-1">
                 <span className="badge-gold mb-4 inline-block">About Session</span>
                 <h2 className="text-4xl md:text-5xl font-display font-bold mb-6" style={{ color: 'var(--color-ink)' }}>
-                  新年に<span className="text-gradient-gold">輝く</span>あなたを
+                  立春に<span className="text-gradient-gold">輝く</span>あなたを
                 </h2>
                 <p className="text-lg font-body mb-6 leading-relaxed" style={{ color: 'var(--color-muted)' }}>
                   2026年の始まりに、当社NonTurnの澤田があなたの自然な美しさを写真に収めます。
-                  新年の決意とともに、最高の一枚をお届けします。
+                  立春の決意とともに、最高の一枚をお届けします。
                 </p>
 
                 <div className="space-y-4">
@@ -739,11 +712,11 @@ export default function Home() {
 
           <div className="max-w-2xl mx-auto text-center relative z-10 scroll-animation">
             <div className="inline-flex items-center gap-2 badge-gold mb-4 animate-pulse">
-              <span>🎍</span>
-              <span className="font-bold">新春限定</span>
+              <span>⛄️</span>
+              <span className="font-bold">立春限定</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-6" style={{ color: 'var(--color-ink)' }}>
-              新年の<span className="text-gradient-gold">スタート</span>に
+              立春の<span className="text-gradient-gold">スタート</span>に
             </h2>
             <p className="text-lg font-body mb-10" style={{ color: 'var(--color-muted)' }}>
               2026年、最高の一枚であなたの新しいスタートを飾りませんか？
@@ -751,17 +724,17 @@ export default function Home() {
 
             <div className="bg-white p-8 md:p-10 rounded-3xl shadow-xl border-2" style={{ borderColor: 'var(--color-gold-light)' }}>
               <div className="mb-4">
-                <span className="text-4xl">🎍🌅🎍</span>
+                <span className="text-4xl">⛄️🌅⛄️</span>
               </div>
               <p className="text-xl font-display font-bold mb-2" style={{ color: 'var(--color-primary)' }}>
-                2026年1月開催
+                2026年2月開催
               </p>
               <p className="font-body mb-2" style={{ color: 'var(--color-ink)' }}>
                 下記のボタンから予約をお申し込みください
               </p>
               <p className="text-sm mb-8" style={{ color: 'var(--color-muted)' }}>
                 ※PCからお申し込みの場合は<br />
-                カレンダーが表示されたら2026年1月が表示される週まで<br />
+                カレンダーが表示されたら2026年2月が表示される週まで<br />
                 移動いただき、設定している撮影枠からご予約お願いいたします。
               </p>
               <a
@@ -770,7 +743,7 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="btn-primary inline-block text-lg"
               >
-                2026年1月の撮影予約はこちら
+                2026年2月の撮影予約はこちら
               </a>
             </div>
           </div>
@@ -782,7 +755,7 @@ export default function Home() {
           <div className="blob blob-gold w-[150px] h-[150px] right-0 -bottom-10 opacity-10" />
 
           <p className="font-body relative z-10 mb-2" style={{ color: 'var(--color-gold)' }}>
-            🎍 2026年 新春特別企画 🎍
+            ⛄️ 2026年 厄払い特別企画 ⛄️
           </p>
           <p className="font-body relative z-10" style={{ color: 'var(--color-subtle)' }}>
             &copy; 2025-2026 NonTurn.LLC Special Photo Session. All rights reserved.
