@@ -144,7 +144,7 @@ export default function CancellationModal({ isOpen, onClose, onReservation }: Ca
                   transition={{ delay: 0.3 }}
                   className="text-gray-300 mb-8 text-center leading-relaxed"
                 >
-                  急遽キャンセルが出ました！
+                  早い者勝ち！女性メンバーの方歓迎！！
                   <br />
                   <span className="text-yellow-400 font-semibold">この機会をお見逃しなく</span>
                 </motion.p>
