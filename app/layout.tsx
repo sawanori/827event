@@ -15,7 +15,7 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "帰ってきたプロフィール撮影会 - 無料写真撮影会",
+  title: "2月厄払いプロフィール撮影会 - 無料写真撮影会",
   description: "プロカメラマンによる2時間の無料撮影会。限定ーー名様、女性限定。2カットの厳選された写真をプレゼント。",
 };
 

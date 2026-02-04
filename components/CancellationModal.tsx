@@ -133,7 +133,7 @@ export default function CancellationModal({ isOpen, onClose, onReservation }: Ca
                     <span className="text-gray-400 text-sm">本日の空き時間</span>
                   </div>
                   <p className="text-2xl md:text-3xl font-bold text-white text-center">
-                    午後 7:15 〜 7:25
+                    19:45 〜 20:00
                   </p>
                 </motion.div>
 

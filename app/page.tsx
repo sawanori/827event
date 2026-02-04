@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import CancellationModal from "@/components/CancellationModal";
 
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -11,6 +12,7 @@ export default function Home() {
   const [heroSlideIndex, setHeroSlideIndex] = useState(0);
   const [galleryLoading, setGalleryLoading] = useState(false);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+  const [showSlotModal, setShowSlotModal] = useState(false);
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -42,6 +44,16 @@ export default function Home() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  // ローディング完了後にモーダルを表示
+  useEffect(() => {
+    if (!loading) {
+      const modalTimer = setTimeout(() => {
+        setShowSlotModal(true);
+      }, 500);
+      return () => clearTimeout(modalTimer);
+    }
+  }, [loading]);
 
   // メンバー撮影分の画像
   const memberImages = [
@@ -761,6 +773,18 @@ export default function Home() {
             &copy; 2025-2026 NonTurn.LLC Special Photo Session. All rights reserved.
           </p>
         </footer>
+
+        {/* Slot Available Modal */}
+        <CancellationModal
+          isOpen={showSlotModal}
+          onClose={() => setShowSlotModal(false)}
+          onReservation={() => {
+            window.open(
+              "https://calendar.google.com/calendar/appointments/schedules/AcZssZ0iEean-B-BgWkc2-ksuujdTv5221lq77XPAULUGMY-iFGCQ83w1zDX7YDJ1LxIE35Icdmm4zLR?gv=true",
+              "_blank"
+            );
+          }}
+        />
 
         {/* Image Modal */}
         {selectedImage && (
