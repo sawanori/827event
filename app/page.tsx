@@ -361,7 +361,7 @@ export default function Home() {
               href="#register"
               className="btn-primary inline-block text-lg animate-slide-up delay-400"
             >
-              立春のスタートを切る
+              満員御礼 - 詳細を見る
             </a>
           </div>
 
@@ -444,7 +444,7 @@ export default function Home() {
 
                 <div className="space-y-4">
                   {[
-                    { text: "完全無料（限定ーー名様）", color: "var(--color-primary)" },
+                    { text: "完全無料（満員御礼）", color: "var(--color-primary)" },
                     { text: "レタッチ済み2カットをプレゼント", color: "var(--color-secondary)" },
                   ].map((item, idx) => (
                     <div key={idx} className="flex items-center gap-3">
@@ -724,38 +724,37 @@ export default function Home() {
 
           <div className="max-w-2xl mx-auto text-center relative z-10 scroll-animation">
             <div className="inline-flex items-center gap-2 badge-gold mb-4 animate-pulse">
-              <span>⛄️</span>
-              <span className="font-bold">立春限定</span>
+              <span>🎉</span>
+              <span className="font-bold">満員御礼</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-6" style={{ color: 'var(--color-ink)' }}>
-              立春の<span className="text-gradient-gold">スタート</span>に
+              ご予約<span className="text-gradient-gold">ありがとうございました</span>
             </h2>
             <p className="text-lg font-body mb-10" style={{ color: 'var(--color-muted)' }}>
-              2026年、最高の一枚であなたの新しいスタートを飾りませんか？
+              おかげさまで全枠満員となりました。次回の開催をお楽しみに！
             </p>
 
             <div className="bg-white p-8 md:p-10 rounded-3xl shadow-xl border-2" style={{ borderColor: 'var(--color-gold-light)' }}>
               <div className="mb-4">
-                <span className="text-4xl">⛄️🌅⛄️</span>
+                <span className="text-4xl">🎉✨🎉</span>
               </div>
               <p className="text-xl font-display font-bold mb-2" style={{ color: 'var(--color-primary)' }}>
-                2/18開催
+                2/18開催 - 満員御礼
               </p>
               <p className="font-body mb-2" style={{ color: 'var(--color-ink)' }}>
-                下記のボタンから予約をお申し込みください
+                たくさんのご予約ありがとうございます！
               </p>
               <p className="text-sm mb-8" style={{ color: 'var(--color-muted)' }}>
-                ※PCからお申し込みの場合は<br />
-                カレンダーが表示されたら2026年2月が表示される週まで<br />
-                移動いただき、設定している撮影枠からご予約お願いいたします。
+                全枠が埋まりました。<br />
+                次回の開催情報はSNSでお知らせいたします。
               </p>
               <a
-                href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0iEean-B-BgWkc2-ksuujdTv5221lq77XPAULUGMY-iFGCQ83w1zDX7YDJ1LxIE35Icdmm4zLR?gv=true"
+                href="https://www.instagram.com/nonturn2022?igsh=MWxoOWx2MnZ0M3I0eg=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary inline-block text-lg"
               >
-                2026年2月の撮影予約はこちら
+                SNSで次回情報をチェック
               </a>
             </div>
           </div>

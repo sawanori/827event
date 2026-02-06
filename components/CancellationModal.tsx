@@ -103,7 +103,7 @@ export default function CancellationModal({ isOpen, onClose, onReservation }: Ca
                   className="inline-block mb-6"
                 >
                   <span className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider shadow-lg">
-                    緊急案内
+                    お知らせ
                   </span>
                 </motion.div>
 
@@ -115,7 +115,7 @@ export default function CancellationModal({ isOpen, onClose, onReservation }: Ca
                   className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight"
                 >
                   <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent">
-                    残り1枠！！！
+                    満員御礼！！！
                   </span>
                 </motion.h2>
 
@@ -126,14 +126,8 @@ export default function CancellationModal({ isOpen, onClose, onReservation }: Ca
                   transition={{ delay: 0.2 }}
                   className="bg-gray-800/50 rounded-2xl p-6 mb-6 border border-gray-700"
                 >
-                  <div className="flex items-center justify-center space-x-2 mb-3">
-                    <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-gray-400 text-sm">本日の空き時間</span>
-                  </div>
                   <p className="text-2xl md:text-3xl font-bold text-white text-center">
-                    19:45 〜 20:00
+                    全枠が埋まりました！
                   </p>
                 </motion.div>
 
@@ -144,9 +138,9 @@ export default function CancellationModal({ isOpen, onClose, onReservation }: Ca
                   transition={{ delay: 0.3 }}
                   className="text-gray-300 mb-8 text-center leading-relaxed"
                 >
-                  早い者勝ち！女性メンバーの方歓迎！！
+                  たくさんのご予約ありがとうございます！
                   <br />
-                  <span className="text-yellow-400 font-semibold">この機会をお見逃しなく</span>
+                  <span className="text-yellow-400 font-semibold">次回の開催をお楽しみに</span>
                 </motion.p>
 
                 {/* CTA Button */}
@@ -156,13 +150,13 @@ export default function CancellationModal({ isOpen, onClose, onReservation }: Ca
                   transition={{ delay: 0.4 }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={handleReservation}
+                  onClick={onClose}
                   className="w-full relative group overflow-hidden rounded-full"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 opacity-100 group-hover:opacity-90 transition-opacity" />
                   <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="relative px-8 py-4 flex items-center justify-center space-x-2">
-                    <span className="text-gray-900 font-bold text-lg">今すぐ予約する</span>
+                    <span className="text-gray-900 font-bold text-lg">閉じる</span>
                     <motion.svg
                       animate={{ x: [0, 5, 0] }}
                       transition={{ repeat: Infinity, duration: 1.5 }}
@@ -183,7 +177,7 @@ export default function CancellationModal({ isOpen, onClose, onReservation }: Ca
                   transition={{ delay: 0.5, duration: 2, repeat: Infinity }}
                   className="text-center mt-4 text-sm text-gray-400"
                 >
-                  ※ 先着順となります
+                  ※ 次回開催の情報はSNSでお知らせします
                 </motion.p>
               </div>
             </div>
