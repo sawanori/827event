@@ -1,7 +1,7 @@
 "use client";
 
 // LP 内予約フォーム。8つの時間枠から希望を選び、Formspree へ送信する。
-// 送信先が未設定（プレースホルダ）の間は「準備中」バナーを出し送信を無効化する。
+// 送信先が未設定（プレースホルダ）の間は mailto（メール作成画面）で受け付ける。
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -39,7 +39,6 @@ export default function BookingForm() {
         ? "どの枠でも可"
         : SLOTS.find((s) => String(s.id) === slot)?.range ?? slot;
 
-    // Formspree 未設定時は mailto（メール作成画面）で予約を受け付ける
     if (!FORMSPREE_IS_CONFIGURED) {
       const subject = `【予約】${EVENT.title} ${EVENT.dateLabel}`;
       const body = [
@@ -89,15 +88,22 @@ export default function BookingForm() {
   if (status === "success") {
     return (
       <motion.div
-        initial={{ opacity: 0, scale: 0.92 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
         className="card text-center py-14"
       >
-        <div className="text-5xl mb-4">🎆</div>
-        <h3 className="font-display text-2xl md:text-3xl font-bold text-gradient-gold mb-3">
+        <div
+          className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full"
+          style={{ background: "var(--shu-wash)", border: "1px solid rgba(193,56,31,0.4)" }}
+        >
+          <svg className="h-6 w-6" fill="none" stroke="var(--shu)" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h3 className="font-display text-2xl md:text-3xl mb-3" style={{ color: "var(--ink)" }}>
           ご予約ありがとうございます
         </h3>
-        <p className="font-body leading-relaxed" style={{ color: "var(--color-muted)" }}>
+        <p className="font-body leading-relaxed" style={{ color: "var(--muted)" }}>
           {FORMSPREE_IS_CONFIGURED ? (
             <>
               受付が完了しました。折り返し、担当の{EVENT.photographer}より
@@ -120,8 +126,8 @@ export default function BookingForm() {
     <form onSubmit={handleSubmit} className="card md:p-10">
       {/* お名前 */}
       <label className="block mb-5">
-        <span className="block mb-2 font-body text-sm" style={{ color: "var(--color-ink)" }}>
-          お名前 <span style={{ color: "var(--color-vermilion-light)" }}>*</span>
+        <span className="block mb-2 font-body text-sm" style={{ color: "var(--ink)" }}>
+          お名前 <span style={{ color: "var(--shu)" }}>*</span>
         </span>
         <input
           className="field-input"
@@ -135,8 +141,8 @@ export default function BookingForm() {
 
       {/* メール */}
       <label className="block mb-5">
-        <span className="block mb-2 font-body text-sm" style={{ color: "var(--color-ink)" }}>
-          メールアドレス <span style={{ color: "var(--color-vermilion-light)" }}>*</span>
+        <span className="block mb-2 font-body text-sm" style={{ color: "var(--ink)" }}>
+          メールアドレス <span style={{ color: "var(--shu)" }}>*</span>
         </span>
         <input
           className="field-input"
@@ -150,8 +156,8 @@ export default function BookingForm() {
 
       {/* 希望枠 */}
       <div className="mb-5">
-        <span className="block mb-2 font-body text-sm" style={{ color: "var(--color-ink)" }}>
-          ご希望の時間枠 <span style={{ color: "var(--color-vermilion-light)" }}>*</span>
+        <span className="block mb-2 font-body text-sm" style={{ color: "var(--ink)" }}>
+          ご希望の時間枠 <span style={{ color: "var(--shu)" }}>*</span>
         </span>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {SLOTS.map((s) => {
@@ -161,20 +167,19 @@ export default function BookingForm() {
                 type="button"
                 key={s.id}
                 onClick={() => setSlot(String(s.id))}
-                className="rounded-xl px-2 py-3 text-center transition-all duration-300 border"
+                className="rounded-lg px-2 py-3 text-center transition-all duration-300"
                 style={{
-                  borderColor: active ? "var(--color-gold)" : "var(--color-line)",
-                  background: active ? "rgba(231,189,84,0.16)" : "rgba(255,255,255,0.03)",
-                  boxShadow: active ? "0 0 18px rgba(231,189,84,0.25)" : "none",
+                  border: `1px solid ${active ? "var(--shu)" : "var(--line)"}`,
+                  background: active ? "var(--shu-wash)" : "var(--paper-2)",
                 }}
               >
                 <span
-                  className="block font-num font-bold text-lg"
-                  style={{ color: active ? "var(--color-gold-light)" : "var(--color-ink)" }}
+                  className="block font-num text-lg"
+                  style={{ color: active ? "var(--shu-deep)" : "var(--ink)" }}
                 >
                   {s.label}
                 </span>
-                <span className="block font-num text-xs" style={{ color: "var(--color-subtle)" }}>
+                <span className="block font-num text-xs" style={{ color: "var(--subtle)" }}>
                   {s.range}
                 </span>
               </button>
@@ -184,11 +189,11 @@ export default function BookingForm() {
         <button
           type="button"
           onClick={() => setSlot("any")}
-          className="mt-2 w-full rounded-xl px-2 py-2.5 text-center transition-all duration-300 border font-body text-sm"
+          className="mt-2 w-full rounded-lg px-2 py-2.5 text-center transition-all duration-300 font-body text-sm"
           style={{
-            borderColor: slot === "any" ? "var(--color-gold)" : "var(--color-line)",
-            background: slot === "any" ? "rgba(231,189,84,0.16)" : "rgba(255,255,255,0.03)",
-            color: slot === "any" ? "var(--color-gold-light)" : "var(--color-muted)",
+            border: `1px solid ${slot === "any" ? "var(--shu)" : "var(--line)"}`,
+            background: slot === "any" ? "var(--shu-wash)" : "var(--paper-2)",
+            color: slot === "any" ? "var(--shu-deep)" : "var(--muted)",
           }}
         >
           どの枠でも可（おまかせ）
@@ -197,8 +202,8 @@ export default function BookingForm() {
 
       {/* SNS（任意） */}
       <label className="block mb-5">
-        <span className="block mb-2 font-body text-sm" style={{ color: "var(--color-ink)" }}>
-          SNSアカウント <span style={{ color: "var(--color-subtle)" }}>（任意）</span>
+        <span className="block mb-2 font-body text-sm" style={{ color: "var(--ink)" }}>
+          SNSアカウント <span style={{ color: "var(--subtle)" }}>（任意）</span>
         </span>
         <input
           className="field-input"
@@ -211,8 +216,8 @@ export default function BookingForm() {
 
       {/* ご要望（任意） */}
       <label className="block mb-5">
-        <span className="block mb-2 font-body text-sm" style={{ color: "var(--color-ink)" }}>
-          ご要望・ひとこと <span style={{ color: "var(--color-subtle)" }}>（任意）</span>
+        <span className="block mb-2 font-body text-sm" style={{ color: "var(--ink)" }}>
+          ご要望・ひとこと <span style={{ color: "var(--subtle)" }}>（任意）</span>
         </span>
         <textarea
           className="field-input resize-none"
@@ -227,11 +232,11 @@ export default function BookingForm() {
       <label className="flex items-start gap-3 mb-6 cursor-pointer">
         <input
           type="checkbox"
-          className="mt-1 accent-[var(--color-gold)] w-4 h-4"
+          className="mt-1 accent-[var(--shu)] w-4 h-4"
           checked={agree}
           onChange={(e) => setAgree(e.target.checked)}
         />
-        <span className="font-body text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
+        <span className="font-body text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
           撮影した写真を当社事例として使用する場合があることに同意します。
         </span>
       </label>
@@ -243,7 +248,7 @@ export default function BookingForm() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             className="mb-4 text-sm font-body"
-            style={{ color: "var(--color-vermilion-light)" }}
+            style={{ color: "var(--shu-deep)" }}
           >
             {errorMsg}
           </motion.p>
@@ -253,17 +258,17 @@ export default function BookingForm() {
       <button
         type="submit"
         disabled={!canSubmit}
-        className="btn-primary w-full text-center"
-        style={{ opacity: canSubmit ? 1 : 0.5, cursor: canSubmit ? "pointer" : "not-allowed" }}
+        className="btn-primary w-full justify-center"
+        style={{ opacity: canSubmit ? 1 : 0.45, cursor: canSubmit ? "pointer" : "not-allowed" }}
       >
         {status === "submitting" ? "送信中…" : "この内容で予約する"}
       </button>
 
-      <p className="mt-4 text-center font-body text-xs" style={{ color: "var(--color-subtle)" }}>
+      <p className="mt-4 text-center font-body text-xs" style={{ color: "var(--subtle)" }}>
         限定{EVENT.capacity}名・{EVENT.price}／{EVENT.benefit}
       </p>
       {!FORMSPREE_IS_CONFIGURED && (
-        <p className="mt-2 text-center font-body text-xs" style={{ color: "var(--color-subtle)" }}>
+        <p className="mt-2 text-center font-body text-xs" style={{ color: "var(--subtle)" }}>
           ※ 送信ボタンを押すとメール作成画面が開きます
         </p>
       )}
