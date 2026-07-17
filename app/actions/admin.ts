@@ -6,7 +6,9 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { ADMIN_COOKIE, sessionToken } from "@/lib/admin-auth";
-import { deleteReservation } from "@/lib/db";
+import { deleteReservation, getReservationById } from "@/lib/db";
+import { sendCancellationEmails } from "@/lib/mail";
+import { SLOTS } from "@/lib/site-data";
 
 export type LoginState = { error?: string } | null;
 
@@ -42,7 +44,24 @@ export async function adminLogout(): Promise<void> {
 export async function cancelReservation(formData: FormData): Promise<void> {
   const id = Number(formData.get("id"));
   if (Number.isInteger(id)) {
+    // 削除前に宛先情報を取得してから削除し、キャンセル通知メールを送る。
+    const r = await getReservationById(id);
     await deleteReservation(id);
+    if (r) {
+      const slotRange = SLOTS.find((s) => s.id === r.slot_id)?.range ?? "";
+      // メール失敗はキャンセル自体を失敗させない（予約は既に削除済み）。
+      try {
+        await sendCancellationEmails({
+          name: r.name,
+          company: r.company,
+          email: r.email,
+          sns: r.sns ?? undefined,
+          slotRange,
+        });
+      } catch (e) {
+        console.error("cancellation email failed (reservation already removed):", e);
+      }
+    }
   }
   revalidatePath("/admin");
 }

@@ -101,6 +101,15 @@ export async function insertReservation(input: CreateInput): Promise<void> {
   });
 }
 
+export async function getReservationById(id: number): Promise<Reservation | null> {
+  await ensureSchema();
+  const rs = await getClient().execute({
+    sql: "SELECT id, slot_id, name, company, email, sns, consent, created_at FROM reservations WHERE id = ?",
+    args: [id],
+  });
+  return (rs.rows[0] as unknown as Reservation) ?? null;
+}
+
 export async function deleteReservation(id: number): Promise<void> {
   await ensureSchema();
   await getClient().execute({ sql: "DELETE FROM reservations WHERE id = ?", args: [id] });

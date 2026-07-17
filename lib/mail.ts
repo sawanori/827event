@@ -78,3 +78,37 @@ export async function sendReservationEmails(d: MailData): Promise<void> {
 
   await sgMail.send([customerMsg, adminMsg]);
 }
+
+export async function sendCancellationEmails(d: MailData): Promise<void> {
+  if (!isMailConfigured()) return;
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
+
+  const customerMsg = {
+    to: d.email,
+    from: FROM,
+    subject: `【ご予約キャンセルのお知らせ】${EVENT.title}（${EVENT.dateLabel}）`,
+    html: wrap(`
+      <h2 style="border-bottom:2px solid #c1381f;padding-bottom:10px;">ご予約をキャンセルしました</h2>
+      <p style="line-height:1.7;">${d.name} 様<br>
+      下記のご予約をキャンセルいたしました。ご都合が合いましたら、またのご予約をお待ちしております。</p>
+      <div style="background:#f9f6f0;padding:16px;border-radius:10px;">${infoTable(d)}</div>
+      <p style="line-height:1.7;color:#57504a;font-size:13px;margin-top:16px;">
+      お心当たりがない場合や再予約をご希望の場合は、このメールにそのままご返信ください。</p>
+    `),
+    replyTo: ADMIN_TO,
+  };
+
+  const adminMsg = {
+    to: ADMIN_TO,
+    from: FROM,
+    subject: `【予約キャンセル】${d.slotRange} / ${d.company} ${d.name} 様`,
+    html: wrap(`
+      <h2 style="border-bottom:2px solid #c1381f;padding-bottom:10px;">予約がキャンセルされました</h2>
+      <p style="line-height:1.7;color:#57504a;font-size:13px;">この枠は再び予約可能になりました。</p>
+      <div style="background:#f9f6f0;padding:16px;border-radius:10px;">${infoTable(d)}</div>
+    `),
+    replyTo: d.email,
+  };
+
+  await sgMail.send([customerMsg, adminMsg]);
+}
