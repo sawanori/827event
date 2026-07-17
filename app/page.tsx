@@ -269,7 +269,7 @@ export default function Home() {
                 {/* コピー */}
                 <motion.div
                   style={{ y: heroTitleY, opacity: heroTitleOpacity }}
-                  className="md:col-span-7 lg:col-span-6"
+                  className="hero-copy md:col-span-7 lg:col-span-6"
                 >
                   <motion.div
                     variants={stagger}
@@ -282,7 +282,7 @@ export default function Home() {
 
                     <motion.h1
                       variants={fadeUp}
-                      className="font-display display-xl mb-6"
+                      className="font-display hero-title mb-6"
                       style={{ color: "var(--ink)" }}
                     >
                       <span className="block">夏の光で、</span>

@@ -111,6 +111,15 @@ body {
 .display-lg { font-size: clamp(2.4rem, 6.5vw, 5rem); line-height: 1.04; letter-spacing: 0.01em; }
 .display-md { font-size: clamp(1.9rem, 4vw, 3.1rem); line-height: 1.12; }
 
+/* ヒーロー見出し：ビューポートではなく「列幅」に追従させ、
+   PC（見出し列が半分幅）で過大にならないようにする。 */
+.hero-copy { container-type: inline-size; }
+.hero-title {
+  font-size: clamp(2.6rem, 13cqi, 5rem);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+}
+
 /* 縦書き（和のアクセント） */
 .vertical {
   writing-mode: vertical-rl;
