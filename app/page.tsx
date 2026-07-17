@@ -370,10 +370,10 @@ export default function Home() {
           <section className="relative py-24 md:py-36">
             <div className="mx-auto max-w-6xl px-6">
               <div className="grid md:grid-cols-12 gap-10 md:gap-14">
-                <div className="md:col-span-5">
+                <div className="col-container md:col-span-5">
                   <Reveal>
                     <Eyebrow>Concept</Eyebrow>
-                    <h2 className="font-display display-md mt-5 mb-6" style={{ color: "var(--ink)" }}>
+                    <h2 className="font-display col-title mt-5 mb-6" style={{ color: "var(--ink)" }}>
                       装いが変わる季節に、<br />
                       表情もひとつ、<span className="mark-shu">新しく</span>。
                     </h2>

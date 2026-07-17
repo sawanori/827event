@@ -120,6 +120,10 @@ body {
   letter-spacing: -0.01em;
 }
 
+/* 列内の見出し：ビューポートではなく列幅に追従（狭い列でPC/タブレット過大化を防ぐ） */
+.col-container { container-type: inline-size; }
+.col-title { font-size: clamp(1.55rem, 9.5cqi, 2.6rem); line-height: 1.22; }
+
 /* 縦書き（和のアクセント） */
 .vertical {
   writing-mode: vertical-rl;
