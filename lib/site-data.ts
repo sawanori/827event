@@ -9,39 +9,37 @@ export const EVENT = {
   title: "夏の新プロフィール撮影会",
   brand: "NonTurn.LLC",
   photographer: "澤田憲孝",
-  // 2026-08-05（水）18:00〜20:00（JST）
-  dateISO: "2026-08-05T18:00:00+09:00",
+  // 2026-08-05（水）18:30〜20:00（JST）
+  dateISO: "2026-08-05T18:30:00+09:00",
   dateLabel: "2026.8.5",
   dateJa: "2026年8月5日",
   weekday: "水",
-  timeLabel: "18:00 – 20:00",
+  timeLabel: "18:30 – 20:00",
   // 会場：ユーザー指定「会議室7A」。建物名・住所・アクセスは未確定（要追記）。
   venue: "会議室7A",
   venueNote: "詳細な会場案内はご予約者へ個別にご連絡します",
-  capacity: 8,
+  capacity: 6,
   price: "完全無料",
   target: "性別不問・どなたでも",
   benefit: "レタッチ済み2カットをプレゼント",
 } as const;
 
-// ---- 予約枠（18:00-20:00／撮影10分＋休憩5分＝全8枠） ------------------------
+// ---- 予約枠（18:30-20:00／撮影10分＋休憩5分＝全6枠） ------------------------
 export type Slot = {
   id: number;
   label: string; // 表示用「①」など
-  start: string; // "18:00"
-  end: string; // "18:10"
-  range: string; // "18:00 – 18:10"
+  start: string; // "18:30"
+  end: string; // "18:40"
+  range: string; // "18:30 – 18:40"
 };
 
 export const SLOTS: Slot[] = [
-  { id: 1, label: "①", start: "18:00", end: "18:10", range: "18:00 – 18:10" },
-  { id: 2, label: "②", start: "18:15", end: "18:25", range: "18:15 – 18:25" },
-  { id: 3, label: "③", start: "18:30", end: "18:40", range: "18:30 – 18:40" },
-  { id: 4, label: "④", start: "18:45", end: "18:55", range: "18:45 – 18:55" },
-  { id: 5, label: "⑤", start: "19:00", end: "19:10", range: "19:00 – 19:10" },
-  { id: 6, label: "⑥", start: "19:15", end: "19:25", range: "19:15 – 19:25" },
-  { id: 7, label: "⑦", start: "19:30", end: "19:40", range: "19:30 – 19:40" },
-  { id: 8, label: "⑧", start: "19:45", end: "19:55", range: "19:45 – 19:55" },
+  { id: 1, label: "①", start: "18:30", end: "18:40", range: "18:30 – 18:40" },
+  { id: 2, label: "②", start: "18:45", end: "18:55", range: "18:45 – 18:55" },
+  { id: 3, label: "③", start: "19:00", end: "19:10", range: "19:00 – 19:10" },
+  { id: 4, label: "④", start: "19:15", end: "19:25", range: "19:15 – 19:25" },
+  { id: 5, label: "⑤", start: "19:30", end: "19:40", range: "19:30 – 19:40" },
+  { id: 6, label: "⑥", start: "19:45", end: "19:55", range: "19:45 – 19:55" },
 ];
 
 // ---- 予約フォーム送信先（Formspree） ---------------------------------------
