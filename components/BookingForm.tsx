@@ -17,16 +17,17 @@ type Status = "idle" | "submitting" | "success" | "error";
 
 export default function BookingForm() {
   const [name, setName] = useState("");
+  const [company, setCompany] = useState("");
   const [email, setEmail] = useState("");
   const [slot, setSlot] = useState<string>("");
   const [sns, setSns] = useState("");
-  const [message, setMessage] = useState("");
   const [agree, setAgree] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
   const canSubmit =
     name.trim() !== "" &&
+    company.trim() !== "" &&
     email.trim() !== "" &&
     slot !== "" &&
     agree &&
@@ -44,10 +45,10 @@ export default function BookingForm() {
       const body = [
         `イベント: ${EVENT.title}（${EVENT.dateJa}）`,
         `お名前: ${name}`,
+        `企業名: ${company}`,
         `メール: ${email}`,
         `希望枠: ${selected}`,
         `SNS: ${sns || "-"}`,
-        `ご要望: ${message || "-"}`,
       ].join("\n");
       window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       setStatus("success");
@@ -63,10 +64,10 @@ export default function BookingForm() {
         body: JSON.stringify({
           イベント: `${EVENT.title}（${EVENT.dateJa}）`,
           お名前: name,
+          企業名: company,
           メール: email,
           希望枠: selected,
           SNS: sns,
-          ご要望: message,
         }),
       });
       if (res.ok) {
@@ -136,6 +137,21 @@ export default function BookingForm() {
           placeholder="山田 花子"
           value={name}
           onChange={(e) => setName(e.target.value)}
+        />
+      </label>
+
+      {/* 企業名 */}
+      <label className="block mb-5">
+        <span className="block mb-2 font-body text-sm" style={{ color: "var(--ink)" }}>
+          企業名 <span style={{ color: "var(--shu)" }}>*</span>
+        </span>
+        <input
+          className="field-input"
+          type="text"
+          required
+          placeholder="株式会社〇〇"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
         />
       </label>
 
@@ -211,20 +227,6 @@ export default function BookingForm() {
           placeholder="Instagram @yourname など"
           value={sns}
           onChange={(e) => setSns(e.target.value)}
-        />
-      </label>
-
-      {/* ご要望（任意） */}
-      <label className="block mb-5">
-        <span className="block mb-2 font-body text-sm" style={{ color: "var(--ink)" }}>
-          ご要望・ひとこと <span style={{ color: "var(--subtle)" }}>（任意）</span>
-        </span>
-        <textarea
-          className="field-input resize-none"
-          rows={3}
-          placeholder="当日の服装のご相談、撮影の希望など"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
         />
       </label>
 
