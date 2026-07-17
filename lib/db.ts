@@ -35,7 +35,8 @@ function ensureSchema(): Promise<void> {
         company TEXT NOT NULL,
         email TEXT NOT NULL,
         sns TEXT,
-        consent INTEGER NOT NULL DEFAULT 0,
+        confirm_photos INTEGER NOT NULL DEFAULT 0,
+        confirm_promo INTEGER NOT NULL DEFAULT 0,
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )
     `);
@@ -54,7 +55,8 @@ export type Reservation = {
   company: string;
   email: string;
   sns: string | null;
-  consent: number;
+  confirm_photos: number;
+  confirm_promo: number;
   created_at: string;
 };
 
@@ -64,7 +66,8 @@ export type CreateInput = {
   company: string;
   email: string;
   sns?: string;
-  consent: boolean;
+  confirmPhotos: boolean;
+  confirmPromo: boolean;
 };
 
 export function isUniqueViolation(err: unknown): boolean {
@@ -81,7 +84,7 @@ export async function getTakenSlotIds(): Promise<number[]> {
 export async function listReservations(): Promise<Reservation[]> {
   await ensureSchema();
   const rs = await getClient().execute(
-    "SELECT id, slot_id, name, company, email, sns, consent, created_at FROM reservations ORDER BY slot_id ASC"
+    "SELECT id, slot_id, name, company, email, sns, confirm_photos, confirm_promo, created_at FROM reservations ORDER BY slot_id ASC"
   );
   return rs.rows as unknown as Reservation[];
 }
@@ -89,14 +92,15 @@ export async function listReservations(): Promise<Reservation[]> {
 export async function insertReservation(input: CreateInput): Promise<void> {
   await ensureSchema();
   await getClient().execute({
-    sql: "INSERT INTO reservations (slot_id, name, company, email, sns, consent) VALUES (?, ?, ?, ?, ?, ?)",
+    sql: "INSERT INTO reservations (slot_id, name, company, email, sns, confirm_photos, confirm_promo) VALUES (?, ?, ?, ?, ?, ?, ?)",
     args: [
       input.slotId,
       input.name,
       input.company,
       input.email,
       input.sns && input.sns.trim() !== "" ? input.sns.trim() : null,
-      input.consent ? 1 : 0,
+      input.confirmPhotos ? 1 : 0,
+      input.confirmPromo ? 1 : 0,
     ],
   });
 }
@@ -104,7 +108,7 @@ export async function insertReservation(input: CreateInput): Promise<void> {
 export async function getReservationById(id: number): Promise<Reservation | null> {
   await ensureSchema();
   const rs = await getClient().execute({
-    sql: "SELECT id, slot_id, name, company, email, sns, consent, created_at FROM reservations WHERE id = ?",
+    sql: "SELECT id, slot_id, name, company, email, sns, confirm_photos, confirm_promo, created_at FROM reservations WHERE id = ?",
     args: [id],
   });
   return (rs.rows[0] as unknown as Reservation) ?? null;

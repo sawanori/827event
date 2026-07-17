@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { EVENT, SLOTS } from "@/lib/site-data";
+import { EVENT, SLOTS, CONFIRMATIONS } from "@/lib/site-data";
 import {
   createReservation,
   getAvailability,
@@ -28,7 +28,10 @@ export default function BookingForm() {
   const [email, setEmail] = useState("");
   const [slot, setSlot] = useState<string>("");
   const [sns, setSns] = useState("");
-  const [agree, setAgree] = useState(false);
+  const [confirms, setConfirms] = useState<Record<string, boolean>>({
+    photos: false,
+    promo: false,
+  });
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -50,6 +53,8 @@ export default function BookingForm() {
   const slotOk =
     slot === "any" ? !soldOut : slot !== "" && !taken.has(Number(slot));
 
+  const allConfirmed = CONFIRMATIONS.every((c) => confirms[c.key]);
+
   const canSubmit =
     configured &&
     !soldOut &&
@@ -57,7 +62,7 @@ export default function BookingForm() {
     company.trim() !== "" &&
     email.trim() !== "" &&
     slotOk &&
-    agree &&
+    allConfirmed &&
     status !== "submitting";
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,7 +76,8 @@ export default function BookingForm() {
       email,
       slot,
       sns,
-      consent: agree,
+      confirmPhotos: confirms.photos,
+      confirmPromo: confirms.promo,
     });
 
     if (result.ok) {
@@ -232,18 +238,31 @@ export default function BookingForm() {
         />
       </label>
 
-      {/* 同意 */}
-      <label className="flex items-start gap-3 mb-6 cursor-pointer">
-        <input
-          type="checkbox"
-          className="mt-1 accent-[var(--shu)] w-4 h-4"
-          checked={agree}
-          onChange={(e) => setAgree(e.target.checked)}
-        />
-        <span className="font-body text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
-          撮影した写真を当社事例として使用する場合があることに同意します。
+      {/* 確認事項 / Confirmation（すべて必須） */}
+      <div className="mb-6">
+        <span className="block mb-3 font-body text-sm" style={{ color: "var(--ink)" }}>
+          確認事項 / Confirmation <span style={{ color: "var(--shu)" }}>*</span>
         </span>
-      </label>
+        <div className="flex flex-col gap-3">
+          {CONFIRMATIONS.map((c) => (
+            <label key={c.key} className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                className="mt-1 accent-[var(--shu)] w-4 h-4 flex-shrink-0"
+                checked={confirms[c.key] ?? false}
+                onChange={(e) =>
+                  setConfirms((prev) => ({ ...prev, [c.key]: e.target.checked }))
+                }
+              />
+              <span className="font-body text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+                {c.jp}
+                <br />
+                <span style={{ color: "var(--subtle)" }}>{c.en}</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
 
       <AnimatePresence>
         {status === "error" && (

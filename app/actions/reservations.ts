@@ -35,7 +35,8 @@ export type ReservationInput = {
   email: string;
   slot: string; // SLOT id の文字列、または "any"
   sns?: string;
-  consent: boolean;
+  confirmPhotos: boolean;
+  confirmPromo: boolean;
 };
 
 export type CreateResult =
@@ -51,9 +52,11 @@ export async function createReservation(input: ReservationInput): Promise<Create
   const company = (input.company ?? "").trim();
   const email = (input.email ?? "").trim();
   const sns = (input.sns ?? "").trim();
-  const consent = Boolean(input.consent);
+  const confirmPhotos = Boolean(input.confirmPhotos);
+  const confirmPromo = Boolean(input.confirmPromo);
 
-  if (!name || !company || !EMAIL_RE.test(email) || !consent) {
+  // 確認事項は2つとも同意が必須。
+  if (!name || !company || !EMAIL_RE.test(email) || !confirmPhotos || !confirmPromo) {
     return { ok: false, error: "invalid" };
   }
 
@@ -76,7 +79,7 @@ export async function createReservation(input: ReservationInput): Promise<Create
   let tries = 0;
   for (;;) {
     try {
-      await insertReservation({ slotId, name, company, email, sns, consent });
+      await insertReservation({ slotId, name, company, email, sns, confirmPhotos, confirmPromo });
       break;
     } catch (err) {
       if (isUniqueViolation(err)) {

@@ -42,6 +42,19 @@ export const SLOTS: Slot[] = [
   { id: 6, label: "⑥", start: "19:45", end: "19:55", range: "19:45 – 19:55" },
 ];
 
+// ---- 予約時の確認事項（すべて必須チェック） -------------------------------
+// key は reservations テーブルの confirm_<key> 列と対応する。
+export type Confirmation = { key: "photos" | "promo"; jp: string; en: string };
+
+export const CONFIRMATIONS: Confirmation[] = [
+  { key: "photos", jp: "データは2枚のみ", en: "Only 2 photos will be provided" },
+  {
+    key: "promo",
+    jp: "当社NonTurn合同会社の宣材としてデータを利用する可能性がある",
+    en: "Photos may be used for NonTurn LLC's promotional materials",
+  },
+];
+
 // ---- 予約フォーム送信先（Formspree） ---------------------------------------
 // 使い方：https://formspree.io で無料登録 →「New Form」→ 発行される
 // エンドポイント（https://formspree.io/f/xxxxxxx）を .env.local に設定する：
