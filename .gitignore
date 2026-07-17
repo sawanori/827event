@@ -32,6 +32,12 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# but keep the documented example
+!.env.local.example
+
+# local dev sqlite (Turso file: mode)
+*.db
+*.db-*
 
 # vercel
 .vercel

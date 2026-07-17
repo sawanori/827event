@@ -1,19 +1,26 @@
 "use client";
 
-// LP 内予約フォーム。8つの時間枠から希望を選び、Formspree へ送信する。
-// 送信先が未設定（プレースホルダ）の間は mailto（メール作成画面）で受け付ける。
+// LP 内予約フォーム。Turso 上の在庫を見て空き枠のみ選択可能にし、Server Action
+// （createReservation）で受け付ける。1枠1名。埋まった枠は「満席」で選択不可。
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { EVENT, SLOTS } from "@/lib/site-data";
 import {
-  EVENT,
-  SLOTS,
-  FORMSPREE_ENDPOINT,
-  FORMSPREE_IS_CONFIGURED,
-  CONTACT_EMAIL,
-} from "@/lib/site-data";
+  createReservation,
+  getAvailability,
+  type CreateResult,
+} from "@/app/actions/reservations";
 
 type Status = "idle" | "submitting" | "success" | "error";
+
+const ERROR_TEXT: Record<Exclude<CreateResult, { ok: true }>["error"], string> = {
+  slot_taken: "その枠はちょうど埋まってしまいました。別の枠をお選びください。",
+  sold_out: "申し訳ありません、満席になりました。",
+  invalid: "入力内容をご確認ください。",
+  not_configured: "予約システムは現在準備中です。時間をおいてお試しください。",
+  server: "送信に失敗しました。時間をおいて再度お試しください。",
+};
 
 export default function BookingForm() {
   const [name, setName] = useState("");
@@ -25,65 +32,60 @@ export default function BookingForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
+  const [taken, setTaken] = useState<Set<number>>(new Set());
+  const [configured, setConfigured] = useState(true);
+  const [soldOut, setSoldOut] = useState(false);
+
+  const refreshAvailability = async () => {
+    const a = await getAvailability();
+    setConfigured(a.configured);
+    setSoldOut(a.soldOut);
+    setTaken(new Set(a.taken));
+  };
+
+  useEffect(() => {
+    refreshAvailability();
+  }, []);
+
+  const slotOk =
+    slot === "any" ? !soldOut : slot !== "" && !taken.has(Number(slot));
+
   const canSubmit =
+    configured &&
+    !soldOut &&
     name.trim() !== "" &&
     company.trim() !== "" &&
     email.trim() !== "" &&
-    slot !== "" &&
+    slotOk &&
     agree &&
     status !== "submitting";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const selected =
-      slot === "any"
-        ? "どの枠でも可"
-        : SLOTS.find((s) => String(s.id) === slot)?.range ?? slot;
+    setStatus("submitting");
+    setErrorMsg("");
 
-    if (!FORMSPREE_IS_CONFIGURED) {
-      const subject = `【予約】${EVENT.title} ${EVENT.dateLabel}`;
-      const body = [
-        `イベント: ${EVENT.title}（${EVENT.dateJa}）`,
-        `お名前: ${name}`,
-        `企業名: ${company}`,
-        `メール: ${email}`,
-        `希望枠: ${selected}`,
-        `SNS: ${sns || "-"}`,
-      ].join("\n");
-      window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const result = await createReservation({
+      name,
+      company,
+      email,
+      slot,
+      sns,
+      consent: agree,
+    });
+
+    if (result.ok) {
       setStatus("success");
       return;
     }
 
-    setStatus("submitting");
-    setErrorMsg("");
-    try {
-      const res = await fetch(FORMSPREE_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          イベント: `${EVENT.title}（${EVENT.dateJa}）`,
-          お名前: name,
-          企業名: company,
-          メール: email,
-          希望枠: selected,
-          SNS: sns,
-        }),
-      });
-      if (res.ok) {
-        setStatus("success");
-      } else {
-        const data = await res.json().catch(() => null);
-        setErrorMsg(
-          data?.errors?.map((x: { message: string }) => x.message).join(" / ") ??
-            "送信に失敗しました。時間をおいて再度お試しください。"
-        );
-        setStatus("error");
-      }
-    } catch {
-      setErrorMsg("通信エラーが発生しました。ネットワークをご確認ください。");
-      setStatus("error");
+    // 満席・競合系は在庫を更新してから案内する
+    if (result.error === "slot_taken" || result.error === "sold_out") {
+      await refreshAvailability();
+      if (result.error === "slot_taken") setSlot("");
     }
+    setErrorMsg(ERROR_TEXT[result.error]);
+    setStatus("error");
   };
 
   if (status === "success") {
@@ -105,19 +107,9 @@ export default function BookingForm() {
           ご予約ありがとうございます
         </h3>
         <p className="font-body leading-relaxed" style={{ color: "var(--muted)" }}>
-          {FORMSPREE_IS_CONFIGURED ? (
-            <>
-              受付が完了しました。折り返し、担当の{EVENT.photographer}より
-              <br />
-              ご連絡いたします。当日お会いできるのを楽しみにしています。
-            </>
-          ) : (
-            <>
-              ご予約メールの下書きを開きました。内容をご確認のうえ、
-              <br />
-              そのまま送信してください。折り返し{EVENT.photographer}よりご連絡します。
-            </>
-          )}
+          受付が完了しました。ご入力のメールアドレスへ確認メールをお送りしています。
+          <br />
+          当日、担当の{EVENT.photographer}がお待ちしております。
         </p>
       </motion.div>
     );
@@ -175,18 +167,22 @@ export default function BookingForm() {
         <span className="block mb-2 font-body text-sm" style={{ color: "var(--ink)" }}>
           ご希望の時間枠 <span style={{ color: "var(--shu)" }}>*</span>
         </span>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {SLOTS.map((s) => {
+            const isTaken = taken.has(s.id);
             const active = slot === String(s.id);
             return (
               <button
                 type="button"
                 key={s.id}
-                onClick={() => setSlot(String(s.id))}
+                disabled={isTaken}
+                onClick={() => !isTaken && setSlot(String(s.id))}
                 className="rounded-lg px-2 py-3 text-center transition-all duration-300"
                 style={{
                   border: `1px solid ${active ? "var(--shu)" : "var(--line)"}`,
                   background: active ? "var(--shu-wash)" : "var(--paper-2)",
+                  opacity: isTaken ? 0.45 : 1,
+                  cursor: isTaken ? "not-allowed" : "pointer",
                 }}
               >
                 <span
@@ -198,18 +194,24 @@ export default function BookingForm() {
                 <span className="block font-num text-xs" style={{ color: "var(--subtle)" }}>
                   {s.range}
                 </span>
+                <span className="block font-body text-[0.6rem] mt-0.5" style={{ color: isTaken ? "var(--shu-deep)" : "var(--subtle)" }}>
+                  {isTaken ? "満席" : "空き"}
+                </span>
               </button>
             );
           })}
         </div>
         <button
           type="button"
-          onClick={() => setSlot("any")}
+          disabled={soldOut}
+          onClick={() => !soldOut && setSlot("any")}
           className="mt-2 w-full rounded-lg px-2 py-2.5 text-center transition-all duration-300 font-body text-sm"
           style={{
             border: `1px solid ${slot === "any" ? "var(--shu)" : "var(--line)"}`,
             background: slot === "any" ? "var(--shu-wash)" : "var(--paper-2)",
             color: slot === "any" ? "var(--shu-deep)" : "var(--muted)",
+            opacity: soldOut ? 0.45 : 1,
+            cursor: soldOut ? "not-allowed" : "pointer",
           }}
         >
           どの枠でも可（おまかせ）
@@ -257,21 +259,27 @@ export default function BookingForm() {
         )}
       </AnimatePresence>
 
+      {soldOut && (
+        <p className="mb-4 text-sm font-body text-center" style={{ color: "var(--shu-deep)" }}>
+          おかげさまで全枠満席となりました。キャンセルが出た場合はこちらで再度受け付けます。
+        </p>
+      )}
+
       <button
         type="submit"
         disabled={!canSubmit}
         className="btn-primary w-full justify-center"
         style={{ opacity: canSubmit ? 1 : 0.45, cursor: canSubmit ? "pointer" : "not-allowed" }}
       >
-        {status === "submitting" ? "送信中…" : "この内容で予約する"}
+        {status === "submitting" ? "送信中…" : soldOut ? "満席" : "この内容で予約する"}
       </button>
 
       <p className="mt-4 text-center font-body text-xs" style={{ color: "var(--subtle)" }}>
         限定{EVENT.capacity}名・{EVENT.price}／{EVENT.benefit}
       </p>
-      {!FORMSPREE_IS_CONFIGURED && (
+      {!configured && (
         <p className="mt-2 text-center font-body text-xs" style={{ color: "var(--subtle)" }}>
-          ※ 送信ボタンを押すとメール作成画面が開きます
+          ※ 予約システムは現在準備中です
         </p>
       )}
     </form>

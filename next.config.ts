@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // @libsql/client / @sendgrid/mail はサーバー専用。バンドルせず外部依存として扱う。
+  serverExternalPackages: ["@libsql/client", "@sendgrid/mail"],
   images: {
     remotePatterns: [
       {
