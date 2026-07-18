@@ -263,13 +263,13 @@ export default function Home() {
           {/* ===== ヒーロー ===== */}
           <section
             ref={heroRef}
-            className="relative min-h-[100svh] flex items-center overflow-hidden pt-24 pb-16"
+            className="relative min-h-[100svh] flex items-center overflow-hidden md:pt-24 md:pb-16"
           >
             {/* 背景の大きな和字（最遅レイヤー） */}
             <motion.div
               aria-hidden
               style={{ y: heroBgY }}
-              className="pointer-events-none absolute -right-[6vw] top-1/2 -translate-y-1/2 select-none"
+              className="hidden md:block pointer-events-none absolute -right-[6vw] top-1/2 -translate-y-1/2 select-none"
             >
               <span
                 className="font-display leading-none"
@@ -284,7 +284,84 @@ export default function Home() {
               </span>
             </motion.div>
 
-            <div className="relative z-10 mx-auto w-full max-w-7xl px-6">
+            {/* ===== モバイル：画像全面＋テキスト重ね（md未満のみ） ===== */}
+            <div className="md:hidden absolute inset-0 z-0">
+              <Image
+                src={heroPortraits[0]}
+                alt="プロフィール撮影サンプル"
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover"
+              />
+              {/* 可読性のためのスクリム（上は控えめ・下は濃いめ） */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(to bottom, rgba(20,16,14,0.30) 0%, rgba(20,16,14,0.08) 34%, rgba(20,16,14,0.18) 58%, rgba(20,16,14,0.74) 100%)",
+                }}
+              />
+            </div>
+
+            <motion.div
+              className="md:hidden relative z-10 flex min-h-[100svh] flex-col justify-between px-6 pt-28 pb-12"
+              variants={stagger}
+              initial="hidden"
+              animate={intro ? "hidden" : "show"}
+            >
+              <div style={{ textShadow: "0 2px 14px rgba(0,0,0,0.45)" }}>
+                <motion.p
+                  variants={fadeUp}
+                  className="font-serif text-[0.7rem] tracking-[0.3em] mb-4"
+                  style={{ color: "rgba(255,255,255,0.85)" }}
+                >
+                  SUMMER PORTRAIT SESSION
+                </motion.p>
+                <motion.h1
+                  variants={fadeUp}
+                  className="font-display mb-4"
+                  style={{ color: "#fff", fontSize: "clamp(2rem, 11vw, 2.9rem)", lineHeight: 1.1, letterSpacing: "-0.01em" }}
+                >
+                  <span className="block">夏の光で、</span>
+                  <span className="block">
+                    新しい<span style={{ color: "#ff8360" }}>自分</span>を。
+                  </span>
+                </motion.h1>
+                <motion.p
+                  variants={fadeUp}
+                  className="font-display text-lg tracking-jp"
+                  style={{ color: "rgba(255,255,255,0.92)" }}
+                >
+                  夏の新プロフィール撮影会
+                </motion.p>
+              </div>
+
+              <motion.div variants={fadeUp} className="flex flex-col gap-4">
+                <p
+                  className="font-body text-xs leading-relaxed"
+                  style={{ color: "rgba(255,255,255,0.88)", textShadow: "0 1px 10px rgba(0,0,0,0.5)" }}
+                >
+                  {EVENT.dateJa}（{EVENT.weekday}）{EVENT.timeLabel} ／ {EVENT.venue}・{EVENT.price}・限定{EVENT.capacity}名
+                </p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <a href="#register" className="btn-primary">
+                    いますぐ予約する
+                    <span aria-hidden>→</span>
+                  </a>
+                  <a
+                    href="#about"
+                    className="btn-outline"
+                    style={{ color: "#fff", borderColor: "rgba(255,255,255,0.55)" }}
+                  >
+                    撮影会について
+                  </a>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* ===== md以上：左右分割（現状維持） ===== */}
+            <div className="hidden md:block relative z-10 mx-auto w-full max-w-7xl px-6">
               <div className="grid md:grid-cols-12 gap-10 md:gap-8 items-center">
                 {/* コピー */}
                 <motion.div
@@ -379,8 +456,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* スクロールインジケータ */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+            {/* スクロールインジケータ（md以上のみ） */}
+            <div className="hidden md:flex absolute bottom-6 left-1/2 -translate-x-1/2 flex-col items-center gap-2">
               <span className="font-serif text-[0.62rem] tracking-[0.3em]" style={{ color: "var(--subtle)" }}>SCROLL</span>
               <span className="block h-10 w-px" style={{ background: "linear-gradient(var(--line-strong), transparent)" }} />
             </div>
