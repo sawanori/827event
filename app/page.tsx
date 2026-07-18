@@ -18,6 +18,7 @@ import BookingForm from "@/components/BookingForm";
 import Parallax from "@/components/Parallax";
 import ParallaxImage from "@/components/ParallaxImage";
 import JuicyMenu from "@/components/JuicyMenu";
+import UiShowcase from "@/components/UiShowcase";
 import {
   EVENT,
   SLOTS,
@@ -466,6 +467,9 @@ export default function Home() {
 
           {/* ===== UIモーションテスト（ジューシーメニュー） ===== */}
           <JuicyMenu images={heroPortraits} />
+
+          {/* ===== UIパターンのサンプル集 ===== */}
+          <UiShowcase images={heroPortraits} />
 
           {/* ===== コンセプト / お悩み ===== */}
           <section className="relative py-24 md:py-36">
