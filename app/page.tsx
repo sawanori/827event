@@ -19,6 +19,7 @@ import Parallax from "@/components/Parallax";
 import ParallaxImage from "@/components/ParallaxImage";
 import JuicyMenu from "@/components/JuicyMenu";
 import UiShowcase from "@/components/UiShowcase";
+import { SectionFx } from "@/components/fx";
 import {
   EVENT,
   SLOTS,
@@ -472,8 +473,9 @@ export default function Home() {
           <UiShowcase images={heroPortraits} />
 
           {/* ===== コンセプト / お悩み ===== */}
-          <section className="relative py-24 md:py-36">
-            <div className="mx-auto max-w-6xl px-6">
+          <section className="relative overflow-hidden py-24 md:py-36">
+            <SectionFx variant="stripes" />
+            <div className="relative mx-auto max-w-6xl px-6">
               <div className="grid md:grid-cols-12 gap-10 md:gap-14">
                 <div className="col-container md:col-span-5">
                   <Reveal>
@@ -522,6 +524,7 @@ export default function Home() {
 
           {/* ===== 撮影会について ===== */}
           <section id="about" className="relative py-24 md:py-36 overflow-hidden">
+            <SectionFx variant="wave" />
             <div className="mx-auto max-w-6xl px-6">
               <div className="grid md:grid-cols-12 gap-12 md:gap-16 items-center">
                 <div className="md:col-span-6 order-2 md:order-1">
@@ -592,7 +595,8 @@ export default function Home() {
           </section>
 
           {/* ===== 開催概要 / 時間枠 ===== */}
-          <section className="relative py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
+          <section className="relative overflow-hidden py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
+            <SectionFx variant="dots" />
             <div className="mx-auto max-w-6xl px-6">
               <Reveal className="mb-14 text-center">
                 <div className="flex justify-center"><Eyebrow ink>Information</Eyebrow></div>
@@ -664,13 +668,18 @@ export default function Home() {
                     <button
                       key={tab.key}
                       onClick={() => setActiveTab(tab.key)}
-                      className="px-5 py-2 rounded-full font-body text-sm transition-all duration-300"
-                      style={{
-                        background: activeTab === tab.key ? "var(--shu)" : "transparent",
-                        color: activeTab === tab.key ? "var(--paper-2)" : "var(--muted)",
-                      }}
+                      className="relative px-5 py-2 rounded-full font-body text-sm transition-colors duration-300"
+                      style={{ color: activeTab === tab.key ? "var(--paper-2)" : "var(--muted)" }}
                     >
-                      {tab.label}
+                      {activeTab === tab.key && (
+                        <motion.span
+                          layoutId="gallery-tab-cursor"
+                          className="absolute inset-0 rounded-full"
+                          style={{ background: "var(--shu)" }}
+                          transition={{ type: "spring", stiffness: 500, damping: 34 }}
+                        />
+                      )}
+                      <span className="relative z-10">{tab.label}</span>
                     </button>
                   ))}
                 </div>
@@ -694,7 +703,19 @@ export default function Home() {
                       alt={`撮影サンプル ${i + 1}`}
                       fill
                       sizes="(max-width: 768px) 45vw, 24vw"
-                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.07]"
+                    />
+                    {/* color_tint.gdshader：朱の掛け合わせ */}
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                      style={{ background: "rgba(193,56,31,0.32)", mixBlendMode: "multiply" }}
+                    />
+                    {/* polygon_outline.gd：朱の内枠 */}
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                      style={{ border: "1.5px solid var(--shu)" }}
                     />
                     <span
                       className="absolute inset-0 flex items-end p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -773,7 +794,8 @@ export default function Home() {
           </section>
 
           {/* ===== 予約 ===== */}
-          <section id="register" className="relative py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
+          <section id="register" className="relative overflow-hidden py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
+            <SectionFx variant="dots" />
             <div className="mx-auto max-w-2xl px-6">
               <Reveal className="mb-10 text-center">
                 <div className="flex justify-center"><Eyebrow>Reservation</Eyebrow></div>
