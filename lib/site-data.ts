@@ -72,25 +72,49 @@ export const FORMSPREE_IS_CONFIGURED =
 export const CONTACT_EMAIL = "snp.inc.info@gmail.com";
 
 // ---- 画像素材（既存素材を流用） --------------------------------------------
-// メンバー撮影分（Vercel Blob）
-export const MEMBER_IMAGES: string[] = [
-  "https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com/port18.jpg",
-  "https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com/port03.jpg",
-  "https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com/port09.jpg",
-  "https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com/port22.jpg",
-  "https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com/port06.jpg",
-  "https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com/port16.jpg",
-  "https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com/port01.jpg",
-  "https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com/port20.jpg",
-  "https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com/port05.jpg",
-  "https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com/port19.jpg",
-  "https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com/port08.jpg",
-  "https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com/port02.jpg",
-  "https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com/port07.jpg",
-  "https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com/port04.jpg",
+const BLOB = "https://rpk6snz1bj3dcdnk.public.blob.vercel-storage.com";
+
+// 2026夏の新規撮影分（Vercel Blob・WebP）16枚。既存素材に「追加」する形で先頭に置く
+// （先頭にあるとヒーロー/リボン/スライドショーのスライスにも新画像が入る）。
+const NEW_2026: string[] = [
+  `${BLOB}/b1.webp`,
+  `${BLOB}/b2.webp`,
+  `${BLOB}/c1.webp`,
+  `${BLOB}/c2.webp`,
+  `${BLOB}/e1.webp`,
+  `${BLOB}/e2.webp`,
+  `${BLOB}/k1.webp`,
+  `${BLOB}/k2.webp`,
+  `${BLOB}/s1.webp`,
+  `${BLOB}/s2.webp`,
+  `${BLOB}/sg1.webp`,
+  `${BLOB}/sg2.webp`,
+  `${BLOB}/t1.webp`,
+  `${BLOB}/t2.webp`,
+  `${BLOB}/y1.webp`,
+  `${BLOB}/y2.webp`,
 ];
 
-// コミュニティー撮影分（ローカル /public/images）
+// メンバー撮影分：新16枚 ＋ 既存の port*（Vercel Blob）
+export const MEMBER_IMAGES: string[] = [
+  ...NEW_2026,
+  `${BLOB}/port18.jpg`,
+  `${BLOB}/port03.jpg`,
+  `${BLOB}/port09.jpg`,
+  `${BLOB}/port22.jpg`,
+  `${BLOB}/port06.jpg`,
+  `${BLOB}/port16.jpg`,
+  `${BLOB}/port01.jpg`,
+  `${BLOB}/port20.jpg`,
+  `${BLOB}/port05.jpg`,
+  `${BLOB}/port19.jpg`,
+  `${BLOB}/port08.jpg`,
+  `${BLOB}/port02.jpg`,
+  `${BLOB}/port07.jpg`,
+  `${BLOB}/port04.jpg`,
+];
+
+// コミュニティー撮影分（既存のローカル /public/images のまま・新規分は追加しない）
 export const COMMUNITY_IMAGES: string[] = [
   "/images/827/DSC00927.jpg",
   "/images/827/DSC01074.jpg",

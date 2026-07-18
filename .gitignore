@@ -39,6 +39,9 @@ yarn-error.log*
 *.db
 *.db-*
 
+# Blob アップロード用のソース画像（リポジトリには含めず Vercel Blob で配信）
+/blob
+
 # vercel
 .vercel
 
