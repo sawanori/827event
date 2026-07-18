@@ -37,8 +37,16 @@ const ScrollRibbon = dynamic(() => import("@/components/three/ScrollRibbon"), {
   loading: () => null,
 });
 
-const HERO_PORTRAITS = MEMBER_IMAGES.slice(0, 5);
-const RIBBON_IMAGES = MEMBER_IMAGES.slice(2, 11);
+// 表示のたびに順番をシャッフル（Fisher–Yates）。SSRは元順のまま、マウント後にランダム化して
+// ハイドレーション不一致を避ける。
+function shuffle<T>(arr: readonly T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 type Caps = { webgl: boolean; reduced: boolean; ready: boolean };
 
@@ -103,8 +111,17 @@ export default function Home() {
   const heroPortraitY = useTransform(heroSmooth, [0, 1], prefersReduced ? [0, 0] : [0, 70]);
   const heroBgY = useTransform(heroSmooth, [0, 1], prefersReduced ? ["0%", "0%"] : ["0%", "26%"]);
 
-  const slideshowImages = useMemo(() => MEMBER_IMAGES.slice(0, 6), []);
-  const currentImages = GALLERY_TABS.find((t) => t.key === activeTab)!.images;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  // マウント後に毎回シャッフル（初回描画は元順にしてSSRと一致させる）
+  const memberImages = useMemo(() => (mounted ? shuffle(MEMBER_IMAGES) : MEMBER_IMAGES), [mounted]);
+  const heroPortraits = useMemo(() => memberImages.slice(0, 5), [memberImages]);
+  const ribbonImages = useMemo(() => memberImages.slice(2, 11), [memberImages]);
+  const slideshowImages = useMemo(() => memberImages.slice(0, 6), [memberImages]);
+  const currentImages = useMemo(() => {
+    const base = GALLERY_TABS.find((t) => t.key === activeTab)!.images;
+    return mounted ? shuffle(base) : base;
+  }, [activeTab, mounted]);
   const use3DHero = caps.ready && caps.webgl && !caps.reduced;
 
   // 端末性能・モーション設定を検出
@@ -334,10 +351,10 @@ export default function Home() {
                   <div className="relative mx-auto w-full max-w-[380px] md:max-w-none">
                     <div className="relative aspect-[3/4] frame frame-inset canvas-well">
                       {use3DHero ? (
-                        <HeroPortrait images={HERO_PORTRAITS} />
+                        <HeroPortrait images={heroPortraits} />
                       ) : (
                         <ParallaxImage
-                          src={HERO_PORTRAITS[0]}
+                          src={heroPortraits[0]}
                           alt="プロフィール撮影サンプル"
                           amount={8}
                           priority
@@ -544,7 +561,7 @@ export default function Home() {
           </section>
 
           {/* ===== スクロール演出（WebGL リボン） ===== */}
-          {use3DHero && <ScrollRibbon images={RIBBON_IMAGES} />}
+          {use3DHero && <ScrollRibbon images={ribbonImages} />}
 
           {/* ===== ギャラリー ===== */}
           <section className="relative py-24 md:py-36">
