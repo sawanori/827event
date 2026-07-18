@@ -17,8 +17,6 @@ import Countdown from "@/components/Countdown";
 import BookingForm from "@/components/BookingForm";
 import Parallax from "@/components/Parallax";
 import ParallaxImage from "@/components/ParallaxImage";
-import JuicyMenu from "@/components/JuicyMenu";
-import UiShowcase from "@/components/UiShowcase";
 import { SectionFx } from "@/components/fx";
 import {
   EVENT,
@@ -465,12 +463,6 @@ export default function Home() {
               <span className="block h-10 w-px" style={{ background: "linear-gradient(var(--line-strong), transparent)" }} />
             </div>
           </section>
-
-          {/* ===== UIモーションテスト（ジューシーメニュー） ===== */}
-          <JuicyMenu images={heroPortraits} />
-
-          {/* ===== UIパターンのサンプル集 ===== */}
-          <UiShowcase images={heroPortraits} />
 
           {/* ===== コンセプト / お悩み ===== */}
           <section className="relative overflow-hidden py-24 md:py-36">
