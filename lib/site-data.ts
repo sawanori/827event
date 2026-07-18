@@ -95,9 +95,20 @@ const NEW_2026: string[] = [
   `${BLOB}/y2.webp`,
 ];
 
-// メンバー撮影分：新16枚 ＋ 既存の port*（Vercel Blob）
-export const MEMBER_IMAGES: string[] = [
-  ...NEW_2026,
+// 作品ギャラリー用は各組の 2 枚目（○2）のみ。
+const NEW_2026_GALLERY: string[] = [
+  `${BLOB}/b2.webp`,
+  `${BLOB}/c2.webp`,
+  `${BLOB}/e2.webp`,
+  `${BLOB}/k2.webp`,
+  `${BLOB}/s2.webp`,
+  `${BLOB}/sg2.webp`,
+  `${BLOB}/t2.webp`,
+  `${BLOB}/y2.webp`,
+];
+
+// 既存の port*（Vercel Blob）
+const PORT_IMAGES: string[] = [
   `${BLOB}/port18.jpg`,
   `${BLOB}/port03.jpg`,
   `${BLOB}/port09.jpg`,
@@ -113,6 +124,12 @@ export const MEMBER_IMAGES: string[] = [
   `${BLOB}/port07.jpg`,
   `${BLOB}/port04.jpg`,
 ];
+
+// メンバー撮影分（ヒーロー/リボン/スライドショー用）：新16枚 ＋ port*
+export const MEMBER_IMAGES: string[] = [...NEW_2026, ...PORT_IMAGES];
+
+// 作品ギャラリー「メンバー撮影分」タブ用：新規は ○2 のみ ＋ port*
+export const MEMBER_GALLERY_IMAGES: string[] = [...NEW_2026_GALLERY, ...PORT_IMAGES];
 
 // コミュニティー撮影分（既存のローカル /public/images のまま・新規分は追加しない）
 export const COMMUNITY_IMAGES: string[] = [
@@ -141,7 +158,7 @@ export const COMMUNITY_IMAGES: string[] = [
 export type GalleryCategory = "member" | "community";
 
 export const GALLERY_TABS: { key: GalleryCategory; label: string; images: string[] }[] = [
-  { key: "member", label: "メンバー撮影分", images: MEMBER_IMAGES },
+  { key: "member", label: "メンバー撮影分", images: MEMBER_GALLERY_IMAGES },
   { key: "community", label: "コミュニティー撮影分", images: COMMUNITY_IMAGES },
 ];
 
