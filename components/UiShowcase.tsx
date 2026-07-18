@@ -1,304 +1,262 @@
 "use client";
 
-// UIパターンのサンプル集。各カードが独立したライブデモ（すべてオリジナル実装）。
-// このLPの技術（Framer Motion / CSS / 3D transform）でどんなUIが作れるかの見本。
+// リポジトリ（Persona_5_menu_in_Godot）の各部品を、Webで実現したサンプル集。
+// 各カードは元の .gdshader / .gd に1対1で対応（効果を独自にWeb実装。コードや素材のコピーではない）。
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 
-function Card({ title, tag, children, bg }: { title: string; tag: string; children: React.ReactNode; bg?: string }) {
+const RED = "#e2482e";
+const INK = "#0d0b0a";
+const STAR = "50,8 60,36 90,37 66,55 75,84 50,67 25,84 34,55 10,37 40,36";
+const POLY = "12,22 88,6 96,64 52,96 6,58";
+
+function Card({ title, tag, children }: { title: string; tag: string; children: React.ReactNode }) {
   return (
-    <div
-      className="relative flex flex-col overflow-hidden rounded-2xl"
-      style={{ border: "1px solid var(--line)", background: "var(--paper-2)" }}
-    >
-      <div className="relative flex min-h-[200px] flex-1 items-center justify-center overflow-hidden p-6" style={{ background: bg }}>
-        {children}
-      </div>
-      <div className="flex items-center justify-between px-5 py-3" style={{ borderTop: "1px solid var(--line)" }}>
+    <div className="relative flex flex-col overflow-hidden rounded-2xl" style={{ border: "1px solid var(--line)", background: "var(--paper-2)" }}>
+      <div className="relative flex min-h-[180px] flex-1 items-center justify-center overflow-hidden">{children}</div>
+      <div className="flex items-center justify-between gap-2 px-4 py-3" style={{ borderTop: "1px solid var(--line)" }}>
         <span className="font-display text-sm" style={{ color: "var(--ink)" }}>{title}</span>
-        <span className="font-body text-[0.58rem] tracking-[0.22em]" style={{ color: "var(--subtle)" }}>{tag}</span>
+        <code className="font-num text-[0.6rem]" style={{ color: RED }}>{tag}</code>
       </div>
     </div>
   );
 }
 
-/* 1. マグネティックボタン */
-function MagneticButton() {
-  const ref = useRef<HTMLButtonElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 300, damping: 15 });
-  const sy = useSpring(y, { stiffness: 300, damping: 15 });
-  const move = (e: React.MouseEvent) => {
-    const r = ref.current?.getBoundingClientRect();
-    if (!r) return;
-    x.set((e.clientX - (r.left + r.width / 2)) * 0.4);
-    y.set((e.clientY - (r.top + r.height / 2)) * 0.4);
-  };
+/* stripes.gdshader — 斜めストライプ（回転・速度） */
+function Stripes() {
   return (
-    <motion.button
-      ref={ref}
-      onMouseMove={move}
-      onMouseLeave={() => { x.set(0); y.set(0); }}
-      style={{ x: sx, y: sy }}
-      className="btn-primary"
-    >
-      Hover me <span aria-hidden>→</span>
-    </motion.button>
+    <motion.div
+      className="h-full w-full"
+      style={{ backgroundImage: `repeating-linear-gradient(-24deg, ${RED} 0 14px, ${INK} 14px 28px)` }}
+      animate={{ backgroundPositionX: ["0px", "56px"] }}
+      transition={{ duration: 2.4, repeat: Infinity, ease: "linear" }}
+    />
   );
 }
 
-/* 2. 3Dチルトカード */
-function TiltCard({ img }: { img?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const rx = useMotionValue(0);
-  const ry = useMotionValue(0);
-  const srx = useSpring(rx, { stiffness: 200, damping: 15 });
-  const sry = useSpring(ry, { stiffness: 200, damping: 15 });
-  const move = (e: React.MouseEvent) => {
-    const r = ref.current?.getBoundingClientRect();
-    if (!r) return;
-    ry.set(((e.clientX - r.left) / r.width - 0.5) * 20);
-    rx.set(-((e.clientY - r.top) / r.height - 0.5) * 20);
-  };
+/* polka_dots.gdshader — 45°に流れるハーフトーン水玉 */
+function PolkaDots() {
   return (
-    <div style={{ perspective: 800 }}>
-      <motion.div
-        ref={ref}
-        onMouseMove={move}
-        onMouseLeave={() => { rx.set(0); ry.set(0); }}
-        style={{ rotateX: srx, rotateY: sry, transformStyle: "preserve-3d" }}
-        className="relative h-44 w-32 overflow-hidden rounded-xl"
-      >
-        {img ? (
-          <Image src={img} alt="" fill sizes="140px" className="object-cover" />
-        ) : (
-          <div className="h-full w-full" style={{ background: "linear-gradient(140deg, var(--shu), var(--indigo, #16336e))" }} />
-        )}
-        <div className="absolute inset-0" style={{ boxShadow: "inset 0 0 40px rgba(0,0,0,0.25)" }} />
-      </motion.div>
+    <motion.div
+      className="h-full w-full"
+      style={{ background: INK, backgroundImage: `radial-gradient(${RED} 30%, transparent 33%)`, backgroundSize: "20px 20px" }}
+      animate={{ backgroundPositionX: ["0px", "20px"], backgroundPositionY: ["0px", "-20px"] }}
+      transition={{ duration: 1.6, repeat: Infinity, ease: "linear" }}
+    />
+  );
+}
+
+/* circle_wave.gdshader — 中心から広がる同心円ウェーブ */
+function CircleWave() {
+  return (
+    <div className="relative h-full w-full" style={{ background: INK }}>
+      {[0, 1, 2].map((i) => (
+        <motion.span
+          key={i}
+          className="absolute left-1/2 top-1/2 rounded-full"
+          style={{ width: 200, height: 200, marginLeft: -100, marginTop: -100, border: `2px solid ${RED}` }}
+          initial={{ scale: 0, opacity: 0.9 }}
+          animate={{ scale: 1, opacity: 0 }}
+          transition={{ duration: 2.1, repeat: Infinity, delay: i * 0.7, ease: "easeOut" }}
+        />
+      ))}
     </div>
   );
 }
 
-/* 3. グラスモーフィズム */
-function GlassCard() {
+/* distortion.gdshader — ノイズによる歪み（SVGフィルタ） */
+function Distortion() {
+  return (
+    <div className="relative flex h-full w-full items-center justify-center" style={{ background: INK }}>
+      <svg width="0" height="0" aria-hidden style={{ position: "absolute" }}>
+        <filter id="p5-distort">
+          <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves={2} result="n">
+            <animate attributeName="baseFrequency" dur="7s" values="0.012 0.02;0.03 0.012;0.012 0.02" repeatCount="indefinite" />
+          </feTurbulence>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="16" />
+        </filter>
+      </svg>
+      <span className="font-num text-5xl italic" style={{ color: RED, filter: "url(#p5-distort)" }}>DISTORT</span>
+    </div>
+  );
+}
+
+/* star_shape_move.gdshader — 回転しながら脈動する星 */
+function StarMove() {
+  return (
+    <div className="flex h-full w-full items-center justify-center" style={{ background: INK }}>
+      <motion.svg viewBox="0 0 100 100" className="h-28 w-28" animate={{ rotate: 360 }} transition={{ duration: 9, repeat: Infinity, ease: "linear" }}>
+        <motion.polygon points={STAR} fill={RED} animate={{ scale: [1, 1.16, 1] }} transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }} style={{ transformOrigin: "50px 50px" }} />
+        <motion.polygon points={STAR} fill="none" stroke={RED} strokeWidth={1.5} animate={{ scale: [1, 1.6], opacity: [0.7, 0] }} transition={{ duration: 1.4, repeat: Infinity, ease: "easeOut" }} style={{ transformOrigin: "50px 50px" }} />
+      </motion.svg>
+    </div>
+  );
+}
+
+/* color_tint.gdshader — 画像に色を掛け合わせ（乗算） */
+function ColorTint({ img }: { img?: string }) {
   return (
     <div className="relative h-full w-full">
+      {img ? <Image src={img} alt="" fill sizes="30vw" className="object-cover" /> : <div className="h-full w-full" style={{ background: "#888" }} />}
       <motion.div
-        aria-hidden
-        className="absolute -left-6 top-2 h-28 w-28 rounded-full"
-        style={{ background: "var(--shu)" }}
-        animate={{ x: [0, 40, 0], y: [0, 20, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute inset-0"
+        style={{ mixBlendMode: "multiply" }}
+        animate={{ backgroundColor: [RED, "#2b57b8", "#e7bd54", RED] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
       />
-      <motion.div
-        aria-hidden
-        className="absolute right-0 bottom-0 h-32 w-32 rounded-full"
-        style={{ background: "#3b6cd4" }}
-        animate={{ x: [0, -30, 0], y: [0, -20, 0] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <div
-        className="absolute left-1/2 top-1/2 flex h-28 w-44 -translate-x-1/2 -translate-y-1/2 flex-col justify-center rounded-2xl px-5"
-        style={{ background: "rgba(255,255,255,0.28)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.5)" }}
+    </div>
+  );
+}
+
+/* simple_mask.gdshader — 形（文字）でテクスチャを抜く */
+function MaskReveal() {
+  return (
+    <div className="flex h-full w-full items-center justify-center" style={{ background: INK }}>
+      <motion.span
+        className="font-num text-6xl italic"
+        style={{
+          backgroundImage: `repeating-linear-gradient(-20deg, ${RED} 0 8px, #ffcf5c 8px 16px)`,
+          backgroundClip: "text",
+          WebkitBackgroundClip: "text",
+          color: "transparent",
+        }}
+        animate={{ backgroundPositionX: ["0px", "48px"] }}
+        transition={{ duration: 1.8, repeat: Infinity, ease: "linear" }}
       >
-        <span className="font-display text-base" style={{ color: "#1a1a1a" }}>Frosted Glass</span>
-        <span className="font-body text-[0.62rem]" style={{ color: "rgba(0,0,0,0.55)" }}>backdrop-blur</span>
-      </div>
+        MASK
+      </motion.span>
     </div>
   );
 }
 
-/* 4. Bentoグリッド */
-function BentoGrid() {
-  const cells = [
-    { c: "var(--shu)", s: "col-span-2" },
-    { c: "var(--paper-3)", s: "" },
-    { c: "#16336e", s: "" },
-    { c: "var(--gold, #e7bd54)", s: "" },
-    { c: "var(--ink)", s: "col-span-2" },
-  ];
+/* Juicy_button.gd — フォーカス/押下のジューシーなオーバーシュート */
+function JuicyButton() {
   return (
-    <div className="grid w-full max-w-[220px] grid-cols-3 gap-2">
-      {cells.map((cell, i) => (
-        <motion.div
-          key={i}
-          className={`h-14 rounded-lg ${cell.s}`}
-          style={{ background: cell.c }}
-          whileHover={{ scale: 1.08, zIndex: 1 }}
-          transition={{ type: "spring", stiffness: 400, damping: 15 }}
-        />
-      ))}
+    <div className="flex h-full w-full items-center justify-center" style={{ background: "var(--paper-3)" }}>
+      <motion.button
+        type="button"
+        whileHover={{ scale: 1.14, skewX: -6 }}
+        whileTap={{ scale: 0.9 }}
+        transition={{ type: "spring", stiffness: 500, damping: 10 }}
+        className="px-6 py-3 font-display text-lg italic"
+        style={{ background: RED, color: "#fff", transformOrigin: "center" }}
+      >
+        SELECT
+      </motion.button>
     </div>
   );
 }
 
-/* 5. 流体グラデーション */
-function FluidGradient() {
-  const blobs = [
-    { c: "#e2482e", d: 8 },
-    { c: "#ffcf5c", d: 11 },
-    { c: "#2b57b8", d: 9 },
-  ];
-  return (
-    <div className="relative h-full w-full overflow-hidden rounded-xl" style={{ background: "#0d0b1a" }}>
-      {blobs.map((b, i) => (
-        <motion.div
-          key={i}
-          className="absolute h-28 w-28 rounded-full"
-          style={{ background: b.c, filter: "blur(28px)", left: `${20 + i * 25}%`, top: "30%", mixBlendMode: "screen" }}
-          animate={{ x: [0, 40, -20, 0], y: [0, -30, 30, 0], scale: [1, 1.3, 0.9, 1] }}
-          transition={{ duration: b.d, repeat: Infinity, ease: "easeInOut" }}
-        />
-      ))}
-    </div>
-  );
-}
-
-/* 6. コマンドパレット（⌘K風） */
-function CommandPalette() {
-  const cmds = ["新規予約を作成", "ギャラリーを開く", "メンバーを招待", "CSVを書き出す", "設定を開く", "ログアウト"];
-  const [q, setQ] = useState("");
-  const [sel, setSel] = useState(0);
-  const filtered = cmds.filter((c) => c.includes(q));
-  const key = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowDown") { e.preventDefault(); setSel((s) => Math.min(s + 1, filtered.length - 1)); }
-    if (e.key === "ArrowUp") { e.preventDefault(); setSel((s) => Math.max(s - 1, 0)); }
+/* Follow_mouse.gd — カーソルに追従するオブジェクト */
+function FollowMouse() {
+  const ref = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 220, damping: 18 });
+  const sy = useSpring(y, { stiffness: 220, damping: 18 });
+  const move = (e: React.MouseEvent) => {
+    const r = ref.current?.getBoundingClientRect();
+    if (!r) return;
+    x.set(e.clientX - r.left);
+    y.set(e.clientY - r.top);
   };
   return (
-    <div className="w-full max-w-[240px] overflow-hidden rounded-xl" style={{ background: "var(--paper)", border: "1px solid var(--line)" }}>
-      <input
-        value={q}
-        onChange={(e) => { setQ(e.target.value); setSel(0); }}
-        onKeyDown={key}
-        placeholder="⌘K  コマンド検索…"
-        className="w-full bg-transparent px-4 py-3 font-body text-sm outline-none"
-        style={{ color: "var(--ink)", borderBottom: "1px solid var(--line)" }}
-      />
-      <div className="max-h-[120px] overflow-auto py-1">
-        {filtered.length === 0 && <div className="px-4 py-2 font-body text-xs" style={{ color: "var(--subtle)" }}>該当なし</div>}
-        {filtered.map((c, i) => (
-          <div
-            key={c}
-            onMouseEnter={() => setSel(i)}
-            className="mx-1 rounded-md px-3 py-2 font-body text-sm"
-            style={{ background: sel === i ? "var(--shu-wash)" : "transparent", color: sel === i ? "var(--shu-deep)" : "var(--ink-soft)" }}
-          >
-            {c}
-          </div>
-        ))}
-      </div>
+    <div ref={ref} onMouseMove={move} className="relative h-full w-full cursor-crosshair" style={{ background: INK }}>
+      <motion.div className="pointer-events-none absolute h-8 w-8" style={{ left: sx, top: sy, x: "-50%", y: "-50%", background: RED, transform: "skewX(-12deg)" }} />
+      <span className="absolute bottom-3 left-3 font-body text-[0.6rem]" style={{ color: "rgba(255,255,255,0.5)" }}>move cursor here</span>
     </div>
   );
 }
 
-/* 7. スプリング・セグメントトグル */
-function SegmentedToggle() {
-  const opts = ["日", "週", "月"];
-  const [i, setI] = useState(0);
+/* polygon_outline.gd — 多角形の輪郭を描くアニメーション */
+function PolygonOutline() {
   return (
-    <div className="flex gap-1 rounded-full p-1" style={{ background: "var(--paper-3)", border: "1px solid var(--line)" }}>
-      {opts.map((o, idx) => (
-        <button
-          key={o}
-          onClick={() => setI(idx)}
-          className="relative rounded-full px-5 py-2 font-body text-sm"
-          style={{ color: i === idx ? "var(--paper-2)" : "var(--muted)" }}
-        >
-          {i === idx && (
-            <motion.span
-              layoutId="seg-pill"
-              className="absolute inset-0 rounded-full"
-              style={{ background: "var(--shu)" }}
-              transition={{ type: "spring", stiffness: 400, damping: 30 }}
-            />
+    <div className="flex h-full w-full items-center justify-center" style={{ background: INK }}>
+      <svg viewBox="0 0 100 100" className="h-28 w-28">
+        <polygon points={POLY} fill="rgba(226,72,46,0.12)" />
+        <motion.polygon
+          points={POLY}
+          fill="none"
+          stroke={RED}
+          strokeWidth={3}
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: [0, 1, 1], opacity: [1, 1, 0] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </svg>
+    </div>
+  );
+}
+
+/* copy_polygon.gd — 多角形を複製してエコー（残像） */
+function CopyPolygon() {
+  return (
+    <div className="flex h-full w-full items-center justify-center" style={{ background: INK }}>
+      <motion.svg viewBox="0 0 140 100" className="h-28 w-40" animate={{ x: [-6, 6, -6] }} transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}>
+        {[3, 2, 1, 0].map((k) => (
+          <polygon
+            key={k}
+            points={POLY}
+            transform={`translate(${k * 12}, ${k * 3})`}
+            fill={k === 0 ? RED : "none"}
+            stroke={RED}
+            strokeWidth={1.5}
+            opacity={k === 0 ? 1 : 0.25 + (3 - k) * 0.05}
+          />
+        ))}
+      </motion.svg>
+    </div>
+  );
+}
+
+/* selecting.tscn — 項目間をスナップする選択カーソル */
+function Selecting() {
+  const items = ["ITEM 01", "ITEM 02", "ITEM 03"];
+  const [sel, setSel] = useState(0);
+  return (
+    <div className="flex h-full w-full flex-col justify-center gap-2 px-6" style={{ background: "var(--paper-3)" }}>
+      {items.map((it, i) => (
+        <button key={it} onMouseEnter={() => setSel(i)} onFocus={() => setSel(i)} className="relative px-4 py-2 text-left font-display italic" style={{ color: sel === i ? RED : "var(--muted)" }}>
+          {sel === i && (
+            <motion.span layoutId="sel-cursor" className="absolute inset-0" style={{ border: `2px solid ${RED}`, background: "var(--shu-wash)" }} transition={{ type: "spring", stiffness: 500, damping: 34 }} />
           )}
-          <span className="relative">{o}</span>
+          <span className="relative">{it}</span>
         </button>
       ))}
     </div>
   );
 }
 
-/* 8. コンフェッティ・ボタン */
-function ConfettiButton() {
-  const [parts, setParts] = useState<{ id: number; x: number; y: number; c: string }[]>([]);
-  const idRef = useRef(0);
-  const colors = ["#e2482e", "#e7bd54", "#2b57b8", "#ffffff"];
-  const burst = () => {
-    const next = Array.from({ length: 14 }, (_, k) => {
-      const a = (k / 14) * Math.PI * 2;
-      const d = 40 + Math.random() * 40;
-      return { id: idRef.current++, x: Math.cos(a) * d, y: Math.sin(a) * d, c: colors[k % colors.length] };
-    });
-    setParts((p) => [...p, ...next]);
-    setTimeout(() => setParts((p) => p.slice(next.length)), 700);
-  };
-  return (
-    <div className="relative">
-      <button onClick={burst} className="btn-primary">Celebrate 🎉</button>
-      <AnimatePresence>
-        {parts.map((p) => (
-          <motion.span
-            key={p.id}
-            className="pointer-events-none absolute left-1/2 top-1/2 h-2 w-2 rounded-sm"
-            style={{ background: p.c }}
-            initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
-            animate={{ x: p.x, y: p.y, opacity: 0, scale: 0.4 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
-          />
-        ))}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-/* 9. 無限マーキー */
-function Marquee() {
-  const tags = ["Next.js", "Framer Motion", "Three.js", "GLSL", "Tailwind", "TypeScript"];
-  const row = [...tags, ...tags];
-  return (
-    <div className="w-full overflow-hidden" style={{ maskImage: "linear-gradient(90deg, transparent, black 12%, black 88%, transparent)", WebkitMaskImage: "linear-gradient(90deg, transparent, black 12%, black 88%, transparent)" }}>
-      <motion.div className="flex w-max gap-3" animate={{ x: ["0%", "-50%"] }} transition={{ duration: 12, repeat: Infinity, ease: "linear" }}>
-        {row.map((t, i) => (
-          <span key={i} className="whitespace-nowrap rounded-full px-4 py-2 font-body text-sm" style={{ background: "var(--paper-3)", border: "1px solid var(--line)", color: "var(--ink-soft)" }}>{t}</span>
-        ))}
-      </motion.div>
-    </div>
-  );
-}
-
 export default function UiShowcase({ images = [] }: { images?: string[] }) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  const tiltImg = images[0];
-
+  const img = images[0];
   return (
     <section className="relative py-20 md:py-28" style={{ background: "var(--paper)" }}>
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-3 flex items-center gap-3">
-          <span className="h-px w-8" style={{ background: "var(--shu)" }} />
-          <span className="font-serif text-xs tracking-[0.3em]" style={{ color: "var(--subtle)" }}>UI PATTERNS</span>
+          <span className="h-px w-8" style={{ background: RED }} />
+          <span className="font-serif text-xs tracking-[0.3em]" style={{ color: "var(--subtle)" }}>FROM THE REPOSITORY</span>
         </div>
-        <h2 className="font-display display-md mb-3" style={{ color: "var(--ink)" }}>実装できるUIの例</h2>
-        <p className="font-body text-sm md:text-base mb-10 max-w-xl" style={{ color: "var(--muted)" }}>
-          各カードはそのまま触れるライブデモです（ホバー・クリック・入力を試せます）。すべてこのLPの技術によるオリジナル実装。
+        <h2 className="font-display display-md mb-3" style={{ color: "var(--ink)" }}>リポジトリの部品をWebで再現</h2>
+        <p className="font-body text-sm md:text-base mb-10 max-w-2xl" style={{ color: "var(--muted)" }}>
+          Persona_5_menu_in_Godot の各シェーダー / スクリプトに対応するライブサンプル。元ファイル名を各カードに表示。
+          効果は Next.js（CSS / SVGフィルタ / Framer Motion）で独自に再実装しています（コード・素材のコピーではありません）。
         </p>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          <Card title="マグネティックボタン" tag="SPRING / MAGNETIC"><MagneticButton /></Card>
-          <Card title="3Dチルトカード" tag="PERSPECTIVE / TILT"><TiltCard img={tiltImg} /></Card>
-          <Card title="グラスモーフィズム" tag="BACKDROP BLUR"><GlassCard /></Card>
-          <Card title="Bentoグリッド" tag="LAYOUT / HOVER"><BentoGrid /></Card>
-          <Card title="流体グラデーション" tag="ANIMATED BLOBS"><FluidGradient /></Card>
-          <Card title="コマンドパレット" tag="⌘K / KEYBOARD"><CommandPalette /></Card>
-          <Card title="セグメントトグル" tag="SHARED LAYOUT"><SegmentedToggle /></Card>
-          <Card title="コンフェッティ" tag="PARTICLES"><ConfettiButton /></Card>
-          <Card title="無限マーキー" tag="INFINITE SCROLL">{mounted ? <Marquee /> : null}</Card>
+          <Card title="斜めストライプ" tag="stripes.gdshader"><Stripes /></Card>
+          <Card title="ハーフトーン水玉" tag="polka_dots.gdshader"><PolkaDots /></Card>
+          <Card title="円形ウェーブ" tag="circle_wave.gdshader"><CircleWave /></Card>
+          <Card title="ノイズ歪み" tag="distortion.gdshader"><Distortion /></Card>
+          <Card title="星形＋脈動" tag="star_shape_move.gdshader"><StarMove /></Card>
+          <Card title="カラーティント" tag="color_tint.gdshader"><ColorTint img={img} /></Card>
+          <Card title="マスク抜き" tag="simple_mask.gdshader"><MaskReveal /></Card>
+          <Card title="ジューシーボタン" tag="Juicy_button.gd"><JuicyButton /></Card>
+          <Card title="マウス追従" tag="Follow_mouse.gd"><FollowMouse /></Card>
+          <Card title="多角形の輪郭描画" tag="polygon_outline.gd"><PolygonOutline /></Card>
+          <Card title="多角形エコー" tag="copy_polygon.gd"><CopyPolygon /></Card>
+          <Card title="選択カーソル" tag="selecting.tscn"><Selecting /></Card>
         </div>
       </div>
     </section>
