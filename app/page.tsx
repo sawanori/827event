@@ -24,6 +24,7 @@ import {
   NOTICES,
   GALLERY_TABS,
   MEMBER_IMAGES,
+  MEMBER_HERO_IMAGES,
   type GalleryCategory,
 } from "@/lib/site-data";
 
@@ -115,7 +116,9 @@ export default function Home() {
   useEffect(() => setMounted(true), []);
   // マウント後に毎回シャッフル（初回描画は元順にしてSSRと一致させる）
   const memberImages = useMemo(() => (mounted ? shuffle(MEMBER_IMAGES) : MEMBER_IMAGES), [mounted]);
-  const heroPortraits = useMemo(() => memberImages.slice(0, 5), [memberImages]);
+  // ヒーローは ○1 のみ（＋port）の専用セットから
+  const heroImages = useMemo(() => (mounted ? shuffle(MEMBER_HERO_IMAGES) : MEMBER_HERO_IMAGES), [mounted]);
+  const heroPortraits = useMemo(() => heroImages.slice(0, 5), [heroImages]);
   const ribbonImages = useMemo(() => memberImages.slice(2, 11), [memberImages]);
   const slideshowImages = useMemo(() => memberImages.slice(0, 6), [memberImages]);
   const currentImages = useMemo(() => {

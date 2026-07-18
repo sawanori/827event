@@ -107,6 +107,18 @@ const NEW_2026_GALLERY: string[] = [
   `${BLOB}/y2.webp`,
 ];
 
+// ヒーロー用は各組の 1 枚目（○1）のみ。
+const NEW_2026_HERO: string[] = [
+  `${BLOB}/b1.webp`,
+  `${BLOB}/c1.webp`,
+  `${BLOB}/e1.webp`,
+  `${BLOB}/k1.webp`,
+  `${BLOB}/s1.webp`,
+  `${BLOB}/sg1.webp`,
+  `${BLOB}/t1.webp`,
+  `${BLOB}/y1.webp`,
+];
+
 // 既存の port*（Vercel Blob）
 const PORT_IMAGES: string[] = [
   `${BLOB}/port18.jpg`,
@@ -125,11 +137,14 @@ const PORT_IMAGES: string[] = [
   `${BLOB}/port04.jpg`,
 ];
 
-// メンバー撮影分（ヒーロー/リボン/スライドショー用）：新16枚 ＋ port*
+// メンバー撮影分（リボン/スライドショー用）：新16枚 ＋ port*
 export const MEMBER_IMAGES: string[] = [...NEW_2026, ...PORT_IMAGES];
 
 // 作品ギャラリー「メンバー撮影分」タブ用：新規は ○2 のみ ＋ port*
 export const MEMBER_GALLERY_IMAGES: string[] = [...NEW_2026_GALLERY, ...PORT_IMAGES];
+
+// ヒーロー「夏の光で、新しい自分を。」用：新規は ○1 のみ ＋ port*
+export const MEMBER_HERO_IMAGES: string[] = [...NEW_2026_HERO, ...PORT_IMAGES];
 
 // コミュニティー撮影分（既存のローカル /public/images のまま・新規分は追加しない）
 export const COMMUNITY_IMAGES: string[] = [
