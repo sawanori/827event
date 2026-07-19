@@ -516,16 +516,16 @@ export default function Home() {
                   <motion.li
                     key={i}
                     variants={fadeUp}
-                    className={`relative ${["md:ml-0", "md:ml-5", "md:ml-10", "md:ml-14"][i] ?? ""}`}
-                    style={{ marginTop: i === 0 ? 0 : "-0.4rem", zIndex: 20 - i }}
+                    className={`relative ${["md:ml-0 md:mr-[54px]", "md:ml-[48px]", "md:ml-[12px] md:mr-[68px]", "md:ml-[82px] md:mr-[8px]"][i] ?? ""}`}
+                    style={{ marginTop: i === 0 ? 0 : "-0.95rem", zIndex: i + 1 }}
                   >
                     <div
                       className="flex items-center gap-5 rounded-2xl px-6 py-5"
                       style={{
                         background: "var(--paper-2)",
                         border: "1px solid var(--line)",
-                        boxShadow: "0 24px 46px -30px rgba(25,21,18,0.5)",
-                        transform: "rotate(-0.8deg)",
+                        boxShadow: "0 26px 50px -28px rgba(25,21,18,0.55)",
+                        transform: `rotate(${[-3.4, 2.8, -2.4, 3.6][i] ?? 0}deg)`,
                       }}
                     >
                       <span className="font-num italic leading-none" style={{ color: "var(--shu)", fontSize: "clamp(2.2rem, 5vw, 3.2rem)" }}>
