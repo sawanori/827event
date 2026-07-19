@@ -17,7 +17,7 @@ import Countdown from "@/components/Countdown";
 import BookingForm from "@/components/BookingForm";
 import Parallax from "@/components/Parallax";
 import ParallaxImage from "@/components/ParallaxImage";
-import { SectionFx } from "@/components/fx";
+import { SectionFx, SectionHead, SlashBand } from "@/components/fx";
 import {
   EVENT,
   SLOTS,
@@ -226,7 +226,7 @@ export default function Home() {
         <header
           className="fixed inset-x-0 top-0 z-50 transition-all duration-500"
           style={{
-            background: scrolled ? "rgba(20,16,14,0.86)" : "transparent",
+            background: scrolled ? "rgba(241,235,223,0.82)" : "transparent",
             borderBottom: `1px solid ${scrolled ? "var(--line)" : "transparent"}`,
             backdropFilter: scrolled ? "blur(10px)" : "none",
           }}
@@ -521,11 +521,10 @@ export default function Home() {
               <div className="grid md:grid-cols-12 gap-12 md:gap-16 items-center">
                 <div className="md:col-span-6 order-2 md:order-1">
                   <Reveal>
-                    <Eyebrow>About the Session</Eyebrow>
-                    <h2 className="font-display display-md mt-5 mb-7" style={{ color: "var(--ink)" }}>
+                    <SectionHead no="02" en="About the Session">
                       夏の光を味方に、<br />
                       <span className="mark-shu">映える</span>あなたを。
-                    </h2>
+                    </SectionHead>
                     <p className="font-body leading-loose mb-9" style={{ color: "var(--muted)" }}>
                       普段は企業ブランディング向けに行う撮影を、個人の方にも。
                       自然光と表情を丁寧に引き出し、プロフィールにふさわしい一枚に仕上げます。
@@ -574,7 +573,7 @@ export default function Home() {
                               onClick={() => setSlideIndex(i)}
                               aria-label={`スライド ${i + 1}`}
                               className="h-1.5 rounded-full transition-all duration-300"
-                              style={{ width: i === slideIndex ? 22 : 7, background: i === slideIndex ? "var(--shu)" : "rgba(245,236,224,0.5)" }}
+                              style={{ width: i === slideIndex ? 22 : 7, background: i === slideIndex ? "var(--paper-2)" : "rgba(247,242,232,0.5)" }}
                             />
                           ))}
                         </div>
@@ -590,10 +589,7 @@ export default function Home() {
           <section className="skew-top relative overflow-hidden py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
             <SectionFx variant="dots" />
             <div className="mx-auto max-w-6xl px-6">
-              <Reveal className="mb-14 text-center">
-                <div className="flex justify-center"><Eyebrow ink>Information</Eyebrow></div>
-                <h2 className="font-display display-md mt-4" style={{ color: "var(--ink)" }}>開催概要</h2>
-              </Reveal>
+              <SectionHead no="03" en="Information">開催概要</SectionHead>
 
               <div className="grid md:grid-cols-12 gap-8 md:gap-12">
                 {/* 定義リスト */}
@@ -647,13 +643,14 @@ export default function Home() {
           {/* ===== スクロール演出（WebGL リボン） ===== */}
           {use3DHero && <ScrollRibbon images={ribbonImages} />}
 
+          <SlashBand label="PORTFOLIO" />
+
           {/* ===== ギャラリー ===== */}
           <section className="relative py-24 md:py-36">
             <div className="mx-auto max-w-7xl px-6">
               <Reveal className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
-                <div>
-                  <Eyebrow>Portfolio</Eyebrow>
-                  <h2 className="font-display display-md mt-4" style={{ color: "var(--ink)" }}>作品ギャラリー</h2>
+                <div className="min-w-0">
+                  <SectionHead no="04" en="Portfolio">作品ギャラリー</SectionHead>
                 </div>
                 <div className="inline-flex self-start sm:self-auto rounded-full p-1 glass">
                   {GALLERY_TABS.map((tab) => (
@@ -726,10 +723,9 @@ export default function Home() {
           <section className="relative py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
             <div className="mx-auto max-w-4xl px-6 text-center">
               <Reveal>
-                <div className="flex justify-center"><Eyebrow ink>Who We Are</Eyebrow></div>
-                <h2 className="font-display display-md mt-4 mb-3" style={{ color: "var(--ink)" }}>
+                <SectionHead no="05" en="Who We Are" align="center">
                   About <span className="accent-serif not-italic" style={{ fontStyle: "normal" }}>NonTurn</span>
-                </h2>
+                </SectionHead>
                 <p className="font-serif italic text-lg mb-8" style={{ color: "var(--shu)" }}>
                   Film · Photo · Web — one-stop creative studio
                 </p>
@@ -764,8 +760,7 @@ export default function Home() {
           <section className="relative py-24 md:py-36">
             <div className="mx-auto max-w-3xl px-6">
               <Reveal className="mb-12">
-                <Eyebrow>Notice</Eyebrow>
-                <h2 className="font-display display-md mt-4" style={{ color: "var(--ink)" }}>ご参加にあたって</h2>
+                <SectionHead no="06" en="Notice">ご参加にあたって</SectionHead>
               </Reveal>
               <motion.ul
                 variants={stagger}
@@ -785,13 +780,14 @@ export default function Home() {
             </div>
           </section>
 
+          <SlashBand label="RESERVE NOW" />
+
           {/* ===== 予約 ===== */}
-          <section id="register" className="skew-top relative overflow-hidden py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
+          <section id="register" className="relative overflow-hidden py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
             <SectionFx variant="dots" />
             <div className="mx-auto max-w-2xl px-6">
               <Reveal className="mb-10 text-center">
-                <div className="flex justify-center"><Eyebrow>Reservation</Eyebrow></div>
-                <h2 className="font-display display-md mt-4 mb-4" style={{ color: "var(--ink)" }}>ご予約はこちら</h2>
+                <SectionHead no="07" en="Reservation" align="center">ご予約はこちら</SectionHead>
                 <p className="font-body" style={{ color: "var(--muted)" }}>
                   {EVENT.dateJa}（{EVENT.weekday}）{EVENT.timeLabel} ／ {EVENT.price}・限定{EVENT.capacity}名
                 </p>

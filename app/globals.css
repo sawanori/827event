@@ -6,25 +6,25 @@
    ========================================================================== */
 
 :root {
-  /* --- ベース（墨・高コントラスト／キネティック） --- */
-  --paper: #14100e;
-  --paper-2: #1e1815;
-  --paper-3: #241d18;
-  --paper-4: #2d241d;
+  /* --- 紙（ベース：ボーン／サンリット） --- */
+  --paper: #f1ebdf;
+  --paper-2: #f7f2e8;
+  --paper-3: #e8dfcd;
+  --paper-4: #ded3bd;
 
-  /* --- テキスト・線（紙色を反転して明色に） --- */
-  --ink: #f5ece0;
-  --ink-soft: #dccfbd;
-  --muted: #a99c8b;
-  --subtle: #7e7364;
-  --line: rgba(245, 236, 224, 0.16);
-  --line-strong: rgba(245, 236, 224, 0.34);
+  /* --- 墨（テキスト・線） --- */
+  --ink: #191512;
+  --ink-soft: #3f382f;
+  --muted: #6a6053;
+  --subtle: #978c7b;
+  --line: rgba(25, 21, 18, 0.14);
+  --line-strong: rgba(25, 21, 18, 0.28);
 
-  /* --- 朱（アクセント：暗背景で映える強い vermilion） --- */
-  --shu: #e2482e;
-  --shu-deep: #c1381f;
-  --shu-bright: #ff6a4d;
-  --shu-wash: rgba(226, 72, 46, 0.16);
+  /* --- 朱（アクセント：vermilion / 蘇芳寄り） --- */
+  --shu: #c1381f;
+  --shu-deep: #9c2c15;
+  --shu-bright: #dc5334;
+  --shu-wash: rgba(193, 56, 31, 0.09);
 
   /* --- 補助（クレイ・淡い夏の光） --- */
   --clay: #a97f3b;
@@ -72,11 +72,11 @@ body {
   color: var(--ink);
   font-family: var(--font-body);
   overflow-x: hidden;
-  /* 墨背景に走る朱の光 */
+  /* 紙面に落ちる、ごく淡い夏の光 */
   background-image:
-    radial-gradient(60rem 42rem at 84% -10%, rgba(226, 72, 46, 0.22), transparent 60%),
-    radial-gradient(48rem 46rem at -8% 14%, rgba(226, 72, 46, 0.12), transparent 58%),
-    radial-gradient(70rem 60rem at 50% 122%, rgba(244, 192, 99, 0.07), transparent 60%);
+    radial-gradient(60rem 40rem at 78% -8%, rgba(244, 192, 99, 0.16), transparent 62%),
+    radial-gradient(48rem 44rem at -6% 12%, rgba(193, 56, 31, 0.05), transparent 58%),
+    radial-gradient(70rem 60rem at 50% 118%, rgba(169, 127, 59, 0.08), transparent 60%);
   background-attachment: fixed;
 }
 
@@ -273,9 +273,9 @@ body {
   box-shadow: 0 40px 70px -42px rgba(25, 21, 18, 0.55);
 }
 
-/* 半透明の墨パネル（旧 glass） */
+/* 半透明の紙（旧 glass） */
 .glass {
-  background: rgba(20, 16, 14, 0.66);
+  background: rgba(247, 242, 232, 0.7);
   border: 1px solid var(--line);
   backdrop-filter: blur(10px);
 }
@@ -405,8 +405,8 @@ body {
 .field-input:focus {
   outline: none;
   border-color: var(--shu);
-  background: var(--paper-3);
-  box-shadow: 0 0 0 3px rgba(226, 72, 46, 0.2);
+  background: #fffdf8;
+  box-shadow: 0 0 0 3px rgba(193, 56, 31, 0.14);
 }
 .field-input:invalid:not(:placeholder-shown) { border-color: rgba(193, 56, 31, 0.55); }
 
