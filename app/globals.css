@@ -451,6 +451,24 @@ body {
 .skew-top { clip-path: polygon(0 2.6vw, 100% 0, 100% 100%, 0 100%); }
 .skew-bottom { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2.6vw), 0 100%); }
 
+/* ギザギザ/引き裂きエッジ（鋭角の破断） */
+.torn-top {
+  clip-path: polygon(
+    0 15px, 5% 3px, 11% 18px, 18% 4px, 25% 16px, 33% 2px, 40% 17px, 48% 5px,
+    55% 19px, 63% 3px, 70% 15px, 78% 6px, 85% 18px, 93% 2px, 100% 13px,
+    100% 100%, 0% 100%
+  );
+}
+.torn-bottom {
+  clip-path: polygon(
+    0 0, 100% 0,
+    100% calc(100% - 13px), 93% calc(100% - 2px), 85% calc(100% - 18px), 78% calc(100% - 6px),
+    70% calc(100% - 15px), 63% calc(100% - 3px), 55% calc(100% - 19px), 48% calc(100% - 5px),
+    40% calc(100% - 17px), 33% calc(100% - 2px), 25% calc(100% - 16px), 18% calc(100% - 4px),
+    11% calc(100% - 18px), 5% calc(100% - 3px), 0 calc(100% - 15px)
+  );
+}
+
 /* 見出し脇の斜め朱バー */
 .h-bar::before {
   content: "";

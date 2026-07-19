@@ -93,49 +93,65 @@ export function SectionHead({
   children: ReactNode;
   align?: "left" | "center";
 }) {
+  // スクロールで勢いよく＋段階的に出現する（P5風のキネティックな見出し）
+  const numberV =
+    align === "center"
+      ? { hidden: { opacity: 0, y: 70, scaleX: 0.52, skewX: -16 }, show: { opacity: 1, y: 0, scaleX: 1, skewX: 0, transition: { type: "spring", stiffness: 560, damping: 12, delay: 0.02 } } }
+      : { hidden: { opacity: 0, x: -160, skewX: -38, rotate: -8 }, show: { opacity: 1, x: 0, skewX: 0, rotate: 0, transition: { type: "spring", stiffness: 580, damping: 12, delay: 0.02 } } };
+  const kickerV = { hidden: { opacity: 0, x: align === "center" ? 0 : -28, y: align === "center" ? 12 : 0 }, show: { opacity: 1, x: 0, y: 0, transition: { duration: 0.34, ease: [0.16, 1, 0.3, 1], delay: 0.1 } } };
+  const headingV = { hidden: { opacity: 0, y: 20, skewX: -12, clipPath: "inset(0 100% 0 0)" }, show: { opacity: 1, y: 0, skewX: 0, clipPath: "inset(0 0% 0 0)", transition: { duration: 0.48, ease: [0.16, 1, 0.3, 1], delay: 0.15 } } };
+  const barV = { hidden: { scaleX: 0, skewX: -24 }, show: { scaleX: 1, skewX: -24, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.3 } } };
+  const linesV = { hidden: { opacity: 0 }, show: { opacity: [0, 0.55, 0], transition: { duration: 0.75, times: [0, 0.32, 1], ease: "easeOut" } } };
+  const focus = align === "center" ? "50%" : "9%";
+
   return (
-    <div className={`relative mb-9 md:mb-12 ${align === "center" ? "text-center" : ""}`}>
+    <motion.div
+      className={`relative mb-9 md:mb-12 ${align === "center" ? "text-center" : ""}`}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.4 }}
+    >
+      {/* 集中線（スピードライン）が一瞬走る */}
       <motion.div
-        initial={{ opacity: 0, x: align === "center" ? 0 : -48, y: 20, skewX: align === "center" ? 0 : -8 }}
-        whileInView={{ opacity: 1, x: 0, y: 0, skewX: 0 }}
-        viewport={{ once: true, amount: 0.5 }}
-        transition={{ type: "spring", stiffness: 240, damping: 20 }}
-        className={`flex flex-col gap-1 md:flex-row md:items-end md:gap-6 ${align === "center" ? "items-center md:justify-center" : "items-start"}`}
-      >
-        <span
+        aria-hidden
+        variants={linesV}
+        className="pointer-events-none absolute -inset-x-4 -top-8 bottom-0"
+        style={{
+          backgroundImage: `repeating-conic-gradient(from 0deg at ${focus} 56%, rgba(193,56,31,0.16) 0deg 0.5deg, transparent 0.5deg 3.4deg)`,
+          WebkitMaskImage: `radial-gradient(58% 62% at ${focus} 56%, black, transparent 72%)`,
+          maskImage: `radial-gradient(58% 62% at ${focus} 56%, black, transparent 72%)`,
+        }}
+      />
+
+      <div className={`relative flex flex-col gap-1 md:flex-row md:items-end md:gap-6 ${align === "center" ? "items-center md:justify-center" : "items-start"}`}>
+        <motion.span
+          variants={numberV}
           className="font-num leading-[0.8] select-none"
-          style={{
-            fontSize: "clamp(2.8rem, 8vw, 5.6rem)",
-            fontStyle: "italic",
-            color: "transparent",
-            WebkitTextStroke: "2px var(--shu)",
-          }}
+          style={{ fontSize: "clamp(2.8rem, 8vw, 5.6rem)", fontStyle: "italic", color: "transparent", WebkitTextStroke: "2px var(--shu)" }}
           aria-hidden
         >
           {no}
-        </span>
+        </motion.span>
         <div className="pb-1.5">
-          <span className="block font-serif text-[0.7rem] tracking-[0.34em] mb-2" style={{ color: "var(--shu)" }}>
+          <motion.span variants={kickerV} className="block font-serif text-[0.7rem] tracking-[0.34em] mb-2" style={{ color: "var(--shu)" }}>
             {en}
-          </span>
-          <h2
+          </motion.span>
+          <motion.h2
+            variants={headingV}
             className="font-display"
             style={{ color: "var(--ink)", fontSize: "clamp(1.7rem, 4.2vw, 3.1rem)", lineHeight: 1.12, fontWeight: 700, letterSpacing: "-0.01em" }}
           >
             {children}
-          </h2>
+          </motion.h2>
         </div>
-      </motion.div>
+      </div>
       <motion.div
         aria-hidden
-        className="mt-4 h-[3px]"
-        style={{ background: "linear-gradient(90deg, var(--shu), transparent)", transformOrigin: "left", transform: "skewX(-24deg)" }}
-        initial={{ scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        variants={barV}
+        className="relative mt-4 h-[3px]"
+        style={{ background: "linear-gradient(90deg, var(--shu), transparent)", transformOrigin: "left" }}
       />
-    </div>
+    </motion.div>
   );
 }
 

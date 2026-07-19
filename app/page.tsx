@@ -638,7 +638,7 @@ export default function Home() {
           </section>
 
           {/* ===== 開催概要 / 時間枠 ===== */}
-          <section className="skew-top relative overflow-hidden py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
+          <section className="torn-top relative overflow-hidden py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
             <SectionFx variant="dots" />
             <div className="mx-auto max-w-6xl px-6">
               <SectionHead no="03" en="Information">開催概要</SectionHead>
@@ -776,7 +776,7 @@ export default function Home() {
           </section>
 
           {/* ===== NonTurn 紹介 ===== */}
-          <section className="relative py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
+          <section className="torn-top relative overflow-hidden py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
             <div className="mx-auto max-w-4xl px-6 text-center">
               <Reveal>
                 <SectionHead no="05" en="Who We Are" align="center">
