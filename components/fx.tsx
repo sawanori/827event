@@ -93,20 +93,30 @@ export function SectionHead({
   children: ReactNode;
   align?: "left" | "center";
 }) {
-  // スクロールで勢いよく＋段階的に出現する（P5風のキネティックな見出し）
+  // スクロールで叩き込むように出現（P5R風：高速スラムイン＋着弾のヒットシェイク＋朱フラッシュ）
+  const containerV: Variants = {
+    hidden: {},
+    show: { x: [0, -9, 8, -4, 0], y: [0, 5, -3, 1, 0], transition: { duration: 0.32, times: [0, 0.28, 0.55, 0.8, 1], delay: 0.12, ease: [0.16, 1, 0.3, 1] } },
+  };
+  const flashV: Variants = {
+    hidden: { opacity: 0, scaleX: 0.1, skewY: -2.4 },
+    show: { opacity: [0, 0.9, 0], scaleX: [0.1, 1, 1.04], skewY: -2.4, transition: { duration: 0.5, times: [0, 0.42, 1], ease: [0.16, 1, 0.3, 1], delay: 0.04 } },
+  };
   const numberV: Variants =
     align === "center"
-      ? { hidden: { opacity: 0, y: 70, scaleX: 0.52, skewX: -16 }, show: { opacity: 1, y: 0, scaleX: 1, skewX: 0, transition: { type: "spring", stiffness: 560, damping: 12, delay: 0.02 } } }
-      : { hidden: { opacity: 0, x: -160, skewX: -38, rotate: -8 }, show: { opacity: 1, x: 0, skewX: 0, rotate: 0, transition: { type: "spring", stiffness: 580, damping: 12, delay: 0.02 } } };
-  const kickerV: Variants = { hidden: { opacity: 0, x: align === "center" ? 0 : -28, y: align === "center" ? 12 : 0 }, show: { opacity: 1, x: 0, y: 0, transition: { duration: 0.34, ease: [0.16, 1, 0.3, 1], delay: 0.1 } } };
-  const headingV: Variants = { hidden: { opacity: 0, y: 20, skewX: -12, clipPath: "inset(0 100% 0 0)" }, show: { opacity: 1, y: 0, skewX: 0, clipPath: "inset(0 0% 0 0)", transition: { duration: 0.48, ease: [0.16, 1, 0.3, 1], delay: 0.15 } } };
-  const barV: Variants = { hidden: { scaleX: 0, skewX: -24 }, show: { scaleX: 1, skewX: -24, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.3 } } };
-  const linesV: Variants = { hidden: { opacity: 0 }, show: { opacity: [0, 0.55, 0], transition: { duration: 0.75, times: [0, 0.32, 1], ease: [0.16, 1, 0.3, 1] } } };
+      ? { hidden: { opacity: 0, y: 100, scale: 0.34, skewX: -22, rotate: -5 }, show: { opacity: 1, y: 0, scale: 1, skewX: 0, rotate: 0, transition: { type: "spring", stiffness: 760, damping: 11, mass: 0.9, delay: 0.02 } } }
+      : { hidden: { opacity: 0, x: -240, skewX: -48, rotate: -13, scale: 0.9 }, show: { opacity: 1, x: 0, skewX: 0, rotate: 0, scale: 1, transition: { type: "spring", stiffness: 780, damping: 11, mass: 0.9, delay: 0.02 } } };
+  const kickerV: Variants = { hidden: { opacity: 0, x: align === "center" ? 0 : -34, y: align === "center" ? 16 : 0 }, show: { opacity: 1, x: 0, y: 0, transition: { type: "spring", stiffness: 640, damping: 15, delay: 0.14 } } };
+  const echoV: Variants = { hidden: { opacity: 0, x: 22, y: 15, skewX: -14 }, show: { opacity: [0, 0.7, 0], x: [22, 6, 0], y: [15, 4, 0], skewX: [-14, -4, 0], transition: { duration: 0.52, times: [0, 0.5, 1], ease: [0.16, 1, 0.3, 1], delay: 0.14 } } };
+  const headingV: Variants = { hidden: { opacity: 0, x: -52, skewX: -16, clipPath: "inset(0 100% 0 0)" }, show: { opacity: 1, x: 0, skewX: 0, clipPath: "inset(0 0% 0 0)", transition: { duration: 0.52, ease: [0.34, 1.56, 0.64, 1], delay: 0.16 } } };
+  const barV: Variants = { hidden: { scaleX: 0, skewX: -24 }, show: { scaleX: [0, 1.14, 1], skewX: -24, transition: { duration: 0.5, times: [0, 0.68, 1], ease: [0.16, 1, 0.3, 1], delay: 0.3 } } };
+  const linesV: Variants = { hidden: { opacity: 0 }, show: { opacity: [0, 0.78, 0], transition: { duration: 0.6, times: [0, 0.26, 1], ease: [0.16, 1, 0.3, 1], delay: 0.03 } } };
   const focus = align === "center" ? "50%" : "9%";
 
   return (
     <motion.div
       className={`relative mb-9 md:mb-12 ${align === "center" ? "text-center" : ""}`}
+      variants={containerV}
       initial="hidden"
       whileInView="show"
       // もう少しスクロールしてから発火：ビューポート下端を18%縮めて検知点を上へずらす
@@ -124,6 +134,23 @@ export function SectionHead({
         }}
       />
 
+      {/* 着弾の朱フラッシュが一閃 */}
+      <motion.div
+        aria-hidden
+        variants={flashV}
+        className="pointer-events-none absolute inset-x-0 top-0"
+        style={{
+          height: "3.4em",
+          background:
+            align === "center"
+              ? "linear-gradient(90deg, rgba(193,56,31,0) 0%, var(--shu) 50%, rgba(193,56,31,0) 100%)"
+              : "linear-gradient(90deg, var(--shu) 0%, rgba(193,56,31,0) 72%)",
+          transformOrigin: align === "center" ? "center" : "left",
+          WebkitMaskImage: "linear-gradient(#000, transparent 88%)",
+          maskImage: "linear-gradient(#000, transparent 88%)",
+        }}
+      />
+
       <div className={`relative flex flex-col gap-1 md:flex-row md:items-end md:gap-6 ${align === "center" ? "items-center md:justify-center" : "items-start"}`}>
         <motion.span
           variants={numberV}
@@ -137,13 +164,23 @@ export function SectionHead({
           <motion.span variants={kickerV} className="block font-serif text-[0.7rem] tracking-[0.34em] mb-2" style={{ color: "var(--shu)" }}>
             {en}
           </motion.span>
-          <motion.h2
-            variants={headingV}
-            className="font-display"
-            style={{ color: "var(--ink)", fontSize: "clamp(1.7rem, 4.2vw, 3.1rem)", lineHeight: 1.12, fontWeight: 700, letterSpacing: "-0.01em" }}
-          >
-            {children}
-          </motion.h2>
+          <div className="relative">
+            <motion.span
+              aria-hidden
+              variants={echoV}
+              className="font-display absolute inset-0 select-none"
+              style={{ color: "var(--shu)", fontSize: "clamp(1.7rem, 4.2vw, 3.1rem)", lineHeight: 1.12, fontWeight: 700, letterSpacing: "-0.01em" }}
+            >
+              {children}
+            </motion.span>
+            <motion.h2
+              variants={headingV}
+              className="font-display relative"
+              style={{ color: "var(--ink)", fontSize: "clamp(1.7rem, 4.2vw, 3.1rem)", lineHeight: 1.12, fontWeight: 700, letterSpacing: "-0.01em" }}
+            >
+              {children}
+            </motion.h2>
+          </div>
         </div>
       </div>
       <motion.div
