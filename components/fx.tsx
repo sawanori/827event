@@ -15,26 +15,26 @@ export function SectionFx({ variant = "dots" }: { variant?: "stripes" | "dots" |
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
-          backgroundImage: "repeating-linear-gradient(-24deg, rgba(193,56,31,0.05) 0 2px, transparent 2px 26px)",
-          WebkitMaskImage: "linear-gradient(115deg, black, transparent 78%)",
-          maskImage: "linear-gradient(115deg, black, transparent 78%)",
+          backgroundImage: "repeating-linear-gradient(-24deg, rgba(226,72,46,0.16) 0 3px, transparent 3px 24px)",
+          WebkitMaskImage: "linear-gradient(115deg, black, transparent 92%)",
+          maskImage: "linear-gradient(115deg, black, transparent 92%)",
         }}
-        animate={{ backgroundPositionX: ["0px", "56px"] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
+        animate={{ backgroundPositionX: ["0px", "54px"] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
       />
     );
   }
   if (variant === "wave") {
     return (
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-        {[0, 1, 2, 3].map((i) => (
+        {[0, 1, 2, 3, 4].map((i) => (
           <motion.span
             key={i}
             className="absolute -right-[6%] top-1/2 rounded-full"
-            style={{ width: 560, height: 560, marginTop: -280, border: "1px solid rgba(193,56,31,0.13)" }}
-            initial={{ scale: 0.15, opacity: 0.5 }}
+            style={{ width: 620, height: 620, marginTop: -310, border: "2px solid rgba(226,72,46,0.28)" }}
+            initial={{ scale: 0.12, opacity: 0.8 }}
             animate={{ scale: 1, opacity: 0 }}
-            transition={{ duration: 6, repeat: Infinity, delay: i * 1.5, ease: "easeOut" }}
+            transition={{ duration: 5.5, repeat: Infinity, delay: i * 1.1, ease: "easeOut" }}
           />
         ))}
       </div>
@@ -45,13 +45,13 @@ export function SectionFx({ variant = "dots" }: { variant?: "stripes" | "dots" |
       aria-hidden
       className="pointer-events-none absolute inset-0"
       style={{
-        backgroundImage: "radial-gradient(rgba(193,56,31,0.10) 1.4px, transparent 1.7px)",
-        backgroundSize: "22px 22px",
-        WebkitMaskImage: "linear-gradient(120deg, black, transparent 76%)",
-        maskImage: "linear-gradient(120deg, black, transparent 76%)",
+        backgroundImage: "radial-gradient(rgba(226,72,46,0.24) 1.6px, transparent 2px)",
+        backgroundSize: "20px 20px",
+        WebkitMaskImage: "linear-gradient(120deg, black, transparent 92%)",
+        maskImage: "linear-gradient(120deg, black, transparent 92%)",
       }}
-      animate={{ backgroundPositionX: ["0px", "22px"], backgroundPositionY: ["0px", "-22px"] }}
-      transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+      animate={{ backgroundPositionX: ["0px", "20px"], backgroundPositionY: ["0px", "-20px"] }}
+      transition={{ duration: 3.5, repeat: Infinity, ease: "linear" }}
     />
   );
 }

@@ -226,7 +226,7 @@ export default function Home() {
         <header
           className="fixed inset-x-0 top-0 z-50 transition-all duration-500"
           style={{
-            background: scrolled ? "rgba(241,235,223,0.82)" : "transparent",
+            background: scrolled ? "rgba(20,16,14,0.86)" : "transparent",
             borderBottom: `1px solid ${scrolled ? "var(--line)" : "transparent"}`,
             backdropFilter: scrolled ? "blur(10px)" : "none",
           }}
@@ -574,7 +574,7 @@ export default function Home() {
                               onClick={() => setSlideIndex(i)}
                               aria-label={`スライド ${i + 1}`}
                               className="h-1.5 rounded-full transition-all duration-300"
-                              style={{ width: i === slideIndex ? 22 : 7, background: i === slideIndex ? "var(--paper-2)" : "rgba(247,242,232,0.5)" }}
+                              style={{ width: i === slideIndex ? 22 : 7, background: i === slideIndex ? "var(--shu)" : "rgba(245,236,224,0.5)" }}
                             />
                           ))}
                         </div>
@@ -587,7 +587,7 @@ export default function Home() {
           </section>
 
           {/* ===== 開催概要 / 時間枠 ===== */}
-          <section className="relative overflow-hidden py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
+          <section className="skew-top relative overflow-hidden py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
             <SectionFx variant="dots" />
             <div className="mx-auto max-w-6xl px-6">
               <Reveal className="mb-14 text-center">
@@ -786,7 +786,7 @@ export default function Home() {
           </section>
 
           {/* ===== 予約 ===== */}
-          <section id="register" className="relative overflow-hidden py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
+          <section id="register" className="skew-top relative overflow-hidden py-24 md:py-36" style={{ background: "var(--paper-3)" }}>
             <SectionFx variant="dots" />
             <div className="mx-auto max-w-2xl px-6">
               <Reveal className="mb-10 text-center">
