@@ -493,10 +493,10 @@ export default function Home() {
                   className="font-display mt-3"
                   style={{
                     color: "var(--ink)",
-                    fontSize: "clamp(2.3rem, 6.4vw, 4.8rem)",
-                    lineHeight: 1.0,
-                    letterSpacing: "-0.02em",
-                    transform: "rotate(-1.6deg)",
+                    fontSize: "clamp(1.7rem, 5.2vw, 3.5rem)",
+                    lineHeight: 1.1,
+                    letterSpacing: "-0.015em",
+                    transform: "rotate(-1.4deg)",
                   }}
                 >
                   装いが変わる季節に、<br />
@@ -516,8 +516,8 @@ export default function Home() {
                   <motion.li
                     key={i}
                     variants={fadeUp}
-                    className="relative"
-                    style={{ marginTop: i === 0 ? 0 : "-0.5rem", marginLeft: `${(i % 2 ? -1 : 1) * i * 16}px`, zIndex: 20 - i }}
+                    className={`relative ${["md:ml-0", "md:ml-5", "md:ml-10", "md:ml-14"][i] ?? ""}`}
+                    style={{ marginTop: i === 0 ? 0 : "-0.4rem", zIndex: 20 - i }}
                   >
                     <div
                       className="flex items-center gap-5 rounded-2xl px-6 py-5"
@@ -525,7 +525,7 @@ export default function Home() {
                         background: "var(--paper-2)",
                         border: "1px solid var(--line)",
                         boxShadow: "0 24px 46px -30px rgba(25,21,18,0.5)",
-                        transform: `rotate(${i % 2 ? 1.5 : -1.3}deg)`,
+                        transform: "rotate(-0.8deg)",
                       }}
                     >
                       <span className="font-num italic leading-none" style={{ color: "var(--shu)", fontSize: "clamp(2.2rem, 5vw, 3.2rem)" }}>
@@ -603,8 +603,9 @@ export default function Home() {
                       <div
                         aria-hidden
                         className="absolute -bottom-5 -right-4 h-[72%] w-[86%] rounded-2xl"
-                        style={{ background: "var(--shu)", transform: "rotate(4.5deg)" }}
+                        style={{ background: "var(--shu)", zIndex: 0, transform: "rotate(4.5deg)" }}
                       />
+                      <div className="relative z-10">
                       <Parallax speed={0.18}>
                         <div className="relative aspect-[4/5] frame" style={{ transform: "rotate(-3.2deg)" }}>
                           {slideshowImages.map((img, i) => (
@@ -628,6 +629,7 @@ export default function Home() {
                           </div>
                         </div>
                       </Parallax>
+                      </div>
                     </div>
                   </Reveal>
                 </div>

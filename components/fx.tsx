@@ -100,12 +100,12 @@ export function SectionHead({
         whileInView={{ opacity: 1, x: 0, y: 0, skewX: 0 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ type: "spring", stiffness: 240, damping: 20 }}
-        className={`flex items-end gap-4 md:gap-6 ${align === "center" ? "justify-center" : ""}`}
+        className={`flex flex-col gap-1 md:flex-row md:items-end md:gap-6 ${align === "center" ? "items-center md:justify-center" : "items-start"}`}
       >
         <span
           className="font-num leading-[0.8] select-none"
           style={{
-            fontSize: "clamp(3.4rem, 9vw, 7rem)",
+            fontSize: "clamp(2.8rem, 8vw, 5.6rem)",
             fontStyle: "italic",
             color: "transparent",
             WebkitTextStroke: "2px var(--shu)",
@@ -118,7 +118,10 @@ export function SectionHead({
           <span className="block font-serif text-[0.7rem] tracking-[0.34em] mb-2" style={{ color: "var(--shu)" }}>
             {en}
           </span>
-          <h2 className="font-display display-md" style={{ color: "var(--ink)" }}>
+          <h2
+            className="font-display"
+            style={{ color: "var(--ink)", fontSize: "clamp(1.7rem, 4.2vw, 3.1rem)", lineHeight: 1.12, fontWeight: 700, letterSpacing: "-0.01em" }}
+          >
             {children}
           </h2>
         </div>
