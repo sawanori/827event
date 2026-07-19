@@ -516,7 +516,7 @@ export default function Home() {
                   <motion.li
                     key={i}
                     variants={fadeUp}
-                    className={`relative ${["md:ml-0", "md:ml-[26px]", "md:ml-[46px]", "md:ml-[60px]"][i] ?? ""}`}
+                    className={`relative ${["md:ml-0", "md:ml-[26px]", "md:ml-[20px]", "md:ml-[32px]"][i] ?? ""}`}
                     style={{ marginTop: i === 0 ? 0 : "-0.6rem", zIndex: 20 - i }}
                   >
                     <div
