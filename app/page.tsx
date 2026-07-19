@@ -465,82 +465,123 @@ export default function Home() {
           </section>
 
           {/* ===== コンセプト / お悩み ===== */}
-          <section className="relative overflow-hidden py-24 md:py-36">
+          <section className="relative overflow-hidden py-28 md:py-44">
             <SectionFx variant="stripes" />
-            <div className="relative mx-auto max-w-6xl px-6">
-              <div className="grid md:grid-cols-12 gap-10 md:gap-14">
-                <div className="col-container md:col-span-5">
-                  <Reveal>
-                    <Eyebrow>Concept</Eyebrow>
-                    <h2 className="font-display col-title mt-5 mb-6" style={{ color: "var(--ink)" }}>
-                      装いが変わる季節に、<br />
-                      表情もひとつ、<span className="mark-shu">新しく</span>。
-                    </h2>
-                    <p className="font-body leading-loose" style={{ color: "var(--muted)" }}>
-                      衣替えのように、プロフィールも夏仕様へ。ほんの少しの光の違いで、
-                      写真の印象は大きく変わります。この夏、後半戦のあなたを、
-                      新しい一枚から始めませんか。
-                    </p>
-                  </Reveal>
-                </div>
+            {/* 巨大なアウトライン 01（背面・はみ出し・回転） */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute -left-[4vw] -top-6 select-none font-num leading-none"
+              style={{
+                fontSize: "clamp(11rem, 34vw, 30rem)",
+                fontStyle: "italic",
+                color: "transparent",
+                WebkitTextStroke: "2px var(--shu)",
+                opacity: 0.13,
+                transform: "rotate(-7deg)",
+              }}
+            >
+              01
+            </span>
 
-                <div className="md:col-span-7">
-                  <motion.ol
-                    variants={stagger}
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true, amount: 0.2 }}
-                    className="border-t"
-                    style={{ borderColor: "var(--line)" }}
+            <div className="relative z-10 mx-auto max-w-6xl px-6">
+              {/* 見出し：左に寄せ・回転・少しはみ出す */}
+              <Reveal className="max-w-2xl md:-ml-1">
+                <span className="font-serif text-[0.7rem] tracking-[0.36em]" style={{ color: "var(--shu)" }}>
+                  CONCEPT
+                </span>
+                <h2
+                  className="font-display mt-3"
+                  style={{
+                    color: "var(--ink)",
+                    fontSize: "clamp(2.3rem, 6.4vw, 4.8rem)",
+                    lineHeight: 1.0,
+                    letterSpacing: "-0.02em",
+                    transform: "rotate(-1.6deg)",
+                  }}
+                >
+                  装いが変わる季節に、<br />
+                  表情もひとつ、<span className="mark-shu">新しく</span>。
+                </h2>
+              </Reveal>
+
+              {/* お悩み：非対称・回転・重なりの階段カード（右寄せ） */}
+              <motion.ul
+                variants={stagger}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.12 }}
+                className="mt-12 flex flex-col md:ml-auto md:mt-2 md:w-[64%]"
+              >
+                {CONCERNS.map((item, i) => (
+                  <motion.li
+                    key={i}
+                    variants={fadeUp}
+                    className="relative"
+                    style={{ marginTop: i === 0 ? 0 : "-0.5rem", marginLeft: `${(i % 2 ? -1 : 1) * i * 16}px`, zIndex: 20 - i }}
                   >
-                    {CONCERNS.map((item, i) => (
-                      <motion.li
-                        key={i}
-                        variants={fadeUp}
-                        className="flex items-baseline gap-6 md:gap-8 py-6 border-b"
-                        style={{ borderColor: "var(--line)" }}
-                      >
-                        <span className="index-serif text-3xl md:text-4xl w-12 flex-shrink-0">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                        <p className="font-body text-base md:text-lg leading-relaxed pt-1" style={{ color: "var(--ink-soft)" }}>
-                          {item.text}
-                        </p>
-                      </motion.li>
-                    ))}
-                  </motion.ol>
-                </div>
-              </div>
+                    <div
+                      className="flex items-center gap-5 rounded-2xl px-6 py-5"
+                      style={{
+                        background: "var(--paper-2)",
+                        border: "1px solid var(--line)",
+                        boxShadow: "0 24px 46px -30px rgba(25,21,18,0.5)",
+                        transform: `rotate(${i % 2 ? 1.5 : -1.3}deg)`,
+                      }}
+                    >
+                      <span className="font-num italic leading-none" style={{ color: "var(--shu)", fontSize: "clamp(2.2rem, 5vw, 3.2rem)" }}>
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <p className="font-body text-base md:text-lg leading-snug" style={{ color: "var(--ink-soft)" }}>
+                        {item.text}
+                      </p>
+                    </div>
+                  </motion.li>
+                ))}
+              </motion.ul>
+
+              <Reveal className="mt-14 max-w-md">
+                <p className="font-body leading-loose" style={{ color: "var(--muted)" }}>
+                  衣替えのように、プロフィールも夏仕様へ。ほんの少しの光の違いで、写真の印象は大きく変わります。この夏、後半戦のあなたを、新しい一枚から始めませんか。
+                </p>
+              </Reveal>
             </div>
           </section>
 
           {/* ===== 撮影会について ===== */}
-          <section id="about" className="relative py-24 md:py-36 overflow-hidden">
+          <section id="about" className="relative py-28 md:py-44 overflow-hidden">
             <SectionFx variant="wave" />
-            <div className="mx-auto max-w-6xl px-6">
-              <div className="grid md:grid-cols-12 gap-12 md:gap-16 items-center">
-                <div className="md:col-span-6 order-2 md:order-1">
+            <div className="relative mx-auto max-w-6xl px-6">
+              <div className="grid items-center gap-y-12 md:grid-cols-12 md:gap-x-4">
+                {/* テキスト（左・前面・チェックはずらした回転チップ） */}
+                <div className="relative z-20 order-2 md:order-1 md:col-span-7 md:pr-6">
                   <Reveal>
                     <SectionHead no="02" en="About the Session">
                       夏の光を味方に、<br />
                       <span className="mark-shu">映える</span>あなたを。
                     </SectionHead>
-                    <p className="font-body leading-loose mb-9" style={{ color: "var(--muted)" }}>
+                    <p className="mb-8 max-w-md font-body leading-loose" style={{ color: "var(--muted)" }}>
                       普段は企業ブランディング向けに行う撮影を、個人の方にも。
                       自然光と表情を丁寧に引き出し、プロフィールにふさわしい一枚に仕上げます。
                     </p>
-                    <ul className="space-y-4">
+                    <ul className="flex max-w-lg flex-col gap-3">
                       {[
                         { t: `${EVENT.price}でご参加いただけます`, s: "参加費は一切かかりません" },
                         { t: EVENT.benefit, s: "後日データでお渡しします" },
                         { t: `限定${EVENT.capacity}名・${EVENT.target}`, s: "少人数だからこその丁寧な撮影" },
                       ].map((b, i) => (
-                        <li key={i} className="flex items-start gap-4">
-                          <span
-                            className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
-                            style={{ background: "var(--shu)" }}
-                          >
-                            <svg className="h-3 w-3" fill="none" stroke="var(--paper-2)" viewBox="0 0 24 24">
+                        <li
+                          key={i}
+                          className="flex items-center gap-4 rounded-xl px-5 py-3.5"
+                          style={{
+                            background: "var(--paper-2)",
+                            border: "1px solid var(--line)",
+                            marginLeft: `${i * 24}px`,
+                            transform: `rotate(${i % 2 ? -1.4 : 1.2}deg)`,
+                            boxShadow: "0 16px 34px -26px rgba(25,21,18,0.5)",
+                          }}
+                        >
+                          <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full" style={{ background: "var(--shu)" }}>
+                            <svg className="h-3.5 w-3.5" fill="none" stroke="var(--paper-2)" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                             </svg>
                           </span>
@@ -554,31 +595,40 @@ export default function Home() {
                   </Reveal>
                 </div>
 
-                <div className="md:col-span-6 order-1 md:order-2">
+                {/* 画像（右・回転・背面の朱ブロック・テキストへ重なる） */}
+                <div className="relative order-1 md:order-2 md:col-span-5 md:-ml-12">
                   <Reveal y={40}>
-                    <Parallax speed={0.18}>
-                      <div className="relative aspect-[4/5] frame">
-                        {slideshowImages.map((img, i) => (
-                          <div
-                            key={i}
-                            className={`absolute inset-0 transition-opacity duration-[1200ms] ${i === slideIndex ? "opacity-100" : "opacity-0"}`}
-                          >
-                            <Image src={img} alt="撮影サンプル" fill className="object-cover" sizes="(max-width: 768px) 90vw, 45vw" priority={i === 0} />
-                          </div>
-                        ))}
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                          {slideshowImages.map((_, i) => (
-                            <button
+                    <div className="relative">
+                      {/* 背面の朱ブロック */}
+                      <div
+                        aria-hidden
+                        className="absolute -bottom-5 -right-4 h-[72%] w-[86%] rounded-2xl"
+                        style={{ background: "var(--shu)", transform: "rotate(4.5deg)" }}
+                      />
+                      <Parallax speed={0.18}>
+                        <div className="relative aspect-[4/5] frame" style={{ transform: "rotate(-3.2deg)" }}>
+                          {slideshowImages.map((img, i) => (
+                            <div
                               key={i}
-                              onClick={() => setSlideIndex(i)}
-                              aria-label={`スライド ${i + 1}`}
-                              className="h-1.5 rounded-full transition-all duration-300"
-                              style={{ width: i === slideIndex ? 22 : 7, background: i === slideIndex ? "var(--paper-2)" : "rgba(247,242,232,0.5)" }}
-                            />
+                              className={`absolute inset-0 transition-opacity duration-[1200ms] ${i === slideIndex ? "opacity-100" : "opacity-0"}`}
+                            >
+                              <Image src={img} alt="撮影サンプル" fill className="object-cover" sizes="(max-width: 768px) 90vw, 40vw" priority={i === 0} />
+                            </div>
                           ))}
+                          <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+                            {slideshowImages.map((_, i) => (
+                              <button
+                                key={i}
+                                onClick={() => setSlideIndex(i)}
+                                aria-label={`スライド ${i + 1}`}
+                                className="h-1.5 rounded-full transition-all duration-300"
+                                style={{ width: i === slideIndex ? 22 : 7, background: i === slideIndex ? "var(--paper-2)" : "rgba(247,242,232,0.5)" }}
+                              />
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    </Parallax>
+                      </Parallax>
+                    </div>
                   </Reveal>
                 </div>
               </div>
@@ -674,18 +724,21 @@ export default function Home() {
                 </div>
               </Reveal>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-                {currentImages.map((img, i) => (
+              <div className="gap-3 md:gap-4 [column-fill:_balance] columns-2 md:columns-3 lg:columns-4">
+                {currentImages.map((img, i) => {
+                  const aspect = ["aspect-[3/4]", "aspect-[4/5]", "aspect-[1/1]", "aspect-[3/4]", "aspect-[4/3]", "aspect-[5/6]"][i % 6];
+                  const rot = [-2.4, 1.6, -1, 2.1, -1.7, 1.2][i % 6];
+                  return (
                   <motion.button
                     type="button"
                     key={`${activeTab}-${i}`}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, y: 26, rotate: rot * 1.6 }}
+                    whileInView={{ opacity: 1, y: 0, rotate: rot }}
                     viewport={{ once: true, amount: 0.1 }}
                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: (i % 4) * 0.05 }}
                     onClick={() => setSelectedImage(img)}
                     aria-label={`撮影サンプル ${i + 1} を拡大表示`}
-                    className="group relative gallery-item aspect-[3/4] w-full overflow-hidden p-0 appearance-none bg-transparent"
+                    className={`group relative gallery-item mb-3 md:mb-4 block w-full break-inside-avoid overflow-hidden p-0 appearance-none bg-transparent ${aspect}`}
                   >
                     <Image
                       src={img}
@@ -713,7 +766,8 @@ export default function Home() {
                       <span className="font-serif text-xs tracking-[0.18em]" style={{ color: "var(--paper-2)" }}>VIEW</span>
                     </span>
                   </motion.button>
-                ))}
+                  );
+                })}
               </div>
               <p className="mt-6 text-center font-body text-sm" style={{ color: "var(--subtle)" }}>タップで拡大表示</p>
             </div>
