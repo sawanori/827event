@@ -4,7 +4,7 @@
 // セクション背景パターン（stripes / polka_dots / circle_wave）と星アクセント。
 
 import type { ReactNode } from "react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 const STAR = "50,8 60,36 90,37 66,55 75,84 50,67 25,84 34,55 10,37 40,36";
 
@@ -94,14 +94,14 @@ export function SectionHead({
   align?: "left" | "center";
 }) {
   // スクロールで勢いよく＋段階的に出現する（P5風のキネティックな見出し）
-  const numberV =
+  const numberV: Variants =
     align === "center"
       ? { hidden: { opacity: 0, y: 70, scaleX: 0.52, skewX: -16 }, show: { opacity: 1, y: 0, scaleX: 1, skewX: 0, transition: { type: "spring", stiffness: 560, damping: 12, delay: 0.02 } } }
       : { hidden: { opacity: 0, x: -160, skewX: -38, rotate: -8 }, show: { opacity: 1, x: 0, skewX: 0, rotate: 0, transition: { type: "spring", stiffness: 580, damping: 12, delay: 0.02 } } };
-  const kickerV = { hidden: { opacity: 0, x: align === "center" ? 0 : -28, y: align === "center" ? 12 : 0 }, show: { opacity: 1, x: 0, y: 0, transition: { duration: 0.34, ease: [0.16, 1, 0.3, 1], delay: 0.1 } } };
-  const headingV = { hidden: { opacity: 0, y: 20, skewX: -12, clipPath: "inset(0 100% 0 0)" }, show: { opacity: 1, y: 0, skewX: 0, clipPath: "inset(0 0% 0 0)", transition: { duration: 0.48, ease: [0.16, 1, 0.3, 1], delay: 0.15 } } };
-  const barV = { hidden: { scaleX: 0, skewX: -24 }, show: { scaleX: 1, skewX: -24, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.3 } } };
-  const linesV = { hidden: { opacity: 0 }, show: { opacity: [0, 0.55, 0], transition: { duration: 0.75, times: [0, 0.32, 1], ease: "easeOut" } } };
+  const kickerV: Variants = { hidden: { opacity: 0, x: align === "center" ? 0 : -28, y: align === "center" ? 12 : 0 }, show: { opacity: 1, x: 0, y: 0, transition: { duration: 0.34, ease: [0.16, 1, 0.3, 1], delay: 0.1 } } };
+  const headingV: Variants = { hidden: { opacity: 0, y: 20, skewX: -12, clipPath: "inset(0 100% 0 0)" }, show: { opacity: 1, y: 0, skewX: 0, clipPath: "inset(0 0% 0 0)", transition: { duration: 0.48, ease: [0.16, 1, 0.3, 1], delay: 0.15 } } };
+  const barV: Variants = { hidden: { scaleX: 0, skewX: -24 }, show: { scaleX: 1, skewX: -24, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.3 } } };
+  const linesV: Variants = { hidden: { opacity: 0 }, show: { opacity: [0, 0.55, 0], transition: { duration: 0.75, times: [0, 0.32, 1], ease: [0.16, 1, 0.3, 1] } } };
   const focus = align === "center" ? "50%" : "9%";
 
   return (
