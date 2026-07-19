@@ -109,7 +109,8 @@ export function SectionHead({
       className={`relative mb-9 md:mb-12 ${align === "center" ? "text-center" : ""}`}
       initial="hidden"
       whileInView="show"
-      viewport={{ once: true, amount: 0.4 }}
+      // もう少しスクロールしてから発火：ビューポート下端を18%縮めて検知点を上へずらす
+      viewport={{ once: true, amount: 0.4, margin: "0px 0px -18% 0px" }}
     >
       {/* 集中線（スピードライン）が一瞬走る */}
       <motion.div
