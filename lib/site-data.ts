@@ -146,7 +146,7 @@ export const MEMBER_GALLERY_IMAGES: string[] = [...NEW_2026_GALLERY, ...PORT_IMA
 // ヒーロー「夏の光で、新しい自分を。」用：新規は ○1 のみ ＋ port*
 export const MEMBER_HERO_IMAGES: string[] = [...NEW_2026_HERO, ...PORT_IMAGES];
 
-// コミュニティー撮影分（既存のローカル /public/images のまま・新規分は追加しない）
+// コミュニティー撮影分：既存のローカル /public/images ＋ 2026新規分（Vercel Blob・WebP、blob/ct 由来）を追加。
 export const COMMUNITY_IMAGES: string[] = [
   "/images/827/DSC00927.jpg",
   "/images/827/DSC01074.jpg",
@@ -168,6 +168,19 @@ export const COMMUNITY_IMAGES: string[] = [
   "/images/827/DSC01314のコピー.jpg",
   "/images/827/kinpatu 12.jpg",
   "/images/827/kinpatu 15.jpg",
+  // 2026新規のコミュニティー撮影分（Vercel Blob・WebP・1334×2000）
+  `${BLOB}/ct/DSC08307.webp`,
+  `${BLOB}/ct/DSC08315.webp`,
+  `${BLOB}/ct/DSC08335.webp`,
+  `${BLOB}/ct/DSC08343.webp`,
+  `${BLOB}/ct/DSC08373.webp`,
+  `${BLOB}/ct/DSC08377.webp`,
+  `${BLOB}/ct/DSC08474.webp`,
+  `${BLOB}/ct/DSC08477.webp`,
+  `${BLOB}/ct/DSC08488.webp`,
+  `${BLOB}/ct/DSC08504.webp`,
+  `${BLOB}/ct/DSC08751.webp`,
+  `${BLOB}/ct/DSC08758.webp`,
 ];
 
 export type GalleryCategory = "member" | "community";
