@@ -146,6 +146,9 @@ export const MEMBER_GALLERY_IMAGES: string[] = [...NEW_2026_GALLERY, ...PORT_IMA
 // ヒーロー「夏の光で、新しい自分を。」用：新規は ○1 のみ ＋ port*
 export const MEMBER_HERO_IMAGES: string[] = [...NEW_2026_HERO, ...PORT_IMAGES];
 
+// ヒーローのメインビジュアルは1枚固定（夏の撮影会・Vercel Blob）。シャッフル・巡回しない。
+export const HERO_SINGLE = `${BLOB}/top.webp`;
+
 // コミュニティー撮影分：既存のローカル /public/images ＋ 2026新規分（Vercel Blob・WebP、blob/ct 由来）を追加。
 export const COMMUNITY_IMAGES: string[] = [
   "/images/827/DSC00927.jpg",

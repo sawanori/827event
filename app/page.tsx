@@ -16,7 +16,6 @@ import {
 import Countdown from "@/components/Countdown";
 import BookingForm from "@/components/BookingForm";
 import Parallax from "@/components/Parallax";
-import ParallaxImage from "@/components/ParallaxImage";
 import { SectionFx, SectionHead, SlashBand } from "@/components/fx";
 import {
   EVENT,
@@ -25,15 +24,11 @@ import {
   NOTICES,
   GALLERY_TABS,
   MEMBER_IMAGES,
-  MEMBER_HERO_IMAGES,
+  HERO_SINGLE,
   type GalleryCategory,
 } from "@/lib/site-data";
 
 // WebGL コンポーネントは SSR を避けてクライアントのみで読み込む
-const HeroPortrait = dynamic(() => import("@/components/three/HeroPortrait"), {
-  ssr: false,
-  loading: () => null,
-});
 const ScrollRibbon = dynamic(() => import("@/components/three/ScrollRibbon"), {
   ssr: false,
   loading: () => null,
@@ -117,9 +112,6 @@ export default function Home() {
   useEffect(() => setMounted(true), []);
   // マウント後に毎回シャッフル（初回描画は元順にしてSSRと一致させる）
   const memberImages = useMemo(() => (mounted ? shuffle(MEMBER_IMAGES) : MEMBER_IMAGES), [mounted]);
-  // ヒーローは ○1 のみ（＋port）の専用セットから
-  const heroImages = useMemo(() => (mounted ? shuffle(MEMBER_HERO_IMAGES) : MEMBER_HERO_IMAGES), [mounted]);
-  const heroPortraits = useMemo(() => heroImages.slice(0, 5), [heroImages]);
   const ribbonImages = useMemo(() => memberImages.slice(2, 11), [memberImages]);
   const slideshowImages = useMemo(() => memberImages.slice(0, 6), [memberImages]);
   const currentImages = useMemo(() => {
@@ -288,8 +280,8 @@ export default function Home() {
             {/* ===== モバイル：画像全面＋テキスト重ね（md未満のみ） ===== */}
             <div className="md:hidden absolute inset-0 z-0">
               <Image
-                src={heroPortraits[0]}
-                alt="プロフィール撮影サンプル"
+                src={HERO_SINGLE}
+                alt="夏の新プロフィール撮影会 メインビジュアル"
                 fill
                 priority
                 sizes="100vw"
@@ -431,18 +423,15 @@ export default function Home() {
                 >
                   <div className="relative mx-auto w-full max-w-[380px] md:max-w-none">
                     <div className="relative aspect-[3/4] frame frame-inset canvas-well">
-                      {use3DHero ? (
-                        <HeroPortrait images={heroPortraits} />
-                      ) : (
-                        <ParallaxImage
-                          src={heroPortraits[0]}
-                          alt="プロフィール撮影サンプル"
-                          amount={8}
-                          priority
-                          sizes="(max-width: 768px) 90vw, 40vw"
-                          style={{ position: "absolute", inset: 0 }}
-                        />
-                      )}
+                      {/* ヒーローは1枚固定。3:4画像を3:4枠に無切れで表示 */}
+                      <Image
+                        src={HERO_SINGLE}
+                        alt="夏の新プロフィール撮影会 メインビジュアル"
+                        fill
+                        priority
+                        sizes="(max-width: 768px) 90vw, 40vw"
+                        className="object-cover"
+                      />
                       <div className="pointer-events-none absolute inset-0" style={{ boxShadow: "inset 0 0 90px rgba(25,21,18,0.10)" }} />
                     </div>
                     {/* キャプション */}
