@@ -215,8 +215,9 @@ export function SlashBand({ label }: { label?: string }) {
   );
 }
 
-// 夏のギラギラした光（イントロ幕用）。回転サンレイ2層＋暖色のサングロー＋斜めの光スイープ
-// ＋きらめき。ブランド配色（紙/墨/朱）を守り、加算的な光ハイライトのみで“夏の陽射し”を演出する。
+// 夏のギラギラした光（イントロ幕用）。波打つ太陽光線（サイン波＋陽炎で揺らめく）＋白熱コアの
+// サングロー＋斜めの光スイープ＋きらめき。ブランド配色（紙/墨/朱）を守り、加算的な光ハイライト
+// のみで“真夏の陽射し”を演出する。
 function Glint({ left, top, delay, size = 22 }: { left: string; top: string; delay: number; size?: number }) {
   return (
     <motion.svg
@@ -233,57 +234,106 @@ function Glint({ left, top, delay, size = 22 }: { left: string; top: string; del
   );
 }
 
+// サイン波でうねらせた放射光線のパスを生成（決定的：乱数不使用）。viewBox 0..1000 前提。
+function buildWavyRays(count: number) {
+  const cx = 500;
+  const cy = 500;
+  return Array.from({ length: count }, (_, i) => {
+    const a = (i / count) * Math.PI * 2;
+    const dx = Math.cos(a);
+    const dy = Math.sin(a);
+    const px = -dy; // 進行方向に対する垂直（うねりのオフセット方向）
+    const py = dx;
+    const long = i % 2 === 0;
+    const ri = 116;
+    const ro = long ? 478 : 372;
+    const amp = long ? 16 : 11;
+    const waves = long ? 1.5 : 2.3;
+    const phase = (i % 5) * 0.8;
+    const steps = 18;
+    let d = "";
+    for (let s = 0; s <= steps; s++) {
+      const t = s / steps;
+      const r = ri + (ro - ri) * t;
+      const off = amp * Math.sin(waves * Math.PI * 2 * t + phase) * (0.2 + 0.8 * t);
+      const x = cx + dx * r + px * off;
+      const y = cy + dy * r + py * off;
+      d += (s === 0 ? "M" : "L") + `${x.toFixed(1)} ${y.toFixed(1)}`;
+    }
+    return { d, long, i };
+  });
+}
+
 export function SummerGlare() {
+  const rays = buildWavyRays(26);
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-      {/* 暖色のサングロー（呼吸） */}
+      {/* 陽炎フィルタ（feTurbulence を SMIL で揺らし、光線を feDisplacementMap でクネクネさせる） */}
+      <svg width="0" height="0" className="absolute" aria-hidden focusable="false">
+        <defs>
+          <filter id="summerHeat" x="-25%" y="-25%" width="150%" height="150%" colorInterpolationFilters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency="0.009 0.016" numOctaves={2} seed={7} result="noise">
+              <animate
+                attributeName="baseFrequency"
+                dur="6s"
+                values="0.009 0.016;0.014 0.023;0.009 0.016"
+                repeatCount="indefinite"
+              />
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale={20} xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+      </svg>
+
+      {/* 白熱コアのサングロー（白→橙→朱、呼吸） */}
       <motion.div
         className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{
-          width: "82vmin",
-          height: "82vmin",
+          width: "92vmin",
+          height: "92vmin",
           background:
-            "radial-gradient(circle, rgba(255,214,132,0.42) 0%, rgba(226,72,46,0.15) 32%, transparent 62%)",
+            "radial-gradient(circle, rgba(255,248,224,0.7) 0%, rgba(255,196,102,0.42) 22%, rgba(226,72,46,0.18) 46%, transparent 68%)",
         }}
-        animate={{ scale: [0.92, 1.08, 0.92], opacity: [0.72, 1, 0.72] }}
+        animate={{ scale: [0.9, 1.1, 0.9], opacity: [0.75, 1, 0.75] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
       />
-      {/* 放射状のサンレイ（太・ゆっくり回転） */}
-      <motion.div
-        className="absolute left-1/2 top-[42%] h-[130vmax] w-[130vmax] -translate-x-1/2 -translate-y-1/2"
-        style={{
-          background:
-            "repeating-conic-gradient(from 0deg at 50% 50%, rgba(226,72,46,0.12) 0deg 1.1deg, transparent 1.1deg 9deg)",
-          WebkitMaskImage: "radial-gradient(circle at 50% 50%, transparent 5%, black 16%, black 34%, transparent 56%)",
-          maskImage: "radial-gradient(circle at 50% 50%, transparent 5%, black 16%, black 34%, transparent 56%)",
-        }}
+
+      {/* 波打つ太陽の光線（ゆっくり回転＋陽炎で揺らめく） */}
+      <motion.svg
+        className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2"
+        style={{ width: "150vmax", height: "150vmax", overflow: "visible" }}
+        viewBox="0 0 1000 1000"
         animate={{ rotate: 360 }}
-        transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
-      />
-      {/* 二層目のレイ（細・逆回転＝ギラつき） */}
-      <motion.div
-        className="absolute left-1/2 top-[42%] h-[120vmax] w-[120vmax] -translate-x-1/2 -translate-y-1/2"
-        style={{
-          background:
-            "repeating-conic-gradient(from 3deg at 50% 50%, rgba(255,206,120,0.11) 0deg 0.5deg, transparent 0.5deg 5deg)",
-          WebkitMaskImage: "radial-gradient(circle at 50% 50%, transparent 4%, black 14%, black 30%, transparent 50%)",
-          maskImage: "radial-gradient(circle at 50% 50%, transparent 4%, black 14%, black 30%, transparent 50%)",
-        }}
-        animate={{ rotate: -360 }}
-        transition={{ duration: 32, repeat: Infinity, ease: "linear" }}
-      />
+        transition={{ duration: 44, repeat: Infinity, ease: "linear" }}
+      >
+        <g filter="url(#summerHeat)">
+          {rays.map((r) => (
+            <path
+              key={r.i}
+              d={r.d}
+              fill="none"
+              stroke={r.long ? "rgba(226,72,46,0.20)" : "rgba(255,178,78,0.18)"}
+              strokeWidth={r.long ? 8 : 4.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          ))}
+        </g>
+      </motion.svg>
+
       {/* 斜めの光のスイープ（一閃／繰り返し） */}
       <motion.div
         className="absolute inset-x-0 inset-y-[-20%]"
         style={{
           background:
-            "linear-gradient(104deg, transparent 34%, rgba(255,255,255,0.58) 48%, rgba(255,236,192,0.4) 53%, transparent 64%)",
+            "linear-gradient(104deg, transparent 34%, rgba(255,255,255,0.6) 48%, rgba(255,236,192,0.42) 53%, transparent 64%)",
           mixBlendMode: "screen",
         }}
         initial={{ x: "-115%" }}
         animate={{ x: ["-115%", "115%"] }}
-        transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 0.9, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 0.8, ease: [0.16, 1, 0.3, 1] }}
       />
+
       {/* きらめき（グリント） */}
       <Glint left="24%" top="33%" delay={0.1} size={26} />
       <Glint left="73%" top="30%" delay={0.6} />
