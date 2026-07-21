@@ -16,6 +16,7 @@ import {
 import Countdown from "@/components/Countdown";
 import BookingForm from "@/components/BookingForm";
 import Parallax from "@/components/Parallax";
+import ScrollArrowFlow from "@/components/ScrollArrowFlow";
 import { SectionFx, SectionHead, SlashBand } from "@/components/fx";
 import {
   EVENT,
@@ -680,6 +681,9 @@ export default function Home() {
               </div>
             </div>
           </section>
+
+          {/* ===== 当日の流れ（P5R風・矢印スクロール演出） ===== */}
+          <ScrollArrowFlow />
 
           {/* ===== スクロール演出（WebGL リボン） ===== */}
           {use3DHero && <ScrollRibbon images={ribbonImages} />}
