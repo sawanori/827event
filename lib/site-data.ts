@@ -146,11 +146,13 @@ export const MEMBER_GALLERY_IMAGES: string[] = [...NEW_2026_GALLERY, ...PORT_IMA
 // ヒーロー「夏の光で、新しい自分を。」用：新規は ○1 のみ ＋ port*
 export const MEMBER_HERO_IMAGES: string[] = [...NEW_2026_HERO, ...PORT_IMAGES];
 
-// ヒーローのメインビジュアルは1枚固定（夏の撮影会・Vercel Blob）。シャッフル・巡回しない。
+// ヒーローのメインビジュアル。2枚をクロスフェードでスライドする（top=Vercel Blob / top2=ローカル）。
 export const HERO_SINGLE = `${BLOB}/top.webp`;
+export const HERO_SECOND = "/images/top2.webp";
+export const HERO_SLIDES: string[] = [HERO_SINGLE, HERO_SECOND];
 
-// コミュニティー撮影分：既存のローカル /public/images ＋ 2026新規分（Vercel Blob・WebP、blob/ct 由来）を追加。
-export const COMMUNITY_IMAGES: string[] = [
+// コミュニティー撮影分（既存のローカル /public/images 分）。
+const COMMUNITY_LOCAL: string[] = [
   "/images/827/DSC00927.jpg",
   "/images/827/DSC01074.jpg",
   "/images/yon/DSC00833のコピー.jpg",
@@ -171,7 +173,11 @@ export const COMMUNITY_IMAGES: string[] = [
   "/images/827/DSC01314のコピー.jpg",
   "/images/827/kinpatu 12.jpg",
   "/images/827/kinpatu 15.jpg",
-  // 2026新規のコミュニティー撮影分（Vercel Blob・WebP・1334×2000）
+];
+
+// 2026新規のコミュニティー撮影分（Vercel Blob・WebP・1334×2000、blob/ct 由来）＝「最近追加した分」。
+// スクロール演出（ScrollRibbon）はこの新規分を一人1枚として表示する。
+export const COMMUNITY_NEW_2026: string[] = [
   `${BLOB}/ct/DSC08307.webp`,
   `${BLOB}/ct/DSC08315.webp`,
   `${BLOB}/ct/DSC08335.webp`,
@@ -185,6 +191,9 @@ export const COMMUNITY_IMAGES: string[] = [
   `${BLOB}/ct/DSC08751.webp`,
   `${BLOB}/ct/DSC08758.webp`,
 ];
+
+// コミュニティー撮影分：既存のローカル ＋ 2026新規分。
+export const COMMUNITY_IMAGES: string[] = [...COMMUNITY_LOCAL, ...COMMUNITY_NEW_2026];
 
 export type GalleryCategory = "member" | "community";
 

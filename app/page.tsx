@@ -25,7 +25,8 @@ import {
   NOTICES,
   GALLERY_TABS,
   MEMBER_IMAGES,
-  HERO_SINGLE,
+  HERO_SLIDES,
+  COMMUNITY_NEW_2026,
   type GalleryCategory,
 } from "@/lib/site-data";
 
@@ -92,6 +93,7 @@ export default function Home() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<GalleryCategory>("member");
   const [slideIndex, setSlideIndex] = useState(0);
+  const [heroSlide, setHeroSlide] = useState(0);
   const [scrolled, setScrolled] = useState(false);
   const [showSticky, setShowSticky] = useState(false);
 
@@ -113,7 +115,11 @@ export default function Home() {
   useEffect(() => setMounted(true), []);
   // マウント後に毎回シャッフル（初回描画は元順にしてSSRと一致させる）
   const memberImages = useMemo(() => (mounted ? shuffle(MEMBER_IMAGES) : MEMBER_IMAGES), [mounted]);
-  const ribbonImages = useMemo(() => memberImages.slice(2, 11), [memberImages]);
+  // スクロール演出のリボンは「最近追加したコミュニティー撮影分」を一人1枚で表示（マウント後にシャッフル）
+  const ribbonImages = useMemo(
+    () => (mounted ? shuffle(COMMUNITY_NEW_2026) : COMMUNITY_NEW_2026),
+    [mounted]
+  );
   const slideshowImages = useMemo(() => memberImages.slice(0, 6), [memberImages]);
   const currentImages = useMemo(() => {
     const base = GALLERY_TABS.find((t) => t.key === activeTab)!.images;
@@ -145,6 +151,12 @@ export default function Home() {
     const id = setInterval(() => setSlideIndex((i) => (i + 1) % slideshowImages.length), 4600);
     return () => clearInterval(id);
   }, [slideshowImages.length]);
+
+  // ヒーロー：2枚をクロスフェードでスライド
+  useEffect(() => {
+    const id = setInterval(() => setHeroSlide((i) => (i + 1) % HERO_SLIDES.length), 5000);
+    return () => clearInterval(id);
+  }, []);
 
   // ヘッダ／スティッキーCTA
   useEffect(() => {
@@ -280,14 +292,21 @@ export default function Home() {
 
             {/* ===== モバイル：画像全面＋テキスト重ね（md未満のみ） ===== */}
             <div className="md:hidden absolute inset-0 z-0">
-              <Image
-                src={HERO_SINGLE}
-                alt="夏の新プロフィール撮影会 メインビジュアル"
-                fill
-                priority
-                sizes="100vw"
-                className="object-cover"
-              />
+              {HERO_SLIDES.map((img, i) => (
+                <div
+                  key={i}
+                  className={`absolute inset-0 transition-opacity duration-[1400ms] ${i === heroSlide ? "opacity-100" : "opacity-0"}`}
+                >
+                  <Image
+                    src={img}
+                    alt="夏の新プロフィール撮影会 メインビジュアル"
+                    fill
+                    priority={i === 0}
+                    sizes="100vw"
+                    className="object-cover"
+                  />
+                </div>
+              ))}
               {/* 可読性のためのスクリム（上は控えめ・下は濃いめ） */}
               <div
                 className="absolute inset-0"
@@ -424,23 +443,23 @@ export default function Home() {
                 >
                   <div className="relative mx-auto w-full max-w-[380px] md:max-w-none">
                     <div className="relative aspect-[3/4] frame frame-inset canvas-well">
-                      {/* ヒーローは1枚固定。3:4画像を3:4枠に無切れで表示 */}
-                      <Image
-                        src={HERO_SINGLE}
-                        alt="夏の新プロフィール撮影会 メインビジュアル"
-                        fill
-                        priority
-                        sizes="(max-width: 768px) 90vw, 40vw"
-                        className="object-cover"
-                      />
+                      {/* ヒーローは2枚をクロスフェード。3:4画像を3:4枠に無切れで表示 */}
+                      {HERO_SLIDES.map((img, i) => (
+                        <div
+                          key={i}
+                          className={`absolute inset-0 transition-opacity duration-[1400ms] ${i === heroSlide ? "opacity-100" : "opacity-0"}`}
+                        >
+                          <Image
+                            src={img}
+                            alt="夏の新プロフィール撮影会 メインビジュアル"
+                            fill
+                            priority={i === 0}
+                            sizes="(max-width: 768px) 90vw, 40vw"
+                            className="object-cover"
+                          />
+                        </div>
+                      ))}
                       <div className="pointer-events-none absolute inset-0" style={{ boxShadow: "inset 0 0 90px rgba(25,21,18,0.10)" }} />
-                    </div>
-                    {/* キャプション */}
-                    <div className="absolute -bottom-4 left-4 flex items-center gap-3 px-4 py-2 rounded-full glass">
-                      <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--shu)" }} />
-                      <span className="font-serif text-xs tracking-[0.18em]" style={{ color: "var(--ink-soft)" }}>
-                        PORTRAIT — by {EVENT.photographer}
-                      </span>
                     </div>
                   </div>
                 </motion.div>
