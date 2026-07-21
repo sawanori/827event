@@ -20,7 +20,7 @@ export const EVENT = {
   venueNote: "詳細な会場案内はご予約者へ個別にご連絡します",
   capacity: 6,
   price: "完全無料",
-  target: "性別不問・どなたでも",
+  target: "性別不問",
   benefit: "レタッチ済み2カットをプレゼント",
 } as const;
 
