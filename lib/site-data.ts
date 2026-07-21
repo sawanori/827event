@@ -196,14 +196,14 @@ export const COMMUNITY_NEW_2026: string[] = [
 export const COMMUNITY_IMAGES: string[] = [...COMMUNITY_LOCAL, ...COMMUNITY_NEW_2026];
 
 // スクロール演出（ScrollRibbon）用：新規12枚は6人×2カットなので「一人1枚」に厳選（6名）。
-// 各人物の正面が明瞭な1枚を採用（A:08315 / B:08335 / C:08373 / E:08474 / F:08488 / G:08758）。
+// 採用カットはユーザー指定（A:08307 / B:08343 / C:08377 / E:08474 / F:08504 / G:08751）。
 export const COMMUNITY_RIBBON: string[] = [
-  `${BLOB}/ct/DSC08315.webp`,
-  `${BLOB}/ct/DSC08335.webp`,
-  `${BLOB}/ct/DSC08373.webp`,
+  `${BLOB}/ct/DSC08307.webp`,
+  `${BLOB}/ct/DSC08343.webp`,
+  `${BLOB}/ct/DSC08377.webp`,
   `${BLOB}/ct/DSC08474.webp`,
-  `${BLOB}/ct/DSC08488.webp`,
-  `${BLOB}/ct/DSC08758.webp`,
+  `${BLOB}/ct/DSC08504.webp`,
+  `${BLOB}/ct/DSC08751.webp`,
 ];
 
 export type GalleryCategory = "member" | "community";
