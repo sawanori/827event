@@ -152,8 +152,10 @@ export const HERO_SECOND = "/images/top2.webp";
 export const HERO_SLIDES: string[] = [HERO_SINGLE, HERO_SECOND];
 
 // About「映えるあなたを」セクションのスライド（ユーザー指定・○2カット7枚）。
+// 注: Blob 上で t1/t2 の中身が入れ替わっている（t1.webp＝頬に手のポーズ, t2.webp＝正面ヘッドショット）。
+// 希望のポーズ（頬に手＝“t2”）は t1.webp 側に入っているため、先頭は t1.webp を参照する。
 export const ABOUT_SLIDES: string[] = [
-  `${BLOB}/t2.webp`,
+  `${BLOB}/t1.webp`,
   `${BLOB}/e2.webp`,
   `${BLOB}/sg2.webp`,
   `${BLOB}/s2.webp`,
