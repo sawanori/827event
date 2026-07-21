@@ -27,6 +27,7 @@ import {
   useMotionValueEvent,
   useReducedMotion,
   type MotionValue,
+  type Variants,
 } from "framer-motion";
 import { EVENT, SLOTS } from "@/lib/site-data";
 
@@ -400,6 +401,96 @@ function ArrowHead({
   );
 }
 
+// CTA のスラムイン（P5R風：小さく縮んだ状態から行き過ぎて着地）
+const ctaVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.4, y: 16 },
+  show: {
+    opacity: 1,
+    scale: [0.35, 1.25, 0.94, 1],
+    y: [16, -6, 2, 0],
+    transition: { duration: 0.6, times: [0, 0.5, 0.8, 1], ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+// 飛び散る火花の到達位置（決定的：乱数不使用）
+const CTA_SPARKS = Array.from({ length: 14 }, (_, i) => {
+  const a = (i / 14) * Math.PI * 2;
+  const r = 104 + (i % 3) * 30;
+  return { x: Math.cos(a) * r, y: Math.sin(a) * r };
+});
+
+// CTA 出現の派手なバースト（フラッシュ＋ショックウェーブ＋集中線＋火花）。一度だけ再生する。
+function CtaBurst() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2">
+      {/* 背後の朱フラッシュ帯（P5R） */}
+      <motion.div
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{ width: 360, height: 66, background: "var(--shu)", filter: "blur(3px)" }}
+        initial={{ scaleX: 0.12, opacity: 0, skewX: -14 }}
+        animate={{ scaleX: [0.12, 1.18, 1], opacity: [0, 0.9, 0], skewX: -14 }}
+        transition={{ duration: 0.5, times: [0, 0.4, 1], ease: [0.16, 1, 0.3, 1] }}
+      />
+      {/* フラッシュ（白熱→橙→朱） */}
+      <motion.div
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{
+          width: 260,
+          height: 260,
+          background:
+            "radial-gradient(circle, rgba(255,250,230,1), rgba(255,152,70,0.6) 38%, rgba(226,72,46,0.35) 56%, transparent 74%)",
+        }}
+        initial={{ scale: 0.2, opacity: 0 }}
+        animate={{ scale: [0.2, 1.7], opacity: [0, 1, 0] }}
+        transition={{ duration: 0.55, times: [0, 0.26, 1], ease: "easeOut" }}
+      />
+      {/* ショックウェーブ・リング（3本） */}
+      {[0, 0.1, 0.2].map((d, i) => (
+        <motion.div
+          key={i}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{ width: 130, height: 130, border: "3.5px solid var(--shu)" }}
+          initial={{ scale: 0.3, opacity: 1 }}
+          animate={{ scale: 3.8, opacity: 0 }}
+          transition={{ duration: 0.78, delay: d, ease: [0.16, 1, 0.3, 1] }}
+        />
+      ))}
+      {/* 集中線（スピードライン）一閃 */}
+      <motion.div
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        style={{
+          width: 460,
+          height: 460,
+          background:
+            "repeating-conic-gradient(from 0deg at 50% 50%, rgba(226,72,46,0.6) 0deg 0.9deg, transparent 0.9deg 6.5deg)",
+          WebkitMaskImage: "radial-gradient(circle, transparent 22%, black 40%, transparent 66%)",
+          maskImage: "radial-gradient(circle, transparent 22%, black 40%, transparent 66%)",
+        }}
+        initial={{ scale: 0.55, opacity: 0, rotate: -6 }}
+        animate={{ scale: [0.55, 1.15], opacity: [0, 0.9, 0], rotate: 0 }}
+        transition={{ duration: 0.52, times: [0, 0.38, 1], ease: "easeOut" }}
+      />
+      {/* 火花 */}
+      {CTA_SPARKS.map((s, i) => (
+        <motion.span
+          key={i}
+          className="absolute left-1/2 top-1/2 rounded-full"
+          style={{
+            width: 8,
+            height: 8,
+            marginLeft: -4,
+            marginTop: -4,
+            background: i % 2 ? "var(--shu)" : "#ffb84d",
+          }}
+          initial={{ x: 0, y: 0, opacity: 0, scale: 1 }}
+          animate={{ x: s.x, y: s.y, opacity: [0, 1, 0], scale: [1, 1, 0.2] }}
+          transition={{ duration: 0.66, times: [0, 0.18, 1], ease: "easeOut" }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function ScrollArrowFlow() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<SVGPathElement | null>(null);
@@ -429,6 +520,12 @@ export default function ScrollArrowFlow() {
   // p=0 でコンテナ上端が viewport の 80% 位置、p=1 で下端が 80% 位置。
   const target = useMotionValue(0);
   const draw = useSpring(target, { stiffness: 120, damping: 30, restDelta: 0.001 });
+
+  // 矢印の描画がほぼ完了したら CTA を派手に出現させる（一度出たら維持）
+  const [ctaReady, setCtaReady] = useState(false);
+  useMotionValueEvent(draw, "change", (v) => {
+    if (v > 0.985) setCtaReady(true);
+  });
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -581,12 +678,29 @@ export default function ScrollArrowFlow() {
         )}
       </div>
 
-      {/* 締めのCTA（この流れの起点＝予約へ） */}
-      <div className="relative z-10 mt-14 flex justify-center px-6">
-        <a href="#register" className="btn-primary">
-          この流れで予約する
-          <span aria-hidden>→</span>
-        </a>
+      {/* 締めのCTA（この流れの起点＝予約へ）：矢印の描画完了で派手に出現 */}
+      <div className="relative z-10 mt-16 flex justify-center px-6">
+        {animated ? (
+          <div className="relative inline-flex">
+            {ctaReady && <CtaBurst />}
+            <motion.div
+              className="relative z-10"
+              variants={ctaVariants}
+              initial="hidden"
+              animate={ctaReady ? "show" : "hidden"}
+            >
+              <a href="#register" className="btn-primary">
+                この流れで予約する
+                <span aria-hidden>→</span>
+              </a>
+            </motion.div>
+          </div>
+        ) : (
+          <a href="#register" className="btn-primary">
+            この流れで予約する
+            <span aria-hidden>→</span>
+          </a>
+        )}
       </div>
     </section>
   );
