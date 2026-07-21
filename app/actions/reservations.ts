@@ -1,7 +1,7 @@
 "use server";
 
 // 予約の受付と空き状況取得（Server Actions）。1枠1名。二重予約は slot_id の
-// UNIQUE 制約で最終的に防ぐ。"おまかせ" は最先の空き枠を割り当てる。
+// UNIQUE 制約で最終的に防ぐ。希望枠は具体的な1枠を必ず指定する。
 
 import { SLOTS } from "@/lib/site-data";
 import {
@@ -9,7 +9,6 @@ import {
   insertReservation,
   isUniqueViolation,
   isDbConfigured,
-  firstOpenSlotId,
 } from "@/lib/db";
 import { sendReservationEmails } from "@/lib/mail";
 
@@ -33,7 +32,7 @@ export type ReservationInput = {
   name: string;
   company: string;
   email: string;
-  slot: string; // SLOT id の文字列、または "any"
+  slot: string; // SLOT id の文字列
   sns?: string;
   confirmPhotos: boolean;
   confirmPromo: boolean;
@@ -60,40 +59,18 @@ export async function createReservation(input: ReservationInput): Promise<Create
     return { ok: false, error: "invalid" };
   }
 
-  const isAny = input.slot === "any";
-  let slotId: number;
-
-  if (isAny) {
-    const open = firstOpenSlotId(await getTakenSlotIds());
-    if (open === null) return { ok: false, error: "sold_out" };
-    slotId = open;
-  } else {
-    slotId = Number(input.slot);
-    if (!Number.isInteger(slotId) || !SLOTS.some((s) => s.id === slotId)) {
-      return { ok: false, error: "invalid" };
-    }
+  const slotId = Number(input.slot);
+  if (!Number.isInteger(slotId) || !SLOTS.some((s) => s.id === slotId)) {
+    return { ok: false, error: "invalid" };
   }
 
-  // "おまかせ" は競合時に次の空き枠へリトライ。指定枠は競合＝満席。
-  const maxTries = isAny ? SLOTS.length : 1;
-  let tries = 0;
-  for (;;) {
-    try {
-      await insertReservation({ slotId, name, company, email, sns, confirmPhotos, confirmPromo });
-      break;
-    } catch (err) {
-      if (isUniqueViolation(err)) {
-        if (isAny && ++tries < maxTries) {
-          const open = firstOpenSlotId(await getTakenSlotIds());
-          if (open === null) return { ok: false, error: "sold_out" };
-          slotId = open;
-          continue;
-        }
-        return { ok: false, error: "slot_taken" };
-      }
-      console.error("createReservation failed:", err);
-      return { ok: false, error: "server" };
-    }
+  // 指定枠が競合（既予約）＝満席。UNIQUE 制約で二重予約を確実に防ぐ。
+  try {
+    await insertReservation({ slotId, name, company, email, sns, confirmPhotos, confirmPromo });
+  } catch (err) {
+    if (isUniqueViolation(err)) return { ok: false, error: "slot_taken" };
+    console.error("createReservation failed:", err);
+    return { ok: false, error: "server" };
   }
 
   const slotRange = SLOTS.find((s) => s.id === slotId)?.range ?? "";

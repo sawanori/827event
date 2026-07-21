@@ -50,8 +50,7 @@ export default function BookingForm() {
     refreshAvailability();
   }, []);
 
-  const slotOk =
-    slot === "any" ? !soldOut : slot !== "" && !taken.has(Number(slot));
+  const slotOk = slot !== "" && !taken.has(Number(slot));
 
   const allConfirmed = CONFIRMATIONS.every((c) => confirms[c.key]);
 
@@ -207,21 +206,6 @@ export default function BookingForm() {
             );
           })}
         </div>
-        <button
-          type="button"
-          disabled={soldOut}
-          onClick={() => !soldOut && setSlot("any")}
-          className="mt-2 w-full rounded-lg px-2 py-2.5 text-center transition-all duration-300 font-body text-sm"
-          style={{
-            border: `1px solid ${slot === "any" ? "var(--shu)" : "var(--line)"}`,
-            background: slot === "any" ? "var(--shu-wash)" : "var(--paper-2)",
-            color: slot === "any" ? "var(--shu-deep)" : "var(--muted)",
-            opacity: soldOut ? 0.45 : 1,
-            cursor: soldOut ? "not-allowed" : "pointer",
-          }}
-        >
-          どの枠でも可（おまかせ）
-        </button>
       </div>
 
       {/* SNS（任意） */}

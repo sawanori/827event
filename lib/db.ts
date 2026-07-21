@@ -5,7 +5,6 @@ import "server-only";
 // TURSO_DATABASE_URL / TURSO_AUTH_TOKEN を Vercel と .env.local に設定する。
 
 import { createClient, type Client } from "@libsql/client";
-import { SLOTS } from "@/lib/site-data";
 
 let _client: Client | null = null;
 
@@ -117,11 +116,4 @@ export async function getReservationById(id: number): Promise<Reservation | null
 export async function deleteReservation(id: number): Promise<void> {
   await ensureSchema();
   await getClient().execute({ sql: "DELETE FROM reservations WHERE id = ?", args: [id] });
-}
-
-// 予約可能な最先の枠を返す（"おまかせ" 用）。空きが無ければ null。
-export function firstOpenSlotId(takenIds: Iterable<number>): number | null {
-  const taken = new Set<number>([...takenIds].map(Number));
-  const open = SLOTS.find((s) => !taken.has(s.id));
-  return open ? open.id : null;
 }
