@@ -214,3 +214,81 @@ export function SlashBand({ label }: { label?: string }) {
     </div>
   );
 }
+
+// 夏のギラギラした光（イントロ幕用）。回転サンレイ2層＋暖色のサングロー＋斜めの光スイープ
+// ＋きらめき。ブランド配色（紙/墨/朱）を守り、加算的な光ハイライトのみで“夏の陽射し”を演出する。
+function Glint({ left, top, delay, size = 22 }: { left: string; top: string; delay: number; size?: number }) {
+  return (
+    <motion.svg
+      aria-hidden
+      className="absolute"
+      style={{ left, top, width: size, height: size, marginLeft: -size / 2, marginTop: -size / 2 }}
+      viewBox="0 0 100 100"
+      initial={{ opacity: 0, scale: 0.3 }}
+      animate={{ opacity: [0, 1, 0], scale: [0.3, 1, 0.3], rotate: [0, 80] }}
+      transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 1.1, delay, ease: "easeInOut" }}
+    >
+      <path d="M50 0 L57 43 L100 50 L57 57 L50 100 L43 57 L0 50 L43 43 Z" fill="rgba(255,247,226,0.95)" />
+    </motion.svg>
+  );
+}
+
+export function SummerGlare() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      {/* 暖色のサングロー（呼吸） */}
+      <motion.div
+        className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{
+          width: "82vmin",
+          height: "82vmin",
+          background:
+            "radial-gradient(circle, rgba(255,214,132,0.42) 0%, rgba(226,72,46,0.15) 32%, transparent 62%)",
+        }}
+        animate={{ scale: [0.92, 1.08, 0.92], opacity: [0.72, 1, 0.72] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+      />
+      {/* 放射状のサンレイ（太・ゆっくり回転） */}
+      <motion.div
+        className="absolute left-1/2 top-[42%] h-[130vmax] w-[130vmax] -translate-x-1/2 -translate-y-1/2"
+        style={{
+          background:
+            "repeating-conic-gradient(from 0deg at 50% 50%, rgba(226,72,46,0.12) 0deg 1.1deg, transparent 1.1deg 9deg)",
+          WebkitMaskImage: "radial-gradient(circle at 50% 50%, transparent 5%, black 16%, black 34%, transparent 56%)",
+          maskImage: "radial-gradient(circle at 50% 50%, transparent 5%, black 16%, black 34%, transparent 56%)",
+        }}
+        animate={{ rotate: 360 }}
+        transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
+      />
+      {/* 二層目のレイ（細・逆回転＝ギラつき） */}
+      <motion.div
+        className="absolute left-1/2 top-[42%] h-[120vmax] w-[120vmax] -translate-x-1/2 -translate-y-1/2"
+        style={{
+          background:
+            "repeating-conic-gradient(from 3deg at 50% 50%, rgba(255,206,120,0.11) 0deg 0.5deg, transparent 0.5deg 5deg)",
+          WebkitMaskImage: "radial-gradient(circle at 50% 50%, transparent 4%, black 14%, black 30%, transparent 50%)",
+          maskImage: "radial-gradient(circle at 50% 50%, transparent 4%, black 14%, black 30%, transparent 50%)",
+        }}
+        animate={{ rotate: -360 }}
+        transition={{ duration: 32, repeat: Infinity, ease: "linear" }}
+      />
+      {/* 斜めの光のスイープ（一閃／繰り返し） */}
+      <motion.div
+        className="absolute inset-x-0 inset-y-[-20%]"
+        style={{
+          background:
+            "linear-gradient(104deg, transparent 34%, rgba(255,255,255,0.58) 48%, rgba(255,236,192,0.4) 53%, transparent 64%)",
+          mixBlendMode: "screen",
+        }}
+        initial={{ x: "-115%" }}
+        animate={{ x: ["-115%", "115%"] }}
+        transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 0.9, ease: [0.16, 1, 0.3, 1] }}
+      />
+      {/* きらめき（グリント） */}
+      <Glint left="24%" top="33%" delay={0.1} size={26} />
+      <Glint left="73%" top="30%" delay={0.6} />
+      <Glint left="67%" top="63%" delay={1.0} size={18} />
+      <Glint left="31%" top="64%" delay={1.5} size={20} />
+    </div>
+  );
+}

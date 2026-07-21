@@ -17,7 +17,7 @@ import Countdown from "@/components/Countdown";
 import BookingForm from "@/components/BookingForm";
 import Parallax from "@/components/Parallax";
 import ScrollArrowFlow from "@/components/ScrollArrowFlow";
-import { SectionFx, SectionHead, SlashBand } from "@/components/fx";
+import { SectionFx, SectionHead, SlashBand, SummerGlare } from "@/components/fx";
 import {
   EVENT,
   SLOTS,
@@ -141,7 +141,7 @@ export default function Home() {
 
   // イントロ幕
   useEffect(() => {
-    const t = setTimeout(() => setIntro(false), 1250);
+    const t = setTimeout(() => setIntro(false), 1900);
     return () => clearTimeout(t);
   }, []);
 
@@ -191,37 +191,42 @@ export default function Home() {
           {intro && (
             <motion.div
               key="intro"
-              className="fixed inset-0 z-[70] flex flex-col items-center justify-center px-6"
+              className="fixed inset-0 z-[70] flex items-center justify-center overflow-hidden px-6"
               style={{ background: "var(--paper)" }}
               initial={{ y: 0 }}
               exit={{ y: "-101%" }}
               transition={{ duration: 0.95, ease: [0.76, 0, 0.24, 1] }}
             >
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="font-body text-xs tracking-[0.32em] mb-5"
-                style={{ color: "var(--muted)" }}
-              >
-                NONTURN.LLC — SUMMER SESSION
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.08 }}
-                className="font-num text-5xl md:text-7xl"
-                style={{ color: "var(--ink)" }}
-              >
-                2026<span style={{ color: "var(--shu)" }}>.</span>8<span style={{ color: "var(--shu)" }}>.</span>5
-              </motion.p>
-              <motion.span
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-6 block h-px w-40 origin-left"
-                style={{ background: "var(--shu)" }}
-              />
+              {/* 夏のギラギラした光（現状デザインの背面に重ねる） */}
+              <SummerGlare />
+
+              <div className="relative z-10 flex flex-col items-center">
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="font-body text-xs tracking-[0.32em] mb-5"
+                  style={{ color: "var(--muted)" }}
+                >
+                  NONTURN.LLC — SUMMER SESSION
+                </motion.p>
+                <motion.p
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.08 }}
+                  className="font-num text-5xl md:text-7xl"
+                  style={{ color: "var(--ink)" }}
+                >
+                  2026<span style={{ color: "var(--shu)" }}>.</span>8<span style={{ color: "var(--shu)" }}>.</span>5
+                </motion.p>
+                <motion.span
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  className="mt-6 block h-px w-40 origin-left"
+                  style={{ background: "var(--shu)" }}
+                />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
