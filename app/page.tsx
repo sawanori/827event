@@ -316,7 +316,7 @@ export default function Home() {
                 className="absolute inset-0"
                 style={{
                   background:
-                    "linear-gradient(to bottom, rgba(20,16,14,0.30) 0%, rgba(20,16,14,0.08) 34%, rgba(20,16,14,0.18) 58%, rgba(20,16,14,0.74) 100%)",
+                    "linear-gradient(to bottom, rgba(14,11,9,0.6) 0%, rgba(14,11,9,0.46) 15%, rgba(16,13,11,0.24) 33%, rgba(20,16,14,0.1) 48%, rgba(20,16,14,0.2) 64%, rgba(20,16,14,0.8) 100%)",
                 }}
               />
             </div>
@@ -327,7 +327,7 @@ export default function Home() {
               initial="hidden"
               animate={intro ? "hidden" : "show"}
             >
-              <div style={{ textShadow: "0 2px 14px rgba(0,0,0,0.45)" }}>
+              <div style={{ textShadow: "0 1px 3px rgba(0,0,0,0.7), 0 2px 16px rgba(0,0,0,0.55)" }}>
                 <motion.p
                   variants={fadeUp}
                   className="font-serif text-[0.7rem] tracking-[0.3em] mb-4"
