@@ -26,7 +26,7 @@ import {
   GALLERY_TABS,
   MEMBER_IMAGES,
   HERO_SLIDES,
-  COMMUNITY_NEW_2026,
+  COMMUNITY_RIBBON,
   type GalleryCategory,
 } from "@/lib/site-data";
 
@@ -117,7 +117,7 @@ export default function Home() {
   const memberImages = useMemo(() => (mounted ? shuffle(MEMBER_IMAGES) : MEMBER_IMAGES), [mounted]);
   // スクロール演出のリボンは「最近追加したコミュニティー撮影分」を一人1枚で表示（マウント後にシャッフル）
   const ribbonImages = useMemo(
-    () => (mounted ? shuffle(COMMUNITY_NEW_2026) : COMMUNITY_NEW_2026),
+    () => (mounted ? shuffle(COMMUNITY_RIBBON) : COMMUNITY_RIBBON),
     [mounted]
   );
   const slideshowImages = useMemo(() => memberImages.slice(0, 6), [memberImages]);
@@ -334,12 +334,10 @@ export default function Home() {
                 <motion.h1
                   variants={fadeUp}
                   className="font-display mb-4"
-                  style={{ color: "#fff", fontSize: "clamp(2rem, 11vw, 2.9rem)", lineHeight: 1.1, letterSpacing: "-0.01em" }}
+                  style={{ color: "#fff", fontSize: "clamp(1.3rem, 7.1vw, 2rem)", lineHeight: 1.14, letterSpacing: "-0.02em" }}
                 >
-                  <span className="block">夏の光で、</span>
-                  <span className="block">
-                    新しい<span style={{ color: "#ff8360" }}>自分</span>を。
-                  </span>
+                  <span className="block">新しい<span style={{ color: "#ff8360" }}>写真</span>撮ろう</span>
+                  <span className="block">いいじゃん、夏なんだから</span>
                 </motion.h1>
                 <motion.p
                   variants={fadeUp}
@@ -395,10 +393,8 @@ export default function Home() {
                       className="font-display hero-title mb-6"
                       style={{ color: "var(--ink)" }}
                     >
-                      <span className="block">夏の光で、</span>
-                      <span className="block">
-                        新しい<span className="mark-shu">自分</span>を。
-                      </span>
+                      <span className="block">新しい<span className="mark-shu">写真</span>撮ろう</span>
+                      <span className="block">いいじゃん、夏なんだから</span>
                     </motion.h1>
 
                     <motion.p
@@ -414,9 +410,9 @@ export default function Home() {
                       className="font-body text-sm md:text-base leading-relaxed mb-8 max-w-lg"
                       style={{ color: "var(--muted)" }}
                     >
-                      {EVENT.brand}のフォトグラファー{EVENT.photographer}が、企業ブランディングで培った
-                      技術で、あなたの自然な表情を一枚に。{EVENT.dateJa}（{EVENT.weekday}）{EVENT.timeLabel}、
-                      {EVENT.venue}にて。{EVENT.price}・限定{EVENT.capacity}名・{EVENT.target}。
+                      {EVENT.brand}がオーシャンゲートみなとみらいメンバー対象に、企業ブランディング対象の
+                      撮影サービスをご提供。あなたの自然な表情を一枚に。{EVENT.dateJa}（{EVENT.weekday}）{EVENT.timeLabel}、
+                      {EVENT.venue}にて。{EVENT.price}・限定{EVENT.capacity}名。
                     </motion.p>
 
                     <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3 mb-10">
