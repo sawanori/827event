@@ -24,8 +24,8 @@ import {
   CONCERNS,
   NOTICES,
   GALLERY_TABS,
-  MEMBER_IMAGES,
   HERO_SLIDES,
+  ABOUT_SLIDES,
   COMMUNITY_RIBBON,
   type GalleryCategory,
 } from "@/lib/site-data";
@@ -113,14 +113,13 @@ export default function Home() {
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  // マウント後に毎回シャッフル（初回描画は元順にしてSSRと一致させる）
-  const memberImages = useMemo(() => (mounted ? shuffle(MEMBER_IMAGES) : MEMBER_IMAGES), [mounted]);
   // スクロール演出のリボンは「最近追加したコミュニティー撮影分」を一人1枚で表示（マウント後にシャッフル）
   const ribbonImages = useMemo(
     () => (mounted ? shuffle(COMMUNITY_RIBBON) : COMMUNITY_RIBBON),
     [mounted]
   );
-  const slideshowImages = useMemo(() => memberImages.slice(0, 6), [memberImages]);
+  // About「映えるあなたを」のスライドはユーザー指定の固定順（○2カット7枚）
+  const slideshowImages = ABOUT_SLIDES;
   const currentImages = useMemo(() => {
     const base = GALLERY_TABS.find((t) => t.key === activeTab)!.images;
     return mounted ? shuffle(base) : base;

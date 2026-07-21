@@ -151,6 +151,17 @@ export const HERO_SINGLE = `${BLOB}/top.webp`;
 export const HERO_SECOND = "/images/top2.webp";
 export const HERO_SLIDES: string[] = [HERO_SINGLE, HERO_SECOND];
 
+// About「映えるあなたを」セクションのスライド（ユーザー指定・○2カット7枚）。
+export const ABOUT_SLIDES: string[] = [
+  `${BLOB}/t2.webp`,
+  `${BLOB}/e2.webp`,
+  `${BLOB}/sg2.webp`,
+  `${BLOB}/s2.webp`,
+  `${BLOB}/c2.webp`,
+  `${BLOB}/b2.webp`,
+  `${BLOB}/k2.webp`,
+];
+
 // コミュニティー撮影分（既存のローカル /public/images 分）。
 const COMMUNITY_LOCAL: string[] = [
   "/images/827/DSC00927.jpg",
