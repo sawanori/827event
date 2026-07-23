@@ -146,7 +146,9 @@ const PORT_IMAGES: string[] = [
 export const MEMBER_IMAGES: string[] = [...NEW_2026, ...PORT_IMAGES];
 
 // 作品ギャラリー「メンバー撮影分」タブ用：新規は ○2 のみ ＋ port*
-export const MEMBER_GALLERY_IMAGES: string[] = [...NEW_2026_GALLERY, ...PORT_IMAGES];
+// 作品ギャラリー（メンバー撮影分）末尾に追加した4人グループ（b3・ローカル最適化WebP・1334×2000）。
+const MEMBER_GALLERY_EXTRA: string[] = ["/images/b3.webp"];
+export const MEMBER_GALLERY_IMAGES: string[] = [...NEW_2026_GALLERY, ...PORT_IMAGES, ...MEMBER_GALLERY_EXTRA];
 
 // ヒーロー「夏の光で、新しい自分を。」用：新規は ○1 のみ ＋ port*
 export const MEMBER_HERO_IMAGES: string[] = [...NEW_2026_HERO, ...PORT_IMAGES];
