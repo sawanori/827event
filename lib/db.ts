@@ -26,7 +26,8 @@ let _schemaReady: Promise<void> | null = null;
 function ensureSchema(): Promise<void> {
   if (_schemaReady) return _schemaReady;
   _schemaReady = (async () => {
-    await getClient().execute(`
+    const client = getClient();
+    await client.execute(`
       CREATE TABLE IF NOT EXISTS reservations (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         slot_id INTEGER NOT NULL UNIQUE,
@@ -36,9 +37,18 @@ function ensureSchema(): Promise<void> {
         sns TEXT,
         confirm_photos INTEGER NOT NULL DEFAULT 0,
         confirm_promo INTEGER NOT NULL DEFAULT 0,
+        confirm_prep INTEGER NOT NULL DEFAULT 0,
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )
     `);
+    // 既存DB（confirm_prep 追加前に作成）への後方互換マイグレーション。
+    // 列が既にあれば "duplicate column" になるので無視する（冪等）。
+    try {
+      await client.execute("ALTER TABLE reservations ADD COLUMN confirm_prep INTEGER NOT NULL DEFAULT 0");
+    } catch (e) {
+      const msg = String((e as { message?: string })?.message ?? e).toLowerCase();
+      if (!msg.includes("duplicate column")) throw e;
+    }
   })().catch((e) => {
     // 失敗したら次回に再試行できるようリセット
     _schemaReady = null;
@@ -56,6 +66,7 @@ export type Reservation = {
   sns: string | null;
   confirm_photos: number;
   confirm_promo: number;
+  confirm_prep: number;
   created_at: string;
 };
 
@@ -67,6 +78,7 @@ export type CreateInput = {
   sns?: string;
   confirmPhotos: boolean;
   confirmPromo: boolean;
+  confirmPrep: boolean;
 };
 
 export function isUniqueViolation(err: unknown): boolean {
@@ -83,7 +95,7 @@ export async function getTakenSlotIds(): Promise<number[]> {
 export async function listReservations(): Promise<Reservation[]> {
   await ensureSchema();
   const rs = await getClient().execute(
-    "SELECT id, slot_id, name, company, email, sns, confirm_photos, confirm_promo, created_at FROM reservations ORDER BY slot_id ASC"
+    "SELECT id, slot_id, name, company, email, sns, confirm_photos, confirm_promo, confirm_prep, created_at FROM reservations ORDER BY slot_id ASC"
   );
   return rs.rows as unknown as Reservation[];
 }
@@ -91,7 +103,7 @@ export async function listReservations(): Promise<Reservation[]> {
 export async function insertReservation(input: CreateInput): Promise<void> {
   await ensureSchema();
   await getClient().execute({
-    sql: "INSERT INTO reservations (slot_id, name, company, email, sns, confirm_photos, confirm_promo) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    sql: "INSERT INTO reservations (slot_id, name, company, email, sns, confirm_photos, confirm_promo, confirm_prep) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
     args: [
       input.slotId,
       input.name,
@@ -100,6 +112,7 @@ export async function insertReservation(input: CreateInput): Promise<void> {
       input.sns && input.sns.trim() !== "" ? input.sns.trim() : null,
       input.confirmPhotos ? 1 : 0,
       input.confirmPromo ? 1 : 0,
+      input.confirmPrep ? 1 : 0,
     ],
   });
 }
@@ -107,7 +120,7 @@ export async function insertReservation(input: CreateInput): Promise<void> {
 export async function getReservationById(id: number): Promise<Reservation | null> {
   await ensureSchema();
   const rs = await getClient().execute({
-    sql: "SELECT id, slot_id, name, company, email, sns, confirm_photos, confirm_promo, created_at FROM reservations WHERE id = ?",
+    sql: "SELECT id, slot_id, name, company, email, sns, confirm_photos, confirm_promo, confirm_prep, created_at FROM reservations WHERE id = ?",
     args: [id],
   });
   return (rs.rows[0] as unknown as Reservation) ?? null;

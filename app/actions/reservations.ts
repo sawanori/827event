@@ -36,6 +36,7 @@ export type ReservationInput = {
   sns?: string;
   confirmPhotos: boolean;
   confirmPromo: boolean;
+  confirmPrep: boolean;
 };
 
 export type CreateResult =
@@ -53,9 +54,10 @@ export async function createReservation(input: ReservationInput): Promise<Create
   const sns = (input.sns ?? "").trim();
   const confirmPhotos = Boolean(input.confirmPhotos);
   const confirmPromo = Boolean(input.confirmPromo);
+  const confirmPrep = Boolean(input.confirmPrep);
 
-  // 確認事項は2つとも同意が必須。
-  if (!name || !company || !EMAIL_RE.test(email) || !confirmPhotos || !confirmPromo) {
+  // 確認事項は3つとも同意が必須。
+  if (!name || !company || !EMAIL_RE.test(email) || !confirmPhotos || !confirmPromo || !confirmPrep) {
     return { ok: false, error: "invalid" };
   }
 
@@ -66,7 +68,7 @@ export async function createReservation(input: ReservationInput): Promise<Create
 
   // 指定枠が競合（既予約）＝満席。UNIQUE 制約で二重予約を確実に防ぐ。
   try {
-    await insertReservation({ slotId, name, company, email, sns, confirmPhotos, confirmPromo });
+    await insertReservation({ slotId, name, company, email, sns, confirmPhotos, confirmPromo, confirmPrep });
   } catch (err) {
     if (isUniqueViolation(err)) return { ok: false, error: "slot_taken" };
     console.error("createReservation failed:", err);

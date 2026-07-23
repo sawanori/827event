@@ -31,6 +31,7 @@ export default function BookingForm() {
   const [confirms, setConfirms] = useState<Record<string, boolean>>({
     photos: false,
     promo: false,
+    prep: false,
   });
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -77,6 +78,7 @@ export default function BookingForm() {
       sns,
       confirmPhotos: confirms.photos,
       confirmPromo: confirms.promo,
+      confirmPrep: confirms.prep,
     });
 
     if (result.ok) {

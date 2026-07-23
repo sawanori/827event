@@ -80,7 +80,7 @@ export default async function AdminPage() {
                         {r.sns ? ` ／ ${r.sns}` : ""}
                       </p>
                       <p className="font-body text-[0.65rem] mt-0.5" style={{ color: "var(--subtle)" }}>
-                        受付: {r.created_at} UTC ／ 確認事項: データ2枚 {r.confirm_photos ? "✓" : "✕"} ・ 宣材利用 {r.confirm_promo ? "✓" : "✕"}
+                        受付: {r.created_at} UTC ／ 確認事項: データ2枚 {r.confirm_photos ? "✓" : "✕"} ・ 宣材利用 {r.confirm_promo ? "✓" : "✕"} ・ 事前すり合わせ {r.confirm_prep ? "✓" : "✕"}
                       </p>
                     </div>
                     <CancelButton id={r.id} label={`${s.range} ${r.name} 様`} />

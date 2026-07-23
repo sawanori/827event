@@ -44,7 +44,7 @@ export const SLOTS: Slot[] = [
 
 // ---- 予約時の確認事項（すべて必須チェック） -------------------------------
 // key は reservations テーブルの confirm_<key> 列と対応する。
-export type Confirmation = { key: "photos" | "promo"; jp: string; en: string };
+export type Confirmation = { key: "photos" | "promo" | "prep"; jp: string; en: string };
 
 export const CONFIRMATIONS: Confirmation[] = [
   { key: "photos", jp: "データは2枚のみ", en: "Only 2 photos will be provided" },
@@ -52,6 +52,11 @@ export const CONFIRMATIONS: Confirmation[] = [
     key: "promo",
     jp: "当社NonTurn合同会社の宣材としてデータを利用する可能性がある",
     en: "Photos may be used for NonTurn LLC's promotional materials",
+  },
+  {
+    key: "prep",
+    jp: "事前のコミュニケーションとして、撮影日前に撮影者とすり合わせする事が可能である",
+    en: "Pre-shoot coordination with the photographer is available before the session date",
   },
 ];
 
