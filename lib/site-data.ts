@@ -60,6 +60,40 @@ export const CONFIRMATIONS: Confirmation[] = [
   },
 ];
 
+// ---- キャンセル理由（管理画面で選択／理由別の同報メールを予約者へ送る） ----------
+// 文面（件名・見出し・本文）もここに集約し、管理画面のセレクトとメールが同じ定義を参照する。
+export type CancelReasonKey = "prev_participant" | "photographer_decline" | "time_change";
+
+export const CANCEL_REASONS: {
+  key: CancelReasonKey;
+  label: string; // 管理画面セレクトの表示
+  subject: string; // 予約者向けメールの件名
+  heading: string; // 本文の見出し
+  body: string; // 本文（丁寧文）
+}[] = [
+  {
+    key: "prev_participant",
+    label: "前回、撮影に参加した企業",
+    subject: `【ご予約に関するお知らせ】${EVENT.title}`,
+    heading: "ご予約を承ることができませんでした",
+    body: "本撮影会は、より多くの企業様にご体験いただくため、過去にご参加いただいた企業様は対象外とさせていただいております。誠に恐れ入りますが、今回のご予約はキャンセルとさせていただきました。何卒ご理解賜りますようお願い申し上げます。",
+  },
+  {
+    key: "photographer_decline",
+    label: "撮影者の判断で撮影不可",
+    subject: `【ご予約に関するお知らせ】${EVENT.title}`,
+    heading: "ご予約を見送らせていただきました",
+    body: "誠に恐れ入りますが、撮影者の判断により、今回はご希望に沿った撮影をお請けすることが難しく、今回のご予約は見送らせていただくこととなりました。何卒ご理解賜りますようお願い申し上げます。",
+  },
+  {
+    key: "time_change",
+    label: "時間変更",
+    subject: `【ご予約時間の変更について】${EVENT.title}`,
+    heading: "ご予約時間の変更のお願い",
+    body: "ご予約いただいたお時間について、変更のご相談をさせていただきたくご連絡いたしました。恐れ入りますが、改めて日程・お時間の調整をお願いできますでしょうか。詳細はこのメールにそのままご返信ください。",
+  },
+];
+
 // ---- 予約フォーム送信先（Formspree） ---------------------------------------
 // 使い方：https://formspree.io で無料登録 →「New Form」→ 発行される
 // エンドポイント（https://formspree.io/f/xxxxxxx）を .env.local に設定する：

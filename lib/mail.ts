@@ -5,7 +5,7 @@ import "server-only";
 // 予約者への確認メールと、管理者への通知メールを送る。
 
 import sgMail from "@sendgrid/mail";
-import { EVENT } from "@/lib/site-data";
+import { EVENT, CANCEL_REASONS, type CancelReasonKey } from "@/lib/site-data";
 
 const FROM = {
   email: process.env.SENDGRID_FROM_EMAIL || "info@non-turn.com",
@@ -79,21 +79,33 @@ export async function sendReservationEmails(d: MailData): Promise<void> {
   await sgMail.send([customerMsg, adminMsg]);
 }
 
-export async function sendCancellationEmails(d: MailData): Promise<void> {
+export async function sendCancellationEmails(
+  d: MailData & { reasonKey?: CancelReasonKey }
+): Promise<void> {
   if (!isMailConfigured()) return;
   sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
+
+  // 理由が指定されていれば理由別の文面、無ければ従来の汎用文面（後方互換）。
+  const reason = CANCEL_REASONS.find((r) => r.key === d.reasonKey);
+  const subject = reason
+    ? `${reason.subject}（${EVENT.dateLabel}）`
+    : `【ご予約キャンセルのお知らせ】${EVENT.title}（${EVENT.dateLabel}）`;
+  const heading = reason ? reason.heading : "ご予約をキャンセルしました";
+  const bodyText = reason
+    ? reason.body
+    : "下記のご予約をキャンセルいたしました。ご都合が合いましたら、またのご予約をお待ちしております。";
 
   const customerMsg = {
     to: d.email,
     from: FROM,
-    subject: `【ご予約キャンセルのお知らせ】${EVENT.title}（${EVENT.dateLabel}）`,
+    subject,
     html: wrap(`
-      <h2 style="border-bottom:2px solid #c1381f;padding-bottom:10px;">ご予約をキャンセルしました</h2>
+      <h2 style="border-bottom:2px solid #c1381f;padding-bottom:10px;">${heading}</h2>
       <p style="line-height:1.7;">${d.name} 様<br>
-      下記のご予約をキャンセルいたしました。ご都合が合いましたら、またのご予約をお待ちしております。</p>
+      ${bodyText}</p>
       <div style="background:#f9f6f0;padding:16px;border-radius:10px;">${infoTable(d)}</div>
       <p style="line-height:1.7;color:#57504a;font-size:13px;margin-top:16px;">
-      お心当たりがない場合や再予約をご希望の場合は、このメールにそのままご返信ください。</p>
+      ご不明点や再調整のご希望は、このメールにそのままご返信ください。</p>
     `),
     replyTo: ADMIN_TO,
   };
@@ -101,10 +113,11 @@ export async function sendCancellationEmails(d: MailData): Promise<void> {
   const adminMsg = {
     to: ADMIN_TO,
     from: FROM,
-    subject: `【予約キャンセル】${d.slotRange} / ${d.company} ${d.name} 様`,
+    subject: `【予約キャンセル${reason ? `／${reason.label}` : ""}】${d.slotRange} / ${d.company} ${d.name} 様`,
     html: wrap(`
       <h2 style="border-bottom:2px solid #c1381f;padding-bottom:10px;">予約がキャンセルされました</h2>
-      <p style="line-height:1.7;color:#57504a;font-size:13px;">この枠は再び予約可能になりました。</p>
+      <p style="line-height:1.7;color:#57504a;font-size:13px;">
+      ${reason ? `キャンセル理由：${reason.label}<br>` : ""}この枠は再び予約可能になりました。</p>
       <div style="background:#f9f6f0;padding:16px;border-radius:10px;">${infoTable(d)}</div>
     `),
     replyTo: d.email,

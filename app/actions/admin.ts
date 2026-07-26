@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
 import { ADMIN_COOKIE, sessionToken } from "@/lib/admin-auth";
 import { deleteReservation, getReservationById } from "@/lib/db";
 import { sendCancellationEmails } from "@/lib/mail";
-import { SLOTS } from "@/lib/site-data";
+import { SLOTS, CANCEL_REASONS, type CancelReasonKey } from "@/lib/site-data";
 
 export type LoginState = { error?: string } | null;
 
@@ -43,6 +43,12 @@ export async function adminLogout(): Promise<void> {
 
 export async function cancelReservation(formData: FormData): Promise<void> {
   const id = Number(formData.get("id"));
+  // 選択されたキャンセル理由（不正・未指定なら undefined＝汎用文面にフォールバック）。
+  const reasonRaw = String(formData.get("reason") ?? "");
+  const reasonKey: CancelReasonKey | undefined = CANCEL_REASONS.some((r) => r.key === reasonRaw)
+    ? (reasonRaw as CancelReasonKey)
+    : undefined;
+
   if (Number.isInteger(id)) {
     // 削除前に宛先情報を取得してから削除し、キャンセル通知メールを送る。
     const r = await getReservationById(id);
@@ -57,6 +63,7 @@ export async function cancelReservation(formData: FormData): Promise<void> {
           email: r.email,
           sns: r.sns ?? undefined,
           slotRange,
+          reasonKey,
         });
       } catch (e) {
         console.error("cancellation email failed (reservation already removed):", e);
