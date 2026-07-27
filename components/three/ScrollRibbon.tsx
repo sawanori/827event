@@ -15,6 +15,7 @@ import {
   useVelocity,
   useTransform,
   useSpring,
+  useMotionValueEvent,
   type MotionValue,
 } from "framer-motion";
 import { CurvedPhotoMaterial } from "./CurvedPhotoMaterial";
@@ -131,11 +132,13 @@ export default function ScrollRibbon({
   label = "Portraits",
   sub = "この夏の一枚",
   watermark = "Gallery",
+  onComplete,
 }: {
   images: string[];
   label?: string;
   sub?: string;
   watermark?: string;
+  onComplete?: () => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
@@ -143,6 +146,15 @@ export default function ScrollRibbon({
   const vel = useSpring(velRaw, { stiffness: 300, damping: 90 });
   const wmX = useTransform(scrollYProgress, [0, 1], ["6%", "-18%"]);
   const labelOpacity = useTransform(scrollYProgress, [0, 0.08, 0.9, 1], [0, 1, 1, 0]);
+
+  // リボンのスクロールが末尾に達したら（＝演出完了）親へ一度だけ通知する。
+  const doneRef = useRef(false);
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    if (v > 0.985 && !doneRef.current) {
+      doneRef.current = true;
+      onComplete?.();
+    }
+  });
 
   return (
     <section ref={ref} className="relative" style={{ height: "230vh" }} aria-label="作品のスクロール演出">

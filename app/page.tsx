@@ -96,6 +96,10 @@ export default function Home() {
   const [heroSlide, setHeroSlide] = useState(0);
   const [scrolled, setScrolled] = useState(false);
   const [showSticky, setShowSticky] = useState(false);
+  // 「この夏の一枚」スクロール完了後に一度だけ開く動画モーダル。
+  const [showVideo, setShowVideo] = useState(false);
+  const [videoLandscape, setVideoLandscape] = useState(true);
+  const videoSeenRef = useRef(false);
 
   const prefersReduced = useReducedMotion();
   const closeBtnRef = useRef<HTMLButtonElement>(null);
@@ -144,6 +148,25 @@ export default function Home() {
     const t = setTimeout(() => setIntro(false), 1900);
     return () => clearTimeout(t);
   }, []);
+
+  // 動画モーダルのソース出し分け：横向き（PC/タブレット横）→16:9、縦向き（スマホ/タブレット縦）→9:16
+  useEffect(() => {
+    const mq = window.matchMedia("(orientation: landscape)");
+    const update = () => setVideoLandscape(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  // 動画モーダルは Esc で閉じる
+  useEffect(() => {
+    if (!showVideo) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setShowVideo(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [showVideo]);
 
   // About スライドショー
   useEffect(() => {
@@ -705,7 +728,17 @@ export default function Home() {
           <ScrollArrowFlow />
 
           {/* ===== スクロール演出（WebGL リボン） ===== */}
-          {use3DHero && <ScrollRibbon images={ribbonImages} />}
+          {use3DHero && (
+            <ScrollRibbon
+              images={ribbonImages}
+              onComplete={() => {
+                if (!videoSeenRef.current) {
+                  videoSeenRef.current = true;
+                  setShowVideo(true);
+                }
+              }}
+            />
+          )}
 
           <SlashBand label="PORTFOLIO" />
 
@@ -906,6 +939,52 @@ export default function Home() {
                   ref={closeBtnRef}
                   onClick={() => setSelectedImage(null)}
                   className="absolute -top-2 right-0 md:top-2 md:-right-14 flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 hover:rotate-90"
+                  style={{ background: "var(--paper-2)" }}
+                  aria-label="閉じる"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="var(--ink)" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ===== 「この夏の一枚」演出後のスペシャルムービー・モーダル ===== */}
+        <AnimatePresence>
+          {showVideo && (
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-label="スペシャルムービー"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[85] flex items-center justify-center p-4"
+              style={{ background: "rgba(25,21,18,0.94)", backdropFilter: "blur(6px)" }}
+              onClick={() => setShowVideo(false)}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94, y: 16 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                className={videoLandscape ? "relative w-full max-w-4xl" : "relative h-[86vh]"}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <video
+                  key={videoLandscape ? "pc" : "sp"}
+                  src={videoLandscape ? "/movie/pc_final_vo_16x9.mp4" : "/movie/sp_final_vo.mp4"}
+                  autoPlay
+                  playsInline
+                  controls
+                  className="block h-full w-full rounded-xl"
+                  style={{ aspectRatio: videoLandscape ? "16 / 9" : "9 / 16", background: "#000" }}
+                />
+                <button
+                  onClick={() => setShowVideo(false)}
+                  className="absolute -top-3 right-0 md:top-2 md:-right-14 flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 hover:rotate-90"
                   style={{ background: "var(--paper-2)" }}
                   aria-label="閉じる"
                 >
