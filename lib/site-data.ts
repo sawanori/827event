@@ -1,18 +1,18 @@
 // ============================================================================
-// 夏の新プロフィール撮影会 — 単一の情報源（Single Source of Truth）
-// 2026/8/5 開催。イベント事実・画像・テーマ色・コピーをここに集約する。
+// 秋の新プロフィール撮影会 — 単一の情報源（Single Source of Truth）
+// 2026/9/9 開催。イベント事実・画像・テーマ色・コピーをここに集約する。
 // three.js コンポーネントと 2D セクションの双方がここから読み込む。
 // ============================================================================
 
 // ---- 開催イベントの事実（ここは勝手に変えない：確定情報） --------------------
 export const EVENT = {
-  title: "夏の新プロフィール撮影会",
+  title: "秋の新プロフィール撮影会",
   brand: "NonTurn.LLC",
   photographer: "澤田憲孝",
-  // 2026-08-05（水）18:30〜20:00（JST）
-  dateISO: "2026-08-05T18:30:00+09:00",
-  dateLabel: "2026.8.5",
-  dateJa: "2026年8月5日",
+  // 2026-09-09（水）18:30〜20:00（JST）
+  dateISO: "2026-09-09T18:30:00+09:00",
+  dateLabel: "2026.9.9",
+  dateJa: "2026年9月9日",
   weekday: "水",
   timeLabel: "18:30 – 20:00",
   // 会場：ユーザー指定「会議室7A」。建物名・住所・アクセスは未確定（要追記）。
@@ -184,7 +184,7 @@ export const MEMBER_IMAGES: string[] = [...NEW_2026, ...PORT_IMAGES];
 const MEMBER_GALLERY_EXTRA: string[] = ["/images/b3.webp"];
 export const MEMBER_GALLERY_IMAGES: string[] = [...NEW_2026_GALLERY, ...PORT_IMAGES, ...MEMBER_GALLERY_EXTRA];
 
-// ヒーロー「夏の光で、新しい自分を。」用：新規は ○1 のみ ＋ port*
+// ヒーロー「秋の光で、新しい自分を。」用：新規は ○1 のみ ＋ port*
 export const MEMBER_HERO_IMAGES: string[] = [...NEW_2026_HERO, ...PORT_IMAGES];
 
 // ヒーローのメインビジュアル。2枚をクロスフェードでスライドする（top=Vercel Blob / top2=ローカル）。
@@ -267,34 +267,34 @@ export const GALLERY_TABS: { key: GalleryCategory; label: string; images: string
   { key: "community", label: "コミュニティー撮影分", images: COMMUNITY_IMAGES },
 ];
 
-// ---- テーマ配色：和モダン夏祭り（藍 / 朱 / 金） ------------------------------
+// ---- テーマ配色：和モダンの秋（墨 / 錆朱 / 金茶） ----------------------------
 // three.js は数値/hex を直接使うため、CSS 変数と別にここでも定義して共有する。
 export const THEME = {
-  // 藍（夜空）
+  // 墨（夜）
   indigoDeep: "#050a1a",
   indigo: "#0b1d44",
   indigoLight: "#16336e",
   night: "#081026",
-  // 朱（vermilion）
-  vermilion: "#e2482e",
-  vermilionLight: "#ff6f52",
-  // 金（gold）
-  gold: "#e7bd54",
-  goldLight: "#ffe6a3",
-  goldBright: "#ffd24a",
-  // 提灯の灯り
-  lantern: "#ff8a3d",
-  lanternGlow: "#ffb066",
-  // 花火の色バリエーション
-  fireworks: ["#ffd24a", "#ff6f52", "#7fd4ff", "#ff9ecb", "#b8ff9e", "#ffffff"],
+  // 錆朱（vermilion）
+  vermilion: "#b03a17",
+  vermilionLight: "#c9552b",
+  // 金茶（gold）
+  gold: "#9c6f26",
+  goldLight: "#e0a441",
+  goldBright: "#d08a2f",
+  // 提灯の灯り（琥珀）
+  lantern: "#d97a2b",
+  lanternGlow: "#e8a45c",
+  // 木の葉の色バリエーション
+  fireworks: ["#d08a2f", "#c9552b", "#9c6f26", "#b03a17", "#e0a441", "#f8f3e6"],
 } as const;
 
-// ---- コピー（8月／夏の新プロフィールに全面書き換え） ------------------------
+// ---- コピー（9月／秋の新プロフィールに全面書き換え） ------------------------
 export const CONCERNS: { icon: string; text: string }[] = [
-  { icon: "🎐", text: "衣替えの季節。夏の装いで新しいプロフィールに更新したい" },
-  { icon: "💗", text: "マッチングアプリで“夏映え”する一枚が欲しい" },
+  { icon: "🍂", text: "衣替えの季節。秋の装いで新しいプロフィールに更新したい" },
+  { icon: "💗", text: "マッチングアプリで“秋映え”する一枚が欲しい" },
   { icon: "💼", text: "LinkedIn等、ビジネス用の写真をアップデートしたい" },
-  { icon: "🎆", text: "上半期の自分をリセット、新しい表情で後半戦へ" },
+  { icon: "🍁", text: "上半期の自分をリセット、新しい表情で後半戦へ" },
 ];
 
 export const NOTICES: string[] = [

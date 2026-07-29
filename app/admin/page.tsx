@@ -61,7 +61,7 @@ export default async function AdminPage() {
               <div
                 key={s.id}
                 className="card flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6"
-                style={{ borderColor: r ? "rgba(193,56,31,0.35)" : "var(--line)" }}
+                style={{ borderColor: r ? "rgba(176,58,23,0.35)" : "var(--line)" }}
               >
                 <div className="flex items-center gap-3 sm:w-48 shrink-0">
                   <span className="font-num text-xl" style={{ color: "var(--ink)" }}>{s.label}</span>

@@ -130,7 +130,7 @@ function ReelCanvas({
 export default function ScrollRibbon({
   images,
   label = "Portraits",
-  sub = "この夏の一枚",
+  sub = "この秋の一枚",
   watermark = "Gallery",
   onComplete,
 }: {

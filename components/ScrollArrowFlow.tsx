@@ -438,7 +438,7 @@ function CtaBurst() {
           width: 260,
           height: 260,
           background:
-            "radial-gradient(circle, rgba(255,250,230,1), rgba(255,152,70,0.6) 38%, rgba(226,72,46,0.35) 56%, transparent 74%)",
+            "radial-gradient(circle, rgba(255,246,224,1), rgba(224,164,65,0.6) 38%, rgba(176,58,23,0.35) 56%, transparent 74%)",
         }}
         initial={{ scale: 0.2, opacity: 0 }}
         animate={{ scale: [0.2, 1.7], opacity: [0, 1, 0] }}
@@ -462,7 +462,7 @@ function CtaBurst() {
           width: 460,
           height: 460,
           background:
-            "repeating-conic-gradient(from 0deg at 50% 50%, rgba(226,72,46,0.6) 0deg 0.9deg, transparent 0.9deg 6.5deg)",
+            "repeating-conic-gradient(from 0deg at 50% 50%, rgba(176,58,23,0.6) 0deg 0.9deg, transparent 0.9deg 6.5deg)",
           WebkitMaskImage: "radial-gradient(circle, transparent 22%, black 40%, transparent 66%)",
           maskImage: "radial-gradient(circle, transparent 22%, black 40%, transparent 66%)",
         }}
@@ -480,7 +480,7 @@ function CtaBurst() {
             height: 8,
             marginLeft: -4,
             marginTop: -4,
-            background: i % 2 ? "var(--shu)" : "#ffb84d",
+            background: i % 2 ? "var(--shu)" : "#e0a441",
           }}
           initial={{ x: 0, y: 0, opacity: 0, scale: 1 }}
           animate={{ x: s.x, y: s.y, opacity: [0, 1, 0], scale: [1, 1, 0.2] }}

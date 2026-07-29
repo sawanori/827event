@@ -17,7 +17,7 @@ import Countdown from "@/components/Countdown";
 import BookingForm from "@/components/BookingForm";
 import Parallax from "@/components/Parallax";
 import ScrollArrowFlow from "@/components/ScrollArrowFlow";
-import { SectionFx, SectionHead, SlashBand, SummerGlare } from "@/components/fx";
+import { SectionFx, SectionHead, SlashBand, AutumnLeaves } from "@/components/fx";
 import {
   EVENT,
   SLOTS,
@@ -96,7 +96,7 @@ export default function Home() {
   const [heroSlide, setHeroSlide] = useState(0);
   const [scrolled, setScrolled] = useState(false);
   const [showSticky, setShowSticky] = useState(false);
-  // 「この夏の一枚」スクロール完了後に一度だけ開く動画モーダル。
+  // 「この秋の一枚」スクロール完了後に一度だけ開く動画モーダル。
   const [showVideo, setShowVideo] = useState(false);
   const [videoLandscape, setVideoLandscape] = useState(true);
   const videoSeenRef = useRef(false);
@@ -220,8 +220,8 @@ export default function Home() {
               exit={{ y: "-101%" }}
               transition={{ duration: 0.95, ease: [0.76, 0, 0.24, 1] }}
             >
-              {/* 夏のギラギラした光（現状デザインの背面に重ねる） */}
-              <SummerGlare />
+              {/* 舞い落ちる紅葉と秋の斜光（ロゴ・日付の背面に重ねる） */}
+              <AutumnLeaves />
 
               <div className="relative z-10 flex flex-col items-center">
                 <motion.p
@@ -231,7 +231,7 @@ export default function Home() {
                   className="font-body text-xs tracking-[0.32em] mb-5"
                   style={{ color: "var(--muted)" }}
                 >
-                  NONTURN.LLC — SUMMER SESSION
+                  NONTURN.LLC — AUTUMN SESSION
                 </motion.p>
                 <motion.p
                   initial={{ opacity: 0, y: 14 }}
@@ -240,7 +240,7 @@ export default function Home() {
                   className="font-num text-5xl md:text-7xl"
                   style={{ color: "var(--ink)" }}
                 >
-                  2026<span style={{ color: "var(--shu)" }}>.</span>8<span style={{ color: "var(--shu)" }}>.</span>5
+                  2026<span style={{ color: "var(--shu)" }}>.</span>9<span style={{ color: "var(--shu)" }}>.</span>9
                 </motion.p>
                 <motion.span
                   initial={{ scaleX: 0 }}
@@ -258,7 +258,7 @@ export default function Home() {
         <header
           className="fixed inset-x-0 top-0 z-50 transition-all duration-500"
           style={{
-            background: scrolled ? "rgba(241,235,223,0.82)" : "transparent",
+            background: scrolled ? "rgba(242,234,219,0.82)" : "transparent",
             borderBottom: `1px solid ${scrolled ? "var(--line)" : "transparent"}`,
             backdropFilter: scrolled ? "blur(10px)" : "none",
           }}
@@ -266,7 +266,7 @@ export default function Home() {
           <div className="mx-auto max-w-7xl px-6 h-16 flex items-center justify-between">
             <div className="flex items-baseline gap-3">
               <span className="font-display text-lg tracking-jp" style={{ color: "var(--ink)" }}>
-                夏の撮影会
+                秋の撮影会
               </span>
               <span className="hidden sm:inline font-body text-[0.68rem] tracking-[0.24em]" style={{ color: "var(--subtle)" }}>
                 NONTURN.LLC
@@ -274,7 +274,7 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-5">
               <span className="hidden md:inline font-num text-sm" style={{ color: "var(--muted)" }}>
-                2026.8.5
+                2026.9.9
               </span>
               <a href="#register" className="btn-ghost text-sm">予約する</a>
             </div>
@@ -313,7 +313,7 @@ export default function Home() {
                   writingMode: "vertical-rl",
                 }}
               >
-                夏
+                秋
               </span>
             </motion.div>
 
@@ -326,7 +326,7 @@ export default function Home() {
                 >
                   <Image
                     src={img}
-                    alt="夏の新プロフィール撮影会 メインビジュアル"
+                    alt="秋の新プロフィール撮影会 メインビジュアル"
                     fill
                     priority={i === 0}
                     sizes="100vw"
@@ -356,22 +356,22 @@ export default function Home() {
                   className="font-serif text-[0.7rem] tracking-[0.3em] mb-4"
                   style={{ color: "rgba(255,255,255,0.85)" }}
                 >
-                  SUMMER PORTRAIT SESSION
+                  AUTUMN PORTRAIT SESSION
                 </motion.p>
                 <motion.h1
                   variants={fadeUp}
                   className="font-display mb-4"
                   style={{ color: "#fff", fontSize: "clamp(1.3rem, 7.1vw, 2rem)", lineHeight: 1.14, letterSpacing: "-0.02em" }}
                 >
-                  <span className="block">新しい<span style={{ color: "#ff8360" }}>写真</span>撮ろう</span>
-                  <span className="block">いいじゃん、夏なんだから</span>
+                  <span className="block">新しい<span style={{ color: "#f2954f" }}>写真</span>撮ろう</span>
+                  <span className="block">いいじゃん、秋なんだから</span>
                 </motion.h1>
                 <motion.p
                   variants={fadeUp}
                   className="font-display text-lg tracking-jp"
                   style={{ color: "rgba(255,255,255,0.92)" }}
                 >
-                  夏の新プロフィール撮影会
+                  秋の新プロフィール撮影会
                 </motion.p>
               </div>
 
@@ -412,7 +412,7 @@ export default function Home() {
                     animate={intro ? "hidden" : "show"}
                   >
                     <motion.div variants={fadeUp} className="mb-7">
-                      <Eyebrow>Summer Portrait Session</Eyebrow>
+                      <Eyebrow>Autumn Portrait Session</Eyebrow>
                     </motion.div>
 
                     <motion.h1
@@ -421,7 +421,7 @@ export default function Home() {
                       style={{ color: "var(--ink)" }}
                     >
                       <span className="block">新しい<span className="mark-shu">写真</span>撮ろう</span>
-                      <span className="block">いいじゃん、夏なんだから</span>
+                      <span className="block">いいじゃん、秋なんだから</span>
                     </motion.h1>
 
                     <motion.p
@@ -429,7 +429,7 @@ export default function Home() {
                       className="font-display text-xl md:text-2xl mb-5 tracking-jp"
                       style={{ color: "var(--ink-soft)" }}
                     >
-                      夏の新プロフィール撮影会
+                      秋の新プロフィール撮影会
                     </motion.p>
 
                     <motion.p
@@ -474,7 +474,7 @@ export default function Home() {
                         >
                           <Image
                             src={img}
-                            alt="夏の新プロフィール撮影会 メインビジュアル"
+                            alt="秋の新プロフィール撮影会 メインビジュアル"
                             fill
                             priority={i === 0}
                             sizes="(max-width: 768px) 90vw, 40vw"
@@ -573,7 +573,7 @@ export default function Home() {
 
               <Reveal className="mt-14 max-w-md">
                 <p className="font-body leading-loose" style={{ color: "var(--muted)" }}>
-                  衣替えのように、プロフィールも夏仕様へ。ほんの少しの光の違いで、写真の印象は大きく変わります。この夏、後半戦のあなたを、新しい一枚から始めませんか。
+                  衣替えのように、プロフィールも秋仕様へ。ほんの少しの光の違いで、写真の印象は大きく変わります。この秋、後半戦のあなたを、新しい一枚から始めませんか。
                 </p>
               </Reveal>
             </div>
@@ -588,7 +588,7 @@ export default function Home() {
                 <div className="relative z-20 order-2 md:order-1 md:col-span-7 md:pr-6">
                   <Reveal>
                     <SectionHead no="02" en="About the Session">
-                      夏の光を味方に、<br />
+                      秋の光を味方に、<br />
                       <span className="mark-shu">映える</span>あなたを。
                     </SectionHead>
                     <p className="mb-8 max-w-md font-body leading-loose" style={{ color: "var(--muted)" }}>
@@ -655,7 +655,7 @@ export default function Home() {
                                 onClick={() => setSlideIndex(i)}
                                 aria-label={`スライド ${i + 1}`}
                                 className="h-1.5 rounded-full transition-all duration-300"
-                                style={{ width: i === slideIndex ? 22 : 7, background: i === slideIndex ? "var(--paper-2)" : "rgba(247,242,232,0.5)" }}
+                                style={{ width: i === slideIndex ? 22 : 7, background: i === slideIndex ? "var(--paper-2)" : "rgba(248,243,230,0.5)" }}
                               />
                             ))}
                           </div>
@@ -798,7 +798,7 @@ export default function Home() {
                     <span
                       aria-hidden
                       className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                      style={{ background: "rgba(193,56,31,0.32)", mixBlendMode: "multiply" }}
+                      style={{ background: "rgba(176,58,23,0.32)", mixBlendMode: "multiply" }}
                     />
                     {/* polygon_outline.gd：朱の内枠 */}
                     <span
@@ -903,10 +903,10 @@ export default function Home() {
           <footer className="relative py-16 text-center" style={{ background: "var(--paper)" }}>
             <div className="mx-auto max-w-3xl px-6">
               <div className="divider-festival mb-8 max-w-xs mx-auto" />
-              <p className="font-display text-xl mb-2" style={{ color: "var(--ink)" }}>夏の新プロフィール撮影会</p>
-              <p className="font-num text-sm mb-4" style={{ color: "var(--shu)" }}>2026.8.5</p>
+              <p className="font-display text-xl mb-2" style={{ color: "var(--ink)" }}>秋の新プロフィール撮影会</p>
+              <p className="font-num text-sm mb-4" style={{ color: "var(--shu)" }}>2026.9.9</p>
               <p className="font-body text-xs" style={{ color: "var(--subtle)" }}>
-                &copy; 2025–2026 {EVENT.brand} — Summer Photo Session
+                &copy; 2025–2026 {EVENT.brand} — Autumn Photo Session
               </p>
             </div>
           </footer>
@@ -951,7 +951,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* ===== 「この夏の一枚」演出後のスペシャルムービー・モーダル ===== */}
+        {/* ===== 「この秋の一枚」演出後のスペシャルムービー・モーダル ===== */}
         <AnimatePresence>
           {showVideo && (
             <motion.div

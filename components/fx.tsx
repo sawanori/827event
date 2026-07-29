@@ -16,7 +16,7 @@ export function SectionFx({ variant = "dots" }: { variant?: "stripes" | "dots" |
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
-          backgroundImage: "repeating-linear-gradient(-24deg, rgba(193,56,31,0.10) 0 3px, transparent 3px 24px)",
+          backgroundImage: "repeating-linear-gradient(-24deg, rgba(176,58,23,0.10) 0 3px, transparent 3px 24px)",
           WebkitMaskImage: "linear-gradient(115deg, black, transparent 90%)",
           maskImage: "linear-gradient(115deg, black, transparent 90%)",
         }}
@@ -32,7 +32,7 @@ export function SectionFx({ variant = "dots" }: { variant?: "stripes" | "dots" |
           <motion.span
             key={i}
             className="absolute -right-[6%] top-1/2 rounded-full"
-            style={{ width: 620, height: 620, marginTop: -310, border: "2px solid rgba(193,56,31,0.18)" }}
+            style={{ width: 620, height: 620, marginTop: -310, border: "2px solid rgba(176,58,23,0.18)" }}
             initial={{ scale: 0.12, opacity: 0.8 }}
             animate={{ scale: 1, opacity: 0 }}
             transition={{ duration: 5.5, repeat: Infinity, delay: i * 1.1, ease: "easeOut" }}
@@ -46,7 +46,7 @@ export function SectionFx({ variant = "dots" }: { variant?: "stripes" | "dots" |
       aria-hidden
       className="pointer-events-none absolute inset-0"
       style={{
-        backgroundImage: "radial-gradient(rgba(193,56,31,0.14) 1.6px, transparent 2px)",
+        backgroundImage: "radial-gradient(rgba(176,58,23,0.14) 1.6px, transparent 2px)",
         backgroundSize: "20px 20px",
         WebkitMaskImage: "linear-gradient(120deg, black, transparent 90%)",
         maskImage: "linear-gradient(120deg, black, transparent 90%)",
@@ -128,7 +128,7 @@ export function SectionHead({
         variants={linesV}
         className="pointer-events-none absolute -inset-x-4 -top-8 bottom-0"
         style={{
-          backgroundImage: `repeating-conic-gradient(from 0deg at ${focus} 56%, rgba(193,56,31,0.16) 0deg 0.5deg, transparent 0.5deg 3.4deg)`,
+          backgroundImage: `repeating-conic-gradient(from 0deg at ${focus} 56%, rgba(176,58,23,0.16) 0deg 0.5deg, transparent 0.5deg 3.4deg)`,
           WebkitMaskImage: `radial-gradient(58% 62% at ${focus} 56%, black, transparent 72%)`,
           maskImage: `radial-gradient(58% 62% at ${focus} 56%, black, transparent 72%)`,
         }}
@@ -143,8 +143,8 @@ export function SectionHead({
           height: "3.4em",
           background:
             align === "center"
-              ? "linear-gradient(90deg, rgba(193,56,31,0) 0%, var(--shu) 50%, rgba(193,56,31,0) 100%)"
-              : "linear-gradient(90deg, var(--shu) 0%, rgba(193,56,31,0) 72%)",
+              ? "linear-gradient(90deg, rgba(176,58,23,0) 0%, var(--shu) 50%, rgba(176,58,23,0) 100%)"
+              : "linear-gradient(90deg, var(--shu) 0%, rgba(176,58,23,0) 72%)",
           transformOrigin: align === "center" ? "center" : "left",
           WebkitMaskImage: "linear-gradient(#000, transparent 88%)",
           maskImage: "linear-gradient(#000, transparent 88%)",
@@ -215,130 +215,183 @@ export function SlashBand({ label }: { label?: string }) {
   );
 }
 
-// 夏のギラギラした光（イントロ幕用）。波打つ太陽光線（サイン波＋陽炎で揺らめく）＋白熱コアの
-// サングロー＋斜めの光スイープ＋きらめき。ブランド配色（紙/墨/朱）を守り、加算的な光ハイライト
-// のみで“真夏の陽射し”を演出する。
-function Glint({ left, top, delay, size = 22 }: { left: string; top: string; delay: number; size?: number }) {
+// 紅葉（モミジ）のイントロ演出。葉の形はSVGパスとして生成し、舞い落ちる葉＋秋の斜光を重ねる。
+// ブランド配色（紙／墨／錆朱）の範囲を守り、差し色に金茶・琥珀を使う。
+
+const LEAF_CX = 50;
+const LEAF_CY = 58;
+
+// モミジの七裂。真上を 0°として左右対称に開く（角度・裂片の長さ）。
+const MOMIJI_LOBES = [
+  { a: -142, r: 30 },
+  { a: -95, r: 38 },
+  { a: -48, r: 42 },
+  { a: 0, r: 44 },
+  { a: 48, r: 42 },
+  { a: 95, r: 38 },
+  { a: 142, r: 30 },
+] as const;
+
+// 裂片の片側の縁（付け根→先端）。角度オフセットと半径比のジグザグがそのまま鋸歯になる。
+const MOMIJI_EDGE: readonly (readonly [number, number])[] = [
+  [24, 0.56],
+  [20, 0.72],
+  [17.5, 0.67],
+  [13, 0.85],
+  [9.5, 0.79],
+  [5, 0.95],
+];
+
+function leafPolar(deg: number, r: number): readonly [number, number] {
+  const a = (deg * Math.PI) / 180;
+  return [LEAF_CX + Math.sin(a) * r, LEAF_CY - Math.cos(a) * r] as const;
+}
+
+// 葉の輪郭を生成（決定的：乱数不使用）。viewBox 0 0 100 100 前提。
+// 各裂片は「谷 → 鋸歯の縁 → 先端 → 鋸歯の縁」で構成し、最後に葉柄の付け根で閉じる。
+function buildMomijiPath(): string {
+  const pts: string[] = [];
+  const at = (deg: number, r: number) => {
+    const [x, y] = leafPolar(deg, r);
+    pts.push(`${x.toFixed(1)} ${y.toFixed(1)}`);
+  };
+  MOMIJI_LOBES.forEach((lobe, i) => {
+    const prev = MOMIJI_LOBES[i - 1];
+    if (prev) at((prev.a + lobe.a) / 2, Math.min(prev.r, lobe.r) * 0.3);
+    MOMIJI_EDGE.forEach(([d, k]) => at(lobe.a - d, lobe.r * k));
+    at(lobe.a, lobe.r);
+    [...MOMIJI_EDGE].reverse().forEach(([d, k]) => at(lobe.a + d, lobe.r * k));
+  });
+  at(180, 9);
+  return `M ${pts.join(" L ")} Z`;
+}
+
+const MOMIJI_PATH = buildMomijiPath();
+
+// 葉脈：中心から各裂片の先端へ。
+const MOMIJI_VEINS = MOMIJI_LOBES.map((lobe) => {
+  const [x, y] = leafPolar(lobe.a, lobe.r * 0.72);
+  return `M ${LEAF_CX} ${LEAF_CY} L ${x.toFixed(1)} ${y.toFixed(1)}`;
+}).join(" ");
+
+// 一枚の紅葉（葉脈・葉柄つき）。
+export function MomijiLeaf({ fill, size = 40 }: { fill: string; size?: number }) {
   return (
-    <motion.svg
+    <svg
       aria-hidden
-      className="absolute"
-      style={{ left, top, width: size, height: size, marginLeft: -size / 2, marginTop: -size / 2 }}
+      width={size}
+      height={size}
       viewBox="0 0 100 100"
-      initial={{ opacity: 0, scale: 0.3 }}
-      animate={{ opacity: [0, 1, 0], scale: [0.3, 1, 0.3], rotate: [0, 80] }}
-      transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 1.1, delay, ease: "easeInOut" }}
+      style={{ display: "block", overflow: "visible" }}
     >
-      <path d="M50 0 L57 43 L100 50 L57 57 L50 100 L43 57 L0 50 L43 43 Z" fill="rgba(255,247,226,0.95)" />
-    </motion.svg>
+      <path d={MOMIJI_PATH} fill={fill} />
+      <path
+        d={`M ${LEAF_CX} ${LEAF_CY} L ${LEAF_CX} 92`}
+        stroke={fill}
+        strokeWidth={3.2}
+        strokeLinecap="round"
+      />
+      <path d={MOMIJI_VEINS} stroke="rgba(25,21,18,0.20)" strokeWidth={1.4} strokeLinecap="round" fill="none" />
+    </svg>
   );
 }
 
-// サイン波でうねらせた放射光線のパスを生成（決定的：乱数不使用）。viewBox 0..1000 前提。
-function buildWavyRays(count: number) {
-  const cx = 500;
-  const cy = 500;
-  return Array.from({ length: count }, (_, i) => {
-    const a = (i / count) * Math.PI * 2;
-    const dx = Math.cos(a);
-    const dy = Math.sin(a);
-    const px = -dy; // 進行方向に対する垂直（うねりのオフセット方向）
-    const py = dx;
-    const long = i % 2 === 0;
-    const ri = 116;
-    const ro = long ? 478 : 372;
-    const amp = long ? 16 : 11;
-    const waves = long ? 1.5 : 2.3;
-    const phase = (i % 5) * 0.8;
-    const steps = 18;
-    let d = "";
-    for (let s = 0; s <= steps; s++) {
-      const t = s / steps;
-      const r = ri + (ro - ri) * t;
-      const off = amp * Math.sin(waves * Math.PI * 2 * t + phase) * (0.2 + 0.8 * t);
-      const x = cx + dx * r + px * off;
-      const y = cy + dy * r + py * off;
-      d += (s === 0 ? "M" : "L") + `${x.toFixed(1)} ${y.toFixed(1)}`;
-    }
-    return { d, long, i };
-  });
+// 舞い落ちる葉の配置（決定的：乱数不使用。開始位置を画面全体に散らし、
+// 幕が出た瞬間から上下いっぱいに葉が舞っている状態にする）。
+type LeafSpec = {
+  left: string;
+  top: string;
+  size: number;
+  dur: number;
+  sway: number;
+  spin: number;
+  tint: string;
+  opacity: number;
+};
+
+const FALLING_LEAVES: LeafSpec[] = [
+  { left: "6%", top: "-14vh", size: 58, dur: 7.2, sway: 30, spin: 300, tint: "var(--shu)", opacity: 0.95 },
+  { left: "18%", top: "12vh", size: 30, dur: 8.6, sway: 18, spin: -260, tint: "var(--clay)", opacity: 0.8 },
+  { left: "29%", top: "-6vh", size: 44, dur: 6.4, sway: 24, spin: 380, tint: "var(--shu-bright)", opacity: 0.9 },
+  { left: "39%", top: "38vh", size: 24, dur: 9.4, sway: 14, spin: -200, tint: "var(--sun)", opacity: 0.72 },
+  { left: "48%", top: "62vh", size: 50, dur: 7.8, sway: 26, spin: 240, tint: "var(--shu-deep)", opacity: 0.85 },
+  { left: "57%", top: "4vh", size: 30, dur: 8.2, sway: 20, spin: -340, tint: "var(--clay)", opacity: 0.78 },
+  { left: "66%", top: "26vh", size: 62, dur: 6.8, sway: 32, spin: 280, tint: "var(--shu)", opacity: 0.95 },
+  { left: "74%", top: "-10vh", size: 26, dur: 9.0, sway: 16, spin: -220, tint: "var(--sun)", opacity: 0.7 },
+  { left: "83%", top: "50vh", size: 42, dur: 7.4, sway: 22, spin: 320, tint: "var(--shu-bright)", opacity: 0.88 },
+  { left: "91%", top: "18vh", size: 34, dur: 8.0, sway: 19, spin: -300, tint: "var(--shu)", opacity: 0.82 },
+  { left: "12%", top: "70vh", size: 22, dur: 9.8, sway: 12, spin: 210, tint: "var(--clay)", opacity: 0.68 },
+];
+
+// 落下（linear）と、横揺れ・回転（easeInOut / linear）を入れ子で分ける。
+// こうすると「まっすぐ落ちながら、ひらひら回る」動きになる。
+function FallingLeaf({ spec }: { spec: LeafSpec }) {
+  return (
+    <motion.div
+      className="absolute"
+      style={{ left: spec.left, top: spec.top }}
+      initial={{ y: 0, opacity: spec.opacity }}
+      animate={{ y: "122vh", opacity: [spec.opacity, spec.opacity, 0] }}
+      transition={{
+        y: { duration: spec.dur, repeat: Infinity, ease: "linear" },
+        opacity: { duration: spec.dur, repeat: Infinity, times: [0, 0.82, 1], ease: "linear" },
+      }}
+    >
+      <motion.div
+        animate={{
+          x: [0, spec.sway, -spec.sway * 0.7, spec.sway * 0.35, 0],
+          rotate: [0, spec.spin],
+        }}
+        transition={{
+          x: { duration: spec.dur * 0.46, repeat: Infinity, ease: "easeInOut" },
+          rotate: { duration: spec.dur * 0.72, repeat: Infinity, ease: "linear" },
+        }}
+      >
+        <MomijiLeaf fill={spec.tint} size={spec.size} />
+      </motion.div>
+    </motion.div>
+  );
 }
 
-export function SummerGlare() {
-  const rays = buildWavyRays(26);
+export function AutumnLeaves() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-      {/* 陽炎フィルタ（feTurbulence を SMIL で揺らし、光線を feDisplacementMap でクネクネさせる） */}
-      <svg width="0" height="0" className="absolute" aria-hidden focusable="false">
-        <defs>
-          <filter id="summerHeat" x="-25%" y="-25%" width="150%" height="150%" colorInterpolationFilters="sRGB">
-            <feTurbulence type="fractalNoise" baseFrequency="0.009 0.016" numOctaves={2} seed={7} result="noise">
-              <animate
-                attributeName="baseFrequency"
-                dur="6s"
-                values="0.009 0.016;0.014 0.023;0.009 0.016"
-                repeatCount="indefinite"
-              />
-            </feTurbulence>
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={20} xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </defs>
-      </svg>
-
-      {/* 白熱コアのサングロー（白→橙→朱、呼吸） */}
+      {/* 秋の低い斜光（琥珀→金茶→錆朱。ゆっくり呼吸する） */}
       <motion.div
-        className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 rounded-full"
+        className="absolute -right-[12%] -top-[16%] rounded-full"
         style={{
-          width: "92vmin",
-          height: "92vmin",
+          width: "98vmin",
+          height: "98vmin",
           background:
-            "radial-gradient(circle, rgba(255,248,224,0.7) 0%, rgba(255,196,102,0.42) 22%, rgba(226,72,46,0.18) 46%, transparent 68%)",
+            "radial-gradient(circle, rgba(224,164,65,0.46) 0%, rgba(216,150,55,0.30) 20%, rgba(204,120,45,0.18) 36%, rgba(190,88,32,0.10) 50%, rgba(176,58,23,0.05) 62%, rgba(176,58,23,0.02) 72%, transparent 84%)",
         }}
-        animate={{ scale: [0.9, 1.1, 0.9], opacity: [0.75, 1, 0.75] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        animate={{ scale: [0.94, 1.07, 0.94], opacity: [0.8, 1, 0.8] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* 波打つ太陽の光線（ゆっくり回転＋陽炎で揺らめく） */}
-      <motion.svg
-        className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2"
-        style={{ width: "150vmax", height: "150vmax", overflow: "visible" }}
-        viewBox="0 0 1000 1000"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 44, repeat: Infinity, ease: "linear" }}
-      >
-        <g filter="url(#summerHeat)">
-          {rays.map((r) => (
-            <path
-              key={r.i}
-              d={r.d}
-              fill="none"
-              stroke={r.long ? "rgba(226,72,46,0.20)" : "rgba(255,178,78,0.18)"}
-              strokeWidth={r.long ? 8 : 4.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          ))}
-        </g>
-      </motion.svg>
+      {/* 地面側にたまる暖色の照り返し */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-[42%]"
+        style={{ background: "linear-gradient(to top, rgba(156,111,38,0.16), transparent 78%)" }}
+      />
 
-      {/* 斜めの光のスイープ（一閃／繰り返し） */}
+      {/* 舞い落ちる紅葉 */}
+      {FALLING_LEAVES.map((spec, i) => (
+        <FallingLeaf key={i} spec={spec} />
+      ))}
+
+      {/* 斜めに流れる、やわらかな秋の光 */}
       <motion.div
         className="absolute inset-x-0 inset-y-[-20%]"
         style={{
           background:
-            "linear-gradient(104deg, transparent 34%, rgba(255,255,255,0.6) 48%, rgba(255,236,192,0.42) 53%, transparent 64%)",
+            "linear-gradient(104deg, transparent 36%, rgba(255,244,222,0.45) 48%, rgba(240,206,150,0.30) 54%, transparent 66%)",
           mixBlendMode: "screen",
         }}
         initial={{ x: "-115%" }}
         animate={{ x: ["-115%", "115%"] }}
-        transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 2.6, repeat: Infinity, repeatDelay: 1.1, ease: [0.16, 1, 0.3, 1] }}
       />
-
-      {/* きらめき（グリント） */}
-      <Glint left="24%" top="33%" delay={0.1} size={26} />
-      <Glint left="73%" top="30%" delay={0.6} />
-      <Glint left="67%" top="63%" delay={1.0} size={18} />
-      <Glint left="31%" top="64%" delay={1.5} size={20} />
     </div>
   );
 }
