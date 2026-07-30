@@ -215,8 +215,88 @@ export function SlashBand({ label }: { label?: string }) {
   );
 }
 
-// 秋の実り（どんぐり／栗／木の実）のイントロ演出。形はSVGパスで持ち、落ちる実＋秋の斜光を重ねる。
-// ブランド配色（紙／墨／錆朱）の範囲を守り、差し色に金茶・琥珀を使う。
+// 秋のモチーフ。形はすべてSVGパスで持ち、ブランド配色（紙／墨／錆朱）の範囲を守って
+// 差し色に金茶・琥珀を使う。イントロ幕は紅葉、矢印の軌跡（ScrollArrowFlow）は木の実。
+
+// ============================ 紅葉（イントロ幕用） ============================
+
+const LEAF_CX = 50;
+const LEAF_CY = 58;
+
+// モミジの七裂。真上を 0°として左右対称に開く（角度・裂片の長さ）。
+const MOMIJI_LOBES = [
+  { a: -142, r: 30 },
+  { a: -95, r: 38 },
+  { a: -48, r: 42 },
+  { a: 0, r: 44 },
+  { a: 48, r: 42 },
+  { a: 95, r: 38 },
+  { a: 142, r: 30 },
+] as const;
+
+// 裂片の片側の縁（付け根→先端）。角度オフセットと半径比のジグザグがそのまま鋸歯になる。
+const MOMIJI_EDGE: readonly (readonly [number, number])[] = [
+  [24, 0.56],
+  [20, 0.72],
+  [17.5, 0.67],
+  [13, 0.85],
+  [9.5, 0.79],
+  [5, 0.95],
+];
+
+function leafPolar(deg: number, r: number): readonly [number, number] {
+  const a = (deg * Math.PI) / 180;
+  return [LEAF_CX + Math.sin(a) * r, LEAF_CY - Math.cos(a) * r] as const;
+}
+
+// 葉の輪郭を生成（決定的：乱数不使用）。viewBox 0 0 100 100 前提。
+// 各裂片は「谷 → 鋸歯の縁 → 先端 → 鋸歯の縁」で構成し、最後に葉柄の付け根で閉じる。
+function buildMomijiPath(): string {
+  const pts: string[] = [];
+  const at = (deg: number, r: number) => {
+    const [x, y] = leafPolar(deg, r);
+    pts.push(`${x.toFixed(1)} ${y.toFixed(1)}`);
+  };
+  MOMIJI_LOBES.forEach((lobe, i) => {
+    const prev = MOMIJI_LOBES[i - 1];
+    if (prev) at((prev.a + lobe.a) / 2, Math.min(prev.r, lobe.r) * 0.3);
+    MOMIJI_EDGE.forEach(([d, k]) => at(lobe.a - d, lobe.r * k));
+    at(lobe.a, lobe.r);
+    [...MOMIJI_EDGE].reverse().forEach(([d, k]) => at(lobe.a + d, lobe.r * k));
+  });
+  at(180, 9);
+  return `M ${pts.join(" L ")} Z`;
+}
+
+const MOMIJI_PATH = buildMomijiPath();
+
+// 葉柄。
+const MOMIJI_STEM = `M ${LEAF_CX} ${LEAF_CY} L ${LEAF_CX} 92`;
+
+// 葉脈：中心から各裂片の先端へ。
+const MOMIJI_VEINS = MOMIJI_LOBES.map((lobe) => {
+  const [x, y] = leafPolar(lobe.a, lobe.r * 0.72);
+  return `M ${LEAF_CX} ${LEAF_CY} L ${x.toFixed(1)} ${y.toFixed(1)}`;
+}).join(" ");
+
+// 一枚の紅葉（葉脈・葉柄つき）。
+function MomijiLeaf({ fill, size = 40 }: { fill: string; size?: number }) {
+  return (
+    <svg
+      aria-hidden
+      width={size}
+      height={size}
+      viewBox="0 0 100 100"
+      style={{ display: "block", overflow: "visible" }}
+    >
+      <path d={MOMIJI_PATH} fill={fill} />
+      <path d={MOMIJI_STEM} stroke={fill} strokeWidth={3.2} strokeLinecap="round" />
+      <path d={MOMIJI_VEINS} stroke="rgba(25,21,18,0.20)" strokeWidth={1.4} strokeLinecap="round" fill="none" />
+    </svg>
+  );
+}
+
+// ====================== 木の実（矢印の軌跡＝ScrollArrowFlow 用） ======================
 
 export type NutKind = "acorn" | "chestnut" | "berries";
 
@@ -278,26 +358,7 @@ function NutShape({ kind, fill, accent }: { kind: NutKind; fill: string; accent:
   );
 }
 
-// 単体のSVGとして置く用。
-export function NutMark({
-  kind,
-  fill,
-  accent,
-  size = 40,
-}: {
-  kind: NutKind;
-  fill: string;
-  accent: string;
-  size?: number;
-}) {
-  return (
-    <svg aria-hidden width={size} height={size} viewBox="0 0 100 100" style={{ display: "block", overflow: "visible" }}>
-      <NutShape kind={kind} fill={fill} accent={accent} />
-    </svg>
-  );
-}
-
-// 同じ実を、他のSVGの座標系へ埋め込む用。原点が実の重心なので、
+// 他のSVGの座標系へ埋め込む用。原点が実の重心なので、
 // 呼び出し側は translate / rotate だけで好きな位置と角度に置ける。size は実の高さ相当px。
 export function NutGlyph({
   kind,
@@ -318,39 +379,38 @@ export function NutGlyph({
   );
 }
 
-// 落ちる実の配置（決定的：乱数不使用。開始位置を画面全体に散らし、
-// 幕が出た瞬間から上下いっぱいに実が落ちている状態にする）。
-// 葉より重いので、揺れは小さく・落下は速く・回転はころころ転がる感じにする。
-type NutSpec = {
-  kind: NutKind;
+// ============================== イントロ幕 ==============================
+
+// 舞い落ちる葉の配置（決定的：乱数不使用。開始位置を画面全体に散らし、
+// 幕が出た瞬間から上下いっぱいに葉が舞っている状態にする）。
+type LeafSpec = {
   left: string;
   top: string;
   size: number;
   dur: number;
   sway: number;
   spin: number;
-  fill: string;
-  accent: string;
+  tint: string;
   opacity: number;
 };
 
-const FALLING_NUTS: NutSpec[] = [
-  { kind: "acorn", left: "6%", top: "-14vh", size: 58, dur: 5.0, sway: 14, spin: 260, fill: "var(--clay)", accent: "var(--shu-deep)", opacity: 0.95 },
-  { kind: "berries", left: "18%", top: "12vh", size: 40, dur: 6.0, sway: 10, spin: -200, fill: "var(--shu)", accent: "var(--clay)", opacity: 0.82 },
-  { kind: "chestnut", left: "29%", top: "-6vh", size: 46, dur: 4.6, sway: 12, spin: 300, fill: "var(--shu-deep)", accent: "var(--sun)", opacity: 0.92 },
-  { kind: "acorn", left: "39%", top: "38vh", size: 34, dur: 6.6, sway: 8, spin: -170, fill: "var(--sun)", accent: "var(--clay)", opacity: 0.74 },
-  { kind: "chestnut", left: "48%", top: "62vh", size: 52, dur: 5.4, sway: 13, spin: 220, fill: "var(--shu)", accent: "var(--sun)", opacity: 0.88 },
-  { kind: "berries", left: "57%", top: "4vh", size: 38, dur: 5.8, sway: 11, spin: -250, fill: "var(--shu-bright)", accent: "var(--clay)", opacity: 0.8 },
-  { kind: "acorn", left: "66%", top: "26vh", size: 62, dur: 4.8, sway: 15, spin: 240, fill: "var(--clay)", accent: "var(--shu-deep)", opacity: 0.95 },
-  { kind: "berries", left: "74%", top: "-10vh", size: 34, dur: 6.4, sway: 9, spin: -190, fill: "var(--shu)", accent: "var(--clay)", opacity: 0.72 },
-  { kind: "chestnut", left: "83%", top: "50vh", size: 42, dur: 5.2, sway: 12, spin: 280, fill: "var(--shu-deep)", accent: "var(--sun)", opacity: 0.9 },
-  { kind: "acorn", left: "91%", top: "18vh", size: 34, dur: 5.6, sway: 10, spin: -230, fill: "var(--clay)", accent: "var(--shu-deep)", opacity: 0.84 },
-  { kind: "berries", left: "12%", top: "70vh", size: 30, dur: 7.0, sway: 8, spin: 180, fill: "var(--shu-bright)", accent: "var(--clay)", opacity: 0.7 },
+const FALLING_LEAVES: LeafSpec[] = [
+  { left: "6%", top: "-14vh", size: 58, dur: 7.2, sway: 30, spin: 300, tint: "var(--shu)", opacity: 0.95 },
+  { left: "18%", top: "12vh", size: 30, dur: 8.6, sway: 18, spin: -260, tint: "var(--clay)", opacity: 0.8 },
+  { left: "29%", top: "-6vh", size: 44, dur: 6.4, sway: 24, spin: 380, tint: "var(--shu-bright)", opacity: 0.9 },
+  { left: "39%", top: "38vh", size: 24, dur: 9.4, sway: 14, spin: -200, tint: "var(--sun)", opacity: 0.72 },
+  { left: "48%", top: "62vh", size: 50, dur: 7.8, sway: 26, spin: 240, tint: "var(--shu-deep)", opacity: 0.85 },
+  { left: "57%", top: "4vh", size: 30, dur: 8.2, sway: 20, spin: -340, tint: "var(--clay)", opacity: 0.78 },
+  { left: "66%", top: "26vh", size: 62, dur: 6.8, sway: 32, spin: 280, tint: "var(--shu)", opacity: 0.95 },
+  { left: "74%", top: "-10vh", size: 26, dur: 9.0, sway: 16, spin: -220, tint: "var(--sun)", opacity: 0.7 },
+  { left: "83%", top: "50vh", size: 42, dur: 7.4, sway: 22, spin: 320, tint: "var(--shu-bright)", opacity: 0.88 },
+  { left: "91%", top: "18vh", size: 34, dur: 8.0, sway: 19, spin: -300, tint: "var(--shu)", opacity: 0.82 },
+  { left: "12%", top: "70vh", size: 22, dur: 9.8, sway: 12, spin: 210, tint: "var(--clay)", opacity: 0.68 },
 ];
 
 // 落下（linear）と、横揺れ・回転（easeInOut / linear）を入れ子で分ける。
-// こうすると「まっすぐ落ちながら、ころころ回る」動きになる。
-function FallingNut({ spec }: { spec: NutSpec }) {
+// こうすると「まっすぐ落ちながら、ひらひら回る」動きになる。
+function FallingLeaf({ spec }: { spec: LeafSpec }) {
   return (
     <motion.div
       className="absolute"
@@ -368,17 +428,17 @@ function FallingNut({ spec }: { spec: NutSpec }) {
           rotate: [0, spec.spin],
         }}
         transition={{
-          x: { duration: spec.dur * 0.5, repeat: Infinity, ease: "easeInOut" },
-          rotate: { duration: spec.dur * 0.8, repeat: Infinity, ease: "linear" },
+          x: { duration: spec.dur * 0.46, repeat: Infinity, ease: "easeInOut" },
+          rotate: { duration: spec.dur * 0.72, repeat: Infinity, ease: "linear" },
         }}
       >
-        <NutMark kind={spec.kind} fill={spec.fill} accent={spec.accent} size={spec.size} />
+        <MomijiLeaf fill={spec.tint} size={spec.size} />
       </motion.div>
     </motion.div>
   );
 }
 
-export function AutumnNuts() {
+export function AutumnLeaves() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
       {/* 秋の低い斜光（琥珀→金茶→錆朱。ゆっくり呼吸する） */}
@@ -400,9 +460,9 @@ export function AutumnNuts() {
         style={{ background: "linear-gradient(to top, rgba(156,111,38,0.16), transparent 78%)" }}
       />
 
-      {/* 落ちてくる木の実 */}
-      {FALLING_NUTS.map((spec, i) => (
-        <FallingNut key={i} spec={spec} />
+      {/* 舞い落ちる紅葉 */}
+      {FALLING_LEAVES.map((spec, i) => (
+        <FallingLeaf key={i} spec={spec} />
       ))}
 
       {/* 斜めに流れる、やわらかな秋の光 */}
