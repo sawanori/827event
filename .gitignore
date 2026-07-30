@@ -42,6 +42,9 @@ yarn-error.log*
 # Blob アップロード用のソース画像（リポジトリには含めず Vercel Blob で配信）
 /blob
 
+# ヒーロー画像の変換元（最適化した WebP だけを public/images へ入れる）
+/top
+
 # vercel
 .vercel
 
