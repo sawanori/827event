@@ -17,7 +17,7 @@ import Countdown from "@/components/Countdown";
 import BookingForm from "@/components/BookingForm";
 import Parallax from "@/components/Parallax";
 import ScrollArrowFlow from "@/components/ScrollArrowFlow";
-import { SectionFx, SectionHead, SlashBand, AutumnLeaves } from "@/components/fx";
+import { SectionFx, SectionHead, SlashBand, AutumnNuts } from "@/components/fx";
 import {
   EVENT,
   SLOTS,
@@ -220,8 +220,8 @@ export default function Home() {
               exit={{ y: "-101%" }}
               transition={{ duration: 0.95, ease: [0.76, 0, 0.24, 1] }}
             >
-              {/* 舞い落ちる紅葉と秋の斜光（ロゴ・日付の背面に重ねる） */}
-              <AutumnLeaves />
+              {/* 落ちてくる木の実と秋の斜光（ロゴ・日付の背面に重ねる） */}
+              <AutumnNuts />
 
               <div className="relative z-10 flex flex-col items-center">
                 <motion.p
