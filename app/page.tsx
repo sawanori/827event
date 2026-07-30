@@ -363,8 +363,8 @@ export default function Home() {
                   className="font-display mb-4"
                   style={{ color: "#fff", fontSize: "clamp(1.3rem, 7.1vw, 2rem)", lineHeight: 1.14, letterSpacing: "-0.02em" }}
                 >
-                  <span className="block">新しい<span style={{ color: "#f2954f" }}>写真</span>撮ろう</span>
-                  <span className="block">いいじゃん、秋なんだから</span>
+                  <span className="block">後半戦のスタートは、</span>
+                  <span className="block">新しい<span style={{ color: "#f2954f" }}>一枚</span>から。</span>
                 </motion.h1>
                 <motion.p
                   variants={fadeUp}
@@ -420,8 +420,8 @@ export default function Home() {
                       className="font-display hero-title mb-6"
                       style={{ color: "var(--ink)" }}
                     >
-                      <span className="block">新しい<span className="mark-shu">写真</span>撮ろう</span>
-                      <span className="block">いいじゃん、秋なんだから</span>
+                      <span className="block">後半戦のスタートは、</span>
+                      <span className="block">新しい<span className="mark-shu">一枚</span>から。</span>
                     </motion.h1>
 
                     <motion.p
