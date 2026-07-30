@@ -187,9 +187,10 @@ export const MEMBER_GALLERY_IMAGES: string[] = [...NEW_2026_GALLERY, ...PORT_IMA
 // ヒーロー「秋の光で、新しい自分を。」用：新規は ○1 のみ ＋ port*
 export const MEMBER_HERO_IMAGES: string[] = [...NEW_2026_HERO, ...PORT_IMAGES];
 
-// ヒーローのメインビジュアル。2枚をクロスフェードでスライドする（top=Vercel Blob / top2=ローカル）。
-export const HERO_SINGLE = `${BLOB}/top.webp`;
-export const HERO_SECOND = "/images/top2.webp";
+// ヒーローのメインビジュアル。2枚をクロスフェードでスライドする（秋の紅葉カット・ローカルWebP）。
+// 元データは top/autumntop{1,2}.png（941×1672）を cwebp -q 82 で変換したもの。
+export const HERO_SINGLE = "/images/autumn-top1.webp";
+export const HERO_SECOND = "/images/autumn-top2.webp";
 export const HERO_SLIDES: string[] = [HERO_SINGLE, HERO_SECOND];
 
 // About「映えるあなたを」セクションのスライド（ユーザー指定・○2カット7枚）。
