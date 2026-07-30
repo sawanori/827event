@@ -29,6 +29,7 @@ import {
   type MotionValue,
   type Variants,
 } from "framer-motion";
+import { MomijiGlyph } from "@/components/fx";
 import { EVENT, SLOTS } from "@/lib/site-data";
 
 type Side = "left" | "right";
@@ -401,6 +402,123 @@ function ArrowHead({
   );
 }
 
+// ---- 矢印の軌跡に舞う紅葉 ----
+// at:      trail=矢じりから後方への距離 / それ以外=軌跡上の位置。どちらもパス長に対する比。
+// amp:     パスの法線方向へのずらし量(px)。符号で軌跡の左右に散る。
+// spin:    静止時の傾き(deg)。trail はここに走行分の回転が加算される。
+// dur:     ひらひらの周期(s)。
+type FlowLeaf = {
+  at: number;
+  trail?: boolean;
+  size: number;
+  tint: string;
+  amp: number;
+  spin: number;
+  dur: number;
+};
+
+const FLOW_LEAVES: FlowLeaf[] = [
+  { at: 0.04, trail: true, size: 30, tint: "var(--shu)", amp: -38, spin: -14, dur: 3.4 },
+  { at: 0.085, trail: true, size: 22, tint: "var(--clay)", amp: 44, spin: 20, dur: 4.1 },
+  { at: 0.135, trail: true, size: 26, tint: "var(--shu-bright)", amp: -52, spin: 8, dur: 3.7 },
+  { at: 0.14, size: 20, tint: "var(--sun)", amp: 28, spin: -22, dur: 4.6 },
+  { at: 0.26, size: 32, tint: "var(--shu)", amp: -36, spin: 12, dur: 3.9 },
+  { at: 0.37, size: 22, tint: "var(--clay)", amp: 32, spin: -16, dur: 4.3 },
+  { at: 0.49, size: 28, tint: "var(--shu-deep)", amp: -28, spin: 24, dur: 3.6 },
+  { at: 0.61, size: 20, tint: "var(--sun)", amp: 36, spin: -10, dur: 4.8 },
+  { at: 0.72, size: 30, tint: "var(--shu-bright)", amp: -24, spin: 18, dur: 4.0 },
+  { at: 0.84, size: 24, tint: "var(--clay)", amp: 30, spin: -20, dur: 3.5 },
+  { at: 0.94, size: 34, tint: "var(--shu)", amp: -20, spin: 10, dur: 4.4 },
+];
+
+const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+// 位置は ArrowHead と同じく実パスの座標から命令的に更新する（1フレームで全枚数まとめて）。
+// 外側の <g> が軌跡上の位置、内側の <motion.g> がひらひらの揺れを持つので、
+// transform の書き込み先が衝突しない。
+function FlowLeaves({
+  draw,
+  trackRef,
+  pathD,
+}: {
+  draw: MotionValue<number>;
+  trackRef: React.RefObject<SVGPathElement | null>;
+  pathD: string;
+}) {
+  const refs = useRef<(SVGGElement | null)[]>([]);
+  const lenRef = useRef(0);
+
+  const apply = (p: number) => {
+    const path = trackRef.current;
+    if (!path) return;
+    if (!lenRef.current) {
+      try {
+        lenRef.current = path.getTotalLength();
+      } catch {
+        return;
+      }
+    }
+    const L = lenRef.current;
+    if (!L) return;
+    const tip = p * L;
+
+    FLOW_LEAVES.forEach((leaf, i) => {
+      const g = refs.current[i];
+      if (!g) return;
+      const len = leaf.trail ? tip - leaf.at * L : leaf.at * L;
+      // 矢じりがまだ届いていない葉は消しておく
+      if (len <= 1 || tip <= 1) {
+        g.style.opacity = "0";
+        return;
+      }
+      // trail は出だしだけフェード、その他は矢じりの通過でフェードイン
+      const reveal = leaf.trail
+        ? clamp01(len / (L * 0.03))
+        : clamp01((tip - len) / (L * 0.025));
+      const at = Math.min(L, len);
+      const pt = path.getPointAtLength(at);
+      const back = path.getPointAtLength(Math.max(0, at - 8));
+      const t = Math.atan2(pt.y - back.y, pt.x - back.x);
+      // 法線方向へ、現れながら外へ流れていく
+      const off = leaf.amp * (0.3 + 0.7 * reveal);
+      const x = pt.x - Math.sin(t) * off;
+      const y = pt.y + Math.cos(t) * off;
+      const rot = leaf.spin + (leaf.trail ? (len / L) * 300 : 0);
+      g.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${rot.toFixed(2)})`);
+      g.style.opacity = (reveal * 0.95).toFixed(3);
+    });
+  };
+
+  useMotionValueEvent(draw, "change", apply);
+  useEffect(() => {
+    lenRef.current = 0; // 幾何が変わったらパス長を測り直す
+    apply(draw.get());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathD]);
+
+  return (
+    <>
+      {FLOW_LEAVES.map((leaf, i) => (
+        <g
+          key={i}
+          ref={(el) => {
+            refs.current[i] = el;
+          }}
+          style={{ opacity: 0 }}
+        >
+          <motion.g
+            style={{ transformBox: "fill-box", transformOrigin: "center" }}
+            animate={{ rotate: [0, 13, -9, 5, 0], x: [0, 3, -2, 1, 0], y: [0, -3, 2, -1, 0] }}
+            transition={{ duration: leaf.dur, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <MomijiGlyph fill={leaf.tint} size={leaf.size} />
+          </motion.g>
+        </g>
+      ))}
+    </>
+  );
+}
+
 // CTA のスラムイン（P5R風：小さく縮んだ状態から行き過ぎて着地）
 const ctaVariants: Variants = {
   hidden: { opacity: 0, scale: 0.4, y: 16 },
@@ -642,6 +760,8 @@ export default function ScrollArrowFlow() {
                 vectorEffect="non-scaling-stroke"
                 style={{ pathLength: draw }}
               />
+              {/* 軌跡に舞う紅葉 */}
+              <FlowLeaves draw={draw} trackRef={trackRef} pathD={geom.d} />
               {/* ノード→カードのティック */}
               {geom.nodes.map((n, i) => (
                 <Connector key={`c${i}`} node={n} frac={geom.frac[i]} draw={draw} />

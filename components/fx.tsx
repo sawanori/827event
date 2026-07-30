@@ -268,13 +268,16 @@ function buildMomijiPath(): string {
 
 const MOMIJI_PATH = buildMomijiPath();
 
+// 葉柄。
+const MOMIJI_STEM = `M ${LEAF_CX} ${LEAF_CY} L ${LEAF_CX} 92`;
+
 // 葉脈：中心から各裂片の先端へ。
 const MOMIJI_VEINS = MOMIJI_LOBES.map((lobe) => {
   const [x, y] = leafPolar(lobe.a, lobe.r * 0.72);
   return `M ${LEAF_CX} ${LEAF_CY} L ${x.toFixed(1)} ${y.toFixed(1)}`;
 }).join(" ");
 
-// 一枚の紅葉（葉脈・葉柄つき）。
+// 一枚の紅葉（葉脈・葉柄つき）。単体のSVGとして置く用。
 export function MomijiLeaf({ fill, size = 40 }: { fill: string; size?: number }) {
   return (
     <svg
@@ -285,14 +288,21 @@ export function MomijiLeaf({ fill, size = 40 }: { fill: string; size?: number })
       style={{ display: "block", overflow: "visible" }}
     >
       <path d={MOMIJI_PATH} fill={fill} />
-      <path
-        d={`M ${LEAF_CX} ${LEAF_CY} L ${LEAF_CX} 92`}
-        stroke={fill}
-        strokeWidth={3.2}
-        strokeLinecap="round"
-      />
+      <path d={MOMIJI_STEM} stroke={fill} strokeWidth={3.2} strokeLinecap="round" />
       <path d={MOMIJI_VEINS} stroke="rgba(25,21,18,0.20)" strokeWidth={1.4} strokeLinecap="round" fill="none" />
     </svg>
+  );
+}
+
+// 同じ紅葉を、他のSVGの座標系へ埋め込む用。原点が葉の中心なので、
+// 呼び出し側は translate / rotate だけで好きな位置と角度に置ける。size は葉の直径相当px。
+export function MomijiGlyph({ fill, size }: { fill: string; size: number }) {
+  return (
+    <g transform={`scale(${(size / 100).toFixed(4)}) translate(${-LEAF_CX} ${-LEAF_CY})`}>
+      <path d={MOMIJI_PATH} fill={fill} />
+      <path d={MOMIJI_STEM} stroke={fill} strokeWidth={3.2} strokeLinecap="round" />
+      <path d={MOMIJI_VEINS} stroke="rgba(25,21,18,0.18)" strokeWidth={1.4} strokeLinecap="round" fill="none" />
+    </g>
   );
 }
 
