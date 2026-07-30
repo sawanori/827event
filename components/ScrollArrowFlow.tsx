@@ -403,14 +403,14 @@ function ArrowHead({
 }
 
 // ---- 矢印の軌跡に転がる木の実 ----
-// at:      trail=矢じりから後方への距離 / それ以外=軌跡上の位置。どちらもパス長に対する比。
+// 軌跡上の決まった位置に置き、矢じりが通過したら現れる（矢じりに追随はしない）。
+// at:      軌跡上の位置（パス長に対する比）。
 // amp:     パスの法線方向へのずらし量(px)。符号で軌跡の左右に散る。
-// spin:    静止時の傾き(deg)。trail はここに走行分の回転が加算される。
+// spin:    傾き(deg)。
 // dur:     ゆらぎの周期(s)。
 type FlowNut = {
   kind: NutKind;
   at: number;
-  trail?: boolean;
   size: number;
   fill: string;
   accent: string;
@@ -420,9 +420,6 @@ type FlowNut = {
 };
 
 const FLOW_NUTS: FlowNut[] = [
-  { kind: "acorn", at: 0.04, trail: true, size: 46, fill: "var(--clay)", accent: "var(--shu-deep)", amp: -38, spin: -14, dur: 3.4 },
-  { kind: "berries", at: 0.085, trail: true, size: 38, fill: "var(--shu)", accent: "var(--clay)", amp: 44, spin: 20, dur: 4.1 },
-  { kind: "chestnut", at: 0.135, trail: true, size: 42, fill: "var(--shu-deep)", accent: "var(--sun)", amp: -52, spin: 8, dur: 3.7 },
   { kind: "acorn", at: 0.14, size: 34, fill: "var(--sun)", accent: "var(--clay)", amp: 28, spin: -22, dur: 4.6 },
   { kind: "chestnut", at: 0.26, size: 46, fill: "var(--shu)", accent: "var(--sun)", amp: -36, spin: 12, dur: 3.9 },
   { kind: "berries", at: 0.37, size: 38, fill: "var(--shu-bright)", accent: "var(--clay)", amp: 32, spin: -16, dur: 4.3 },
@@ -467,26 +464,22 @@ function FlowNuts({
     FLOW_NUTS.forEach((nut, i) => {
       const g = refs.current[i];
       if (!g) return;
-      const len = nut.trail ? tip - nut.at * L : nut.at * L;
+      const len = nut.at * L;
       // 矢じりがまだ届いていない実は消しておく
-      if (len <= 1 || tip <= 1) {
+      if (tip <= len) {
         g.style.opacity = "0";
         return;
       }
-      // trail は出だしだけフェード、その他は矢じりの通過でフェードイン
-      const reveal = nut.trail
-        ? clamp01(len / (L * 0.03))
-        : clamp01((tip - len) / (L * 0.025));
-      const at = Math.min(L, len);
-      const pt = path.getPointAtLength(at);
-      const back = path.getPointAtLength(Math.max(0, at - 8));
+      // 矢じりの通過でフェードイン
+      const reveal = clamp01((tip - len) / (L * 0.025));
+      const pt = path.getPointAtLength(Math.min(L, len));
+      const back = path.getPointAtLength(Math.max(0, Math.min(L, len) - 8));
       const t = Math.atan2(pt.y - back.y, pt.x - back.x);
       // 法線方向へ、現れながら外へ転がり出ていく
       const off = nut.amp * (0.3 + 0.7 * reveal);
       const x = pt.x - Math.sin(t) * off;
       const y = pt.y + Math.cos(t) * off;
-      const rot = nut.spin + (nut.trail ? (len / L) * 300 : 0);
-      g.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${rot.toFixed(2)})`);
+      g.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${nut.spin.toFixed(2)})`);
       g.style.opacity = (reveal * 0.95).toFixed(3);
     });
   };
