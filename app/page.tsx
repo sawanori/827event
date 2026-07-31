@@ -17,6 +17,7 @@ import Countdown from "@/components/Countdown";
 import BookingForm from "@/components/BookingForm";
 import Parallax from "@/components/Parallax";
 import ScrollArrowFlow from "@/components/ScrollArrowFlow";
+import MoonMove from "@/components/MoonMove";
 import { SectionFx, SectionHead, SlashBand, AutumnLeaves } from "@/components/fx";
 import {
   EVENT,
@@ -573,7 +574,7 @@ export default function Home() {
 
               <Reveal className="mt-14 max-w-md">
                 <p className="font-body leading-loose" style={{ color: "var(--muted)" }}>
-                  衣替えのように、プロフィールも秋仕様へ。ほんの少しの光の違いで、写真の印象は大きく変わります。この秋、後半戦のあなたを、新しい一枚から始めませんか。
+                  衣替えのように、プロフィールも秋仕様へ。ほんの少しの光の違いで、写真の印象は大きく変わります。この半年で変わったあなたを、そのまま写しに来てください。
                 </p>
               </Reveal>
             </div>
@@ -726,6 +727,9 @@ export default function Home() {
 
           {/* ===== 当日の流れ（P5R風・矢印スクロール演出） ===== */}
           <ScrollArrowFlow />
+
+          {/* ===== 装飾バンド（halfmoon / moooove!! のスクロール演出） ===== */}
+          <MoonMove />
 
           {/* ===== スクロール演出（WebGL リボン） ===== */}
           {use3DHero && (
